@@ -2,11 +2,16 @@ import ModalityCore
 import SwiftUI
 
 #if DEBUG
-public struct DebugPerformanceHUD: View {
+public struct DebugRenderingPerformanceFPS_HUD: View {
+  public static let isVisibleStorageKey = "DebugRenderingPerformanceFPS_HUD.isVisible"
+  public static let defaultVisibility = false
+
   @ObservedObject private var metrics: DebugRenderMetrics
   @State private var fpsHistory: [Double] = []
   @State private var lastFPSHistoryUpdate: Date?
+  @State private var warmupStartFrameCount: Int?
 
+  private let warmupFrameCount = 120
   private let maximumFPSHistoryCount = 40
   private let fpsHistoryMinimumInterval: TimeInterval = 0.25
 
@@ -21,59 +26,74 @@ public struct DebugPerformanceHUD: View {
 
   public var body: some View {
     let snapshot = metrics.snapshot
+    let isWarmedUp = warmupFramesElapsed(snapshot) >= warmupFrameCount
     let averageFPS = averageFPS(fallback: snapshot.fps)
+    let averageFPSValue = isWarmedUp ? wholeNumber(averageFPS) : "..."
+    let minimumFPSValue = isWarmedUp ? wholeNumber(minimumFPS(fallback: snapshot.fps)) : "..."
+    let backgroundShape = RoundedCornersRectangle(radius: 7, corners: [.bottomLeft])
 
-    VStack(alignment: .leading, spacing: 6) {
-      HStack(alignment: .top, spacing: 8) {
-        VStack(alignment: .leading, spacing: 0) {
-          Text("FPS")
-            .font(.system(size: 8, weight: .semibold))
-            .foregroundStyle(.white.opacity(0.46))
-          Text(wholeNumber(snapshot.fps))
-            .font(.system(size: 20, weight: .semibold, design: .rounded))
-            .monospacedDigit()
-        }
-
-        Spacer(minLength: 0)
-
-        VStack(alignment: .trailing, spacing: 2) {
-          inlineMetric("avg", value: wholeNumber(averageFPS))
-          inlineMetric("max", value: "\(wholeNumber(snapshot.displayHz))Hz")
-        }
-        .padding(.top, 1)
+    HStack(alignment: .center, spacing: 10) {
+      VStack(alignment: .leading, spacing: 0) {
+        Text("FPS")
+          .font(.system(size: 8, weight: .semibold))
+          .foregroundStyle(.white.opacity(0.46))
+        Text(wholeNumber(snapshot.fps))
+          .font(.system(size: 24, weight: .semibold, design: .rounded))
+          .monospacedDigit()
       }
+      .frame(width: 52, alignment: .leading)
 
-      fpsSparkline(samples: fpsHistory, averageFPS: averageFPS)
+      VStack(alignment: .leading, spacing: 4) {
+        fpsSparkline(samples: fpsHistory, averageFPS: averageFPS)
 
-      HStack(alignment: .firstTextBaseline, spacing: 9) {
-        compactMetric("ms", value: millisecondsNumber(snapshot.latestFrameDuration))
-        compactMetric("p95", value: millisecondsNumber(snapshot.p95FrameDuration))
-        compactMetric("max", value: millisecondsNumber(snapshot.worstFrameDuration))
-        compactMetric(
-          "hitch",
-          value: "\(snapshot.hitchCount)",
-          valueColor: snapshot.hitchCount == 0 ? .white.opacity(0.86) : .orange
-        )
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+          HStack(alignment: .firstTextBaseline, spacing: 7) {
+            compactMetric("avg", value: averageFPSValue)
+            compactMetric("min", value: minimumFPSValue)
+          }
+
+          Spacer(minLength: 10)
+
+          HStack(alignment: .firstTextBaseline, spacing: 7) {
+            compactMetric("ms", value: millisecondsNumber(snapshot.latestFrameDuration))
+            compactMetric("p95", value: millisecondsNumber(snapshot.p95FrameDuration))
+            compactMetric("max", value: millisecondsNumber(snapshot.worstFrameDuration))
+            compactMetric(
+              "hitch",
+              value: "\(snapshot.hitchCount)",
+              valueColor: snapshot.hitchCount == 0 ? .white.opacity(0.86) : .orange
+            )
+
+            Button {
+              resetState()
+            } label: {
+              Image(systemName: "arrow.counterclockwise")
+                .font(.system(size: 9, weight: .semibold))
+                .frame(width: 14, height: 18)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white.opacity(0.70))
+            .help("Reset FPS HUD")
+          }
+        }
       }
     }
-    .frame(width: 164)
+    .frame(width: 260)
     .foregroundStyle(.white)
     .lineLimit(1)
     .padding(.horizontal, 8)
     .padding(.vertical, 7)
-    .background(.black.opacity(0.58), in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+    .background(.black.opacity(0.78), in: backgroundShape)
     .overlay {
-      RoundedRectangle(cornerRadius: 7, style: .continuous)
-        .stroke(.white.opacity(0.12), lineWidth: 1)
+      backgroundShape.stroke(.white.opacity(0.12), lineWidth: 1)
     }
     .shadow(color: .black.opacity(0.16), radius: 4, y: 2)
     .fixedSize(horizontal: true, vertical: false)
-    .accessibilityHidden(true)
     .onAppear {
-      appendFPS(snapshot.fps, force: true)
+      restartWarmup(from: snapshot)
     }
     .onChange(of: snapshot) { newSnapshot in
-      appendFPS(newSnapshot.fps)
+      appendSnapshot(newSnapshot)
     }
   }
 
@@ -161,7 +181,7 @@ public struct DebugPerformanceHUD: View {
         style: StrokeStyle(lineWidth: 1.25, lineCap: .round, lineJoin: .round)
       )
     }
-    .frame(height: 18)
+    .frame(height: 31)
     .background(.white.opacity(0.035), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
   }
 
@@ -180,8 +200,40 @@ public struct DebugPerformanceHUD: View {
     return fpsHistory.reduce(0, +) / Double(fpsHistory.count)
   }
 
-  private func appendFPS(_ fps: Double, force: Bool = false) {
-    guard fps.isFinite, fps >= 0 else {
+  private func minimumFPS(fallback: Double) -> Double {
+    fpsHistory.min() ?? fallback
+  }
+
+  private func resetState() {
+    metrics.resetSamplingState()
+    restartWarmup(fromFrameCount: 0)
+  }
+
+  private func restartWarmup(from snapshot: DebugRenderMetricsSnapshot) {
+    restartWarmup(fromFrameCount: snapshot.totalFrameCount)
+  }
+
+  private func restartWarmup(fromFrameCount frameCount: Int) {
+    fpsHistory.removeAll()
+    lastFPSHistoryUpdate = nil
+    warmupStartFrameCount = frameCount
+  }
+
+  private func warmupFramesElapsed(_ snapshot: DebugRenderMetricsSnapshot) -> Int {
+    guard let warmupStartFrameCount else {
+      return 0
+    }
+
+    return max(0, snapshot.totalFrameCount - warmupStartFrameCount)
+  }
+
+  private func appendSnapshot(_ snapshot: DebugRenderMetricsSnapshot, force: Bool = false) {
+    guard warmupFramesElapsed(snapshot) >= warmupFrameCount else {
+      return
+    }
+
+    let fps = snapshot.fps
+    guard fps.isFinite, fps > 0 else {
       return
     }
 
@@ -198,33 +250,46 @@ public struct DebugPerformanceHUD: View {
   }
 }
 
-private struct DebugPerformanceOverlayModifier: ViewModifier {
+private struct DebugRenderingPerformanceFPS_HUDOverlayModifier: ViewModifier {
   let enabled: Bool
+  @AppStorage(DebugRenderingPerformanceFPS_HUD.isVisibleStorageKey)
+  private var isVisible = DebugRenderingPerformanceFPS_HUD.defaultVisibility
   @ObservedObject private var metrics: DebugRenderMetrics
 
-  init(enabled: Bool, metrics: DebugRenderMetrics) {
+  @MainActor
+  init(enabled: Bool, metrics: DebugRenderMetrics = .shared) {
     self.enabled = enabled
     self.metrics = metrics
   }
 
   func body(content: Content) -> some View {
-    if enabled {
-      content
-        .overlay(alignment: .topTrailing) {
-          DebugPerformanceHUD(metrics: metrics)
-            .padding(.top, 6)
-            .padding(.trailing, 6)
-            .allowsHitTesting(false)
+    let shouldShowHUD = enabled && isVisible
+
+    content
+      .overlay(alignment: .topTrailing) {
+        if shouldShowHUD {
+          DebugRenderingPerformanceFPS_HUD(metrics: metrics)
+            .ignoresSafeArea(.all, edges: .top)
+            .zIndex(.greatestFiniteMagnitude)
         }
-        .onAppear {
+      }
+      .onAppear {
+        if shouldShowHUD {
           metrics.startSampling()
         }
-        .onDisappear {
+      }
+      .onDisappear {
+        if shouldShowHUD {
           metrics.stopSampling()
         }
-    } else {
-      content
-    }
+      }
+      .onChange(of: shouldShowHUD) { isEnabled in
+        if isEnabled {
+          metrics.startSampling()
+        } else {
+          metrics.stopSampling()
+        }
+      }
   }
 }
 #endif
@@ -232,9 +297,9 @@ private struct DebugPerformanceOverlayModifier: ViewModifier {
 public extension View {
   @MainActor
   @ViewBuilder
-  func debugPerformanceOverlay(enabled: Bool = true) -> some View {
+  func debugRenderingPerformanceFPS_HUD(enabled: Bool = true) -> some View {
     #if DEBUG
-    modifier(DebugPerformanceOverlayModifier(enabled: enabled, metrics: .shared))
+    modifier(DebugRenderingPerformanceFPS_HUDOverlayModifier(enabled: enabled))
     #else
     self
     #endif

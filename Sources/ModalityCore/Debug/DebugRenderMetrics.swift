@@ -51,6 +51,13 @@ public final class DebugRenderMetrics: ObservableObject {
     sampler = nil
   }
 
+  public func resetSamplingState() {
+    let displayHz = snapshot.displayHz > 0 ? snapshot.displayHz : 60
+    aggregator = DebugRenderMetricsAggregator(displayHz: displayHz)
+    lastPublishTime = 0
+    snapshot = .empty
+  }
+
   private func recordFrame(timestamp: TimeInterval, displayHz: Double) {
     aggregator.recordFrame(timestamp: timestamp, displayHz: displayHz)
     publishSnapshot(now: timestamp, force: false)
@@ -67,6 +74,7 @@ public final class DebugRenderMetrics: ObservableObject {
 
   public func startSampling() {}
   public func stopSampling() {}
+  public func resetSamplingState() {}
   #endif
 }
 

@@ -9,7 +9,8 @@ public struct DebugRenderMetricsSnapshot: Equatable, Sendable {
     p95FrameDuration: 0,
     worstFrameDuration: 0,
     hitchCount: 0,
-    frameSampleCount: 0
+    frameSampleCount: 0,
+    totalFrameCount: 0
   )
 
   public let displayHz: Double
@@ -20,6 +21,7 @@ public struct DebugRenderMetricsSnapshot: Equatable, Sendable {
   public let worstFrameDuration: TimeInterval
   public let hitchCount: Int
   public let frameSampleCount: Int
+  public let totalFrameCount: Int
 
   public init(
     displayHz: Double,
@@ -29,7 +31,8 @@ public struct DebugRenderMetricsSnapshot: Equatable, Sendable {
     p95FrameDuration: TimeInterval,
     worstFrameDuration: TimeInterval,
     hitchCount: Int,
-    frameSampleCount: Int
+    frameSampleCount: Int,
+    totalFrameCount: Int = 0
   ) {
     self.displayHz = displayHz
     self.frameCadenceHz = frameCadenceHz
@@ -39,6 +42,7 @@ public struct DebugRenderMetricsSnapshot: Equatable, Sendable {
     self.worstFrameDuration = worstFrameDuration
     self.hitchCount = hitchCount
     self.frameSampleCount = frameSampleCount
+    self.totalFrameCount = totalFrameCount
   }
 }
 
@@ -52,6 +56,7 @@ public struct DebugRenderMetricsAggregator: Sendable {
 
   private var lastFrameTimestamp: TimeInterval?
   private var frameSamples: [FrameSample] = []
+  private var totalFrameCount = 0
 
   public private(set) var displayHz: Double
 
@@ -76,6 +81,7 @@ public struct DebugRenderMetricsAggregator: Sendable {
     }
 
     guard let lastFrameTimestamp, timestamp > lastFrameTimestamp else { return }
+    totalFrameCount += 1
 
     let duration = timestamp - lastFrameTimestamp
     guard duration.isFinite, duration >= 0 else { return }
@@ -102,7 +108,8 @@ public struct DebugRenderMetricsAggregator: Sendable {
         samples: frameSamples,
         expectedFrameDuration: expectedFrameDuration
       ),
-      frameSampleCount: frameSamples.count
+      frameSampleCount: frameSamples.count,
+      totalFrameCount: totalFrameCount
     )
   }
 

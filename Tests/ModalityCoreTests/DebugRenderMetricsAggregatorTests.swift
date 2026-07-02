@@ -14,6 +14,7 @@ struct DebugRenderMetricsAggregatorTests {
     let snapshot = aggregator.snapshot(now: 1)
 
     #expect(snapshot.displayHz == 60)
+    #expect(snapshot.totalFrameCount == 60)
     #expect(abs(snapshot.frameCadenceHz - 60) < 0.000_1)
     #expect(snapshot.fps == 60)
     #expect(snapshot.hitchCount == 0)
@@ -83,6 +84,7 @@ struct DebugRenderMetricsAggregatorTests {
     let snapshot = aggregator.snapshot(now: 2)
 
     #expect(snapshot.frameSampleCount == 0)
+    #expect(snapshot.totalFrameCount == 1)
     #expect(snapshot.fps == 0)
   }
 }
