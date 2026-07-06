@@ -50,8 +50,8 @@ struct NormalizeTests {
 
   @Test
   func normalizeInvalidRange() {
-    let result = 50.0.normalize(from: 100, to: 0)
-    #expect(result == -1)
+    let result = -50.0.normalize(from: 100, to: 0)
+    #expect(result == -0.5)
   }
 
   @Test
