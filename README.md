@@ -107,3 +107,15 @@ Then add products to your target:
   ]
 )
 ```
+
+## Tuist
+
+Run from the module directory:
+
+```sh
+tuist generate --no-open
+```
+
+The local `ModalityCoreProjectDescription` plugin owns the targets and test groups. The main workspace reads these groups for its test schemes. The standalone project uses the package platform requirements, default Tuist build settings and remote Swift packages. The plugin defines dependencies for both build modes. The main repository supplies its build settings, source paths and `isStandalone: false`.
+
+For local signing, add `DEVELOPMENT_TEAM = your_team_id` to `Configuration/Signing.local.xcconfig`. Git ignores this file.
