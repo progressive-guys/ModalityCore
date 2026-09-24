@@ -19,6 +19,7 @@ Foundation utilities and extensions:
 - **Numeric Extensions**: Interpolation, extrapolation (`lerp`), normalization, formatting, sign value
 - **Property Wrappers**: `@Persisted` — automatic UserDefaults sync with debouncing
 - **Operators**: CGSize arithmetic, logical assignment operators (`||=`, `&&=`, `??=`)
+- **File resources**: `FileResource<Content>("file.xml", bundle: bundle)` stores a file name and bundle. Use `try resource.url` to read the file.
 - **Utilities**: `SeededRandomNumberGenerator`, debug helpers, Logger extensions
 
 ### ModalityDesign
