@@ -1,0 +1,8 @@
+{
+  "title": "Catalog",
+  "children": [
+    { "value": 3 },
+    { "title": "Nested", "children": [{ "value": 7 }] },
+    { "title": "Empty", "children": [] }
+  ]
+}

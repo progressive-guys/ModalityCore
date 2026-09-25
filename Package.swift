@@ -21,7 +21,11 @@ let package = Package(
       dependencies: ["ModalityCore", "SwiftMusicTheory"],
       resources: [.process("Resources")]
     ),
-    .testTarget(name: "ModalityCoreTests", dependencies: ["ModalityCore"]),
+    .testTarget(
+      name: "ModalityCoreTests",
+      dependencies: ["ModalityCore"],
+      resources: [.process("TreeTests/Resources")]
+    ),
     .testTarget(name: "ModalityDesignTests", dependencies: ["ModalityDesign"]),
   ]
 )

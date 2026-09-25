@@ -20,6 +20,7 @@ Foundation utilities and extensions:
 - **Property Wrappers**: `@Persisted` — automatic UserDefaults sync with debouncing
 - **Operators**: CGSize arithmetic, logical assignment operators (`||=`, `&&=`, `??=`)
 - **File resources**: `FileResource<Content>("file.xml", bundle: bundle)` stores a file name and bundle. Use `try resource.url` to read the file.
+- **Trees**: `Tree<Value>` holds folders and leaf values. `map` changes leaf values and keeps folders and order; `flattened` returns all leaf values. Protocol support depends on the value type.
 - **Utilities**: `SeededRandomNumberGenerator`, debug helpers, Logger extensions
 
 ### ModalityDesign
