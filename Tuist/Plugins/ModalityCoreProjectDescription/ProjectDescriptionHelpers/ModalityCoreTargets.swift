@@ -53,7 +53,10 @@ public struct ModalityCoreTargets {
         deploymentTargets: Self.deploymentTargets,
         infoPlist: .default,
         sources: ["\(sourceRoot)/Tests/ModalityCoreTests/**"],
-        resources: ["\(sourceRoot)/Tests/ModalityCoreTests/TreeTests/Resources/**"],
+        resources: [
+          "\(sourceRoot)/Tests/ModalityCoreTests/TreeTests/Resources/**",
+          "\(sourceRoot)/Tests/ModalityCoreTests/FileSystemStoreTests/Resources/**"
+        ],
         dependencies: [
           .target(name: "ModalityCore")
         ]

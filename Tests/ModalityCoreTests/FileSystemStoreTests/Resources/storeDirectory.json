@@ -1,0 +1,13 @@
+{
+  "directories": ["Empty", "Nested/Empty"],
+  "files": [
+    {"path": "root.json", "resource": "storeProfile"},
+    {"path": "Nested/Deep/profile.json", "resource": "storeProfile"},
+    {"path": "Nested/broken.json", "resource": "storeInvalid"},
+    {"path": ".hidden/profile.json", "resource": "storeProfile"}
+  ],
+  "links": [
+    {"path": "Nested/loop", "destination": ".."},
+    {"path": "linked.json", "destination": "root.json"}
+  ]
+}

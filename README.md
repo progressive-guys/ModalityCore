@@ -20,6 +20,7 @@ Foundation utilities and extensions:
 - **Property Wrappers**: `@Persisted` — automatic UserDefaults sync with debouncing
 - **Operators**: CGSize arithmetic, logical assignment operators (`||=`, `&&=`, `??=`)
 - **Bundled resources**: `BundledResource<Content>("file.xml", bundle: bundle)` stores a file name and bundle. Use `try resource.url` to read the file.
+- **File storage**: `FileSystemStore<Value>` reads and writes Codable, Sendable values as JSON at caller-supplied URLs. Writes are atomic; directory reads return `(trees: [Tree<Entry>], errors: [URL: any Error])`. Trees preserve empty folders. Consumers choose the display order. Hidden items and symbolic links are skipped. Nested file or directory failures are reported by URL while other entries remain available. A missing root returns an empty result; other root read errors propagate. Use `trees.flatMap(\.flattened)` for a flat list. A supplied decoder can fill profile defaults. Deletion uses the supplied file URL. Operations are synchronous; UI owners can run them in worker tasks.
 - **Trees**: `Tree<Value>` holds folders and leaf values. `map` changes leaf values and keeps folders and order; `flattened` returns all leaf values. Protocol support depends on the value type.
 - **Utilities**: `SeededRandomNumberGenerator`, debug helpers, Logger extensions
 
