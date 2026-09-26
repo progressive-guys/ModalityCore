@@ -1,14 +1,15 @@
 import Foundation
 
 public struct BundledResource<Content>: Hashable, Sendable {
-  public let fileName: String
+  public let path: String
   private let bundle: Bundle
 
-  public init(_ fileName: String, bundle: Bundle) {
-    self.fileName = fileName
+  public init(_ path: String, bundle: Bundle) {
+    self.path = path
     self.bundle = bundle
   }
-
+  
+  public var fileName: String { (path as NSString).lastPathComponent }
   public var name: String { (fileName as NSString).deletingPathExtension }
   public var ext: String { (fileName as NSString).pathExtension }
 

@@ -24,7 +24,7 @@ let package = Package(
     .testTarget(
       name: "ModalityCoreTests",
       dependencies: ["ModalityCore"],
-      resources: [.process("TreeTests/Resources"), .process("FileSystemStoreTests/Resources")]
+      resources: [.process("TreeTests/Resources"), .copy("FileSystemStoreTests/Resources")]
     ),
     .testTarget(name: "ModalityDesignTests", dependencies: ["ModalityDesign"]),
   ]

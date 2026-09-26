@@ -55,7 +55,7 @@ public struct ModalityCoreTargets {
         sources: ["\(sourceRoot)/Tests/ModalityCoreTests/**"],
         resources: [
           "\(sourceRoot)/Tests/ModalityCoreTests/TreeTests/Resources/**",
-          "\(sourceRoot)/Tests/ModalityCoreTests/FileSystemStoreTests/Resources/**"
+          .folderReference(path: .relativeToManifest("\(sourceRoot)/Tests/ModalityCoreTests/FileSystemStoreTests/Resources"))
         ],
         dependencies: [
           .target(name: "ModalityCore")

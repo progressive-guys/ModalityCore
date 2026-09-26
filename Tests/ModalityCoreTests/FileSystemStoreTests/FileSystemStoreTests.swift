@@ -123,28 +123,20 @@ struct FileSystemStoreTests {
     var speed: Double
   }
 
-  private func fixture(_ name: String) throws -> URL {
+  private func fixture(_ name: String, withExtension ext: String? = "json") throws -> URL {
     #if SWIFT_PACKAGE
     let bundle = Bundle.module
     #else
     let bundle = Bundle(for: BundleToken.self)
     #endif
-    return try #require(bundle.url(forResource: name, withExtension: "json"))
+    return try #require(bundle.url(forResource: name, withExtension: ext, subdirectory: "Resources"))
   }
 
   private func prepareDirectory(at directory: URL) throws {
-    let layout = try JSONDecoder().decode(DirectoryFixture.self, from: Data(contentsOf: fixture("storeDirectory")))
-    for path in layout.directories {
-      try FileManager.default.createDirectory(at: directory.appendingPathComponent(path), withIntermediateDirectories: true)
-    }
-    for file in layout.files {
-      let url = directory.appendingPathComponent(file.path)
-      try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
-      try FileManager.default.copyItem(at: fixture(file.resource), to: url)
-    }
-    for link in layout.links {
-      try FileManager.default.createSymbolicLink(atPath: directory.appendingPathComponent(link.path).path, withDestinationPath: link.destination)
-    }
+    try FileManager.default.copyItem(at: fixture("StoreDirectory", withExtension: nil), to: directory)
+    // Create links in the temporary copy so resource packaging does not follow the cycle.
+    try FileManager.default.createSymbolicLink(atPath: directory.appendingPathComponent("Nested/loop").path, withDestinationPath: "..")
+    try FileManager.default.createSymbolicLink(atPath: directory.appendingPathComponent("linked.json").path, withDestinationPath: "root.json")
   }
 
   private func nodeName(_ tree: Tree<FileSystemStore<Profile>.Entry>) -> String {
@@ -160,22 +152,6 @@ struct FileSystemStoreTests {
       return name == title
     })
     return try #require(tree.children)
-  }
-
-  private struct DirectoryFixture: Decodable {
-    let directories: [String]
-    let files: [File]
-    let links: [Link]
-
-    struct File: Decodable {
-      let path: String
-      let resource: String
-    }
-
-    struct Link: Decodable {
-      let path: String
-      let destination: String
-    }
   }
 
   private final class BundleToken {}
