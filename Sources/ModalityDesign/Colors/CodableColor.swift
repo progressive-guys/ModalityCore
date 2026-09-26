@@ -1,7 +1,7 @@
 import SwiftUI
 
 @propertyWrapper
-public enum CodableColor: Codable, Equatable {
+public enum CodableColor: Codable, Equatable, Sendable {
   case primary
   case white
   case rgba(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
