@@ -1,6 +1,6 @@
 import Foundation
 
-public struct FileResource<Content>: Hashable, Sendable {
+public struct BundledResource<Content>: Hashable, Sendable {
   public let fileName: String
   private let bundle: Bundle
 
