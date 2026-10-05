@@ -95,7 +95,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/modality-lab/ModalityCore.git", branch: "main"),
+  .package(url: "https://github.com/modality-lab/ModalityCore.git", branch: "master"),
 ]
 ```
 
@@ -113,12 +113,16 @@ Then add products to your target:
 
 ## Tuist
 
-Run from the module directory:
+The libraries and tests are defined in `Package.swift`. Run from the checkout:
 
 ```sh
-tuist generate --no-open
+swift package resolve
+swift test
+swift build -c release
 ```
 
-The local `ModalityCoreProjectDescription` plugin owns the targets and test groups. The main workspace reads these groups for its test schemes. The standalone project uses the package platform requirements, default Tuist build settings and remote Swift packages. The plugin defines dependencies for both build modes. The main repository supplies its build settings, source paths and `isStandalone: false`.
+Open `Workspace.xcworkspace`. Tuist 4.210.0 generates the libraries and tests from `Package.swift`. The package owns products, resources, platforms and dependency requirements. SwiftMusicTheory resolves from its declared remote repository. The local `ModalityCoreProjectDescription` plugin exports test and coverage names for consumer workspace schemes.
 
-For local signing, add `DEVELOPMENT_TEAM = your_team_id` to `Configuration/Signing.local.xcconfig`. Git ignores this file.
+To use local sources in another Tuist project, add this checkout and any local SwiftMusicTheory checkout as path dependencies in the consumer's `Tuist/Package.swift`. Use `.external(name: "ModalityCore")` or `.external(name: "ModalityDesign")` in its target dependencies. The consumer owns paths and package settings. A local package must keep its package identity; a consumer-owned symbolic link can provide the expected directory name.
+
+Development and tests need Swift 6 and the Metal toolchain. CI uses the latest stable Xcode on the macOS runner and the pinned Tuist version. It runs package resolution, unit tests, a Release package build, Tuist generation and both generated unit-test schemes.

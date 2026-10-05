@@ -14,18 +14,27 @@ let package = Package(
   targets: [
     .target(
       name: "ModalityCore",
-      dependencies: ["SwiftMusicTheory"]
+      dependencies: ["SwiftMusicTheory"],
+      path: "ModalityCore",
+      sources: ["Sources"]
     ),
     .target(
       name: "ModalityDesign",
       dependencies: ["ModalityCore", "SwiftMusicTheory"],
+      path: "ModalityDesign",
+      sources: ["Sources"],
       resources: [.process("Resources")]
     ),
     .testTarget(
-      name: "ModalityCoreTests",
+      name: "ModalityCoreUnitTests",
       dependencies: ["ModalityCore"],
+      path: "UnitTests/ModalityCore",
       resources: [.process("TreeTests/Resources"), .copy("FileSystemStoreTests/Resources")]
     ),
-    .testTarget(name: "ModalityDesignTests", dependencies: ["ModalityDesign"]),
+    .testTarget(
+      name: "ModalityDesignUnitTests",
+      dependencies: ["ModalityDesign"],
+      path: "UnitTests/ModalityDesign"
+    ),
   ]
 )
