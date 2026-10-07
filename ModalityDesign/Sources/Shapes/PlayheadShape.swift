@@ -27,7 +27,6 @@ public struct PlayheadShape: Shape {
 
     // Draw rectangular area at top
     let rectLeft = centerX - rectWidth / 2
-    let rectRight = centerX + rectWidth / 2
 
 //    path.addRect(CGRect(
 //      x: rectLeft,

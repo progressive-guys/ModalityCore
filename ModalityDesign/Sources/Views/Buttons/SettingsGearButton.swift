@@ -28,8 +28,8 @@ public struct SettingsGearButton<Label: View, SettingsView: View>: View {
       } else {
         Button(
           action: {
-            if Selector("showSettingsWindow:").sendToApp() { return }
-            if Selector("showPreferencesWindow:").sendToApp() { return }
+            if Selector(("showSettingsWindow:")).sendToApp() { return }
+            if Selector(("showPreferencesWindow:")).sendToApp() { return }
           },
           label: label
         )
