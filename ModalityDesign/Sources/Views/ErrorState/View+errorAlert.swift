@@ -30,7 +30,7 @@ private struct AlertModifier: ViewModifier {
           Text("Got it")
         }
       } message: {
-        let errorText = error != nil ? "\(error!)" : "An error occured"
+        let errorText = error.map { "\($0)" } ?? "An error occured"
         Text(errorText)
       }
   }

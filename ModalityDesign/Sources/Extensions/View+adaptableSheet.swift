@@ -34,6 +34,6 @@ fileprivate extension View {
 @available(iOS 16.0, macOS 13.0, *)
 fileprivate extension PresentationDetent {
   static func detents(for height: CGFloat?) -> Self {
-    height != nil ? .height(height!) : .fraction(0.3)
+    height.map { .height($0) } ?? .fraction(0.3)
   }
 }

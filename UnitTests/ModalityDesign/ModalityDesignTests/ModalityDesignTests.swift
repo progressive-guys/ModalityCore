@@ -129,11 +129,11 @@ struct VioletPaletteTests {
   }
 
   @Test
-  func rampStartsDark() {
-    let first = VioletPalette.violetRamp.first!
-    let last = VioletPalette.violetRamp.last!
+  func rampStartsDark() throws {
+    let first = try #require(VioletPalette.violetRamp.first)
+    let last = try #require(VioletPalette.violetRamp.last)
     #expect(first.components.red + first.components.green + first.components.blue <
-            last.components.red + last.components.green + last.components.blue)
+      last.components.red + last.components.green + last.components.blue)
   }
 }
 

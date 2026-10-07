@@ -35,11 +35,11 @@ public struct WidthDrivenVStack: Layout {
   }
 
   public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-    guard !subviews.isEmpty else { return .zero }
+    guard let firstSubview = subviews.first else { return .zero }
 
     // Find width drivers or fall back to first view
     let widthDrivers = subviews.filter { $0[WidthDriverKey.self] }
-    let drivingViews = widthDrivers.isEmpty ? [subviews.first!] : widthDrivers
+    let drivingViews = widthDrivers.isEmpty ? [firstSubview] : widthDrivers
 
     // Calculate the maximum width needed by all driving views
     let drivingWidth = drivingViews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
@@ -63,11 +63,11 @@ public struct WidthDrivenVStack: Layout {
   }
 
   public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-    guard !subviews.isEmpty else { return }
+    guard let firstSubview = subviews.first else { return }
 
     // Find width drivers or fall back to first view
     let widthDrivers = subviews.filter { $0[WidthDriverKey.self] }
-    let drivingViews = widthDrivers.isEmpty ? [subviews.first!] : widthDrivers
+    let drivingViews = widthDrivers.isEmpty ? [firstSubview] : widthDrivers
 
     // Calculate the maximum width needed by all driving views
     let drivingWidth = drivingViews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
