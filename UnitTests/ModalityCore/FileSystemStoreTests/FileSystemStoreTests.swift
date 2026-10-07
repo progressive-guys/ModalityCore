@@ -136,7 +136,10 @@ struct FileSystemStoreTests {
     try FileManager.default.copyItem(at: fixture("StoreDirectory", withExtension: nil), to: directory)
     // Create links in the temporary copy so resource packaging does not follow the cycle.
     try FileManager.default.createSymbolicLink(atPath: directory.appendingPathComponent("Nested/loop").path, withDestinationPath: "..")
-    try FileManager.default.createSymbolicLink(atPath: directory.appendingPathComponent("linked.json").path, withDestinationPath: "root.json")
+    try FileManager.default.createSymbolicLink(
+      atPath: directory.appendingPathComponent("linked.json").path,
+      withDestinationPath: "root.json"
+    )
   }
 
   private func nodeName(_ tree: Tree<FileSystemStore<Profile>.Entry>) -> String {

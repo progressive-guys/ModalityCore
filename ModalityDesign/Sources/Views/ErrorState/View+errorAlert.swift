@@ -17,7 +17,8 @@ private struct AlertModifier: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .alert("Whoops",
+      .alert(
+        "Whoops",
         isPresented: .init(get: {
           error != nil
         }, set: { _ in

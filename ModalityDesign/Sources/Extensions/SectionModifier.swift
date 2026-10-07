@@ -24,11 +24,13 @@ public extension View {
   }
 
   func section(title: String, showCard: Bool = true) -> some View {
-    modifier(SectionModifier(
-      title: Text(title)
-        .font(.titleFont)
-        .foregroundColor(.primary),
-      showCard: showCard)
+    modifier(
+      SectionModifier(
+        title: Text(title)
+          .font(.titleFont)
+          .foregroundColor(.primary),
+        showCard: showCard
+      )
     )
   }
 }
