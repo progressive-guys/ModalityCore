@@ -8,7 +8,7 @@ public struct BundledResource<Content>: Hashable, Sendable {
     self.path = path
     self.bundle = bundle
   }
-  
+
   public var fileName: String { (path as NSString).lastPathComponent }
   public var name: String { (fileName as NSString).deletingPathExtension }
   public var ext: String { (fileName as NSString).pathExtension }

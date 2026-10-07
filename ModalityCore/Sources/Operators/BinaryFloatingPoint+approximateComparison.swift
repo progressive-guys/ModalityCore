@@ -39,4 +39,3 @@ public func ~~<=<T: BinaryFloatingPoint>(_ a: T, _ b: T) -> Bool {
 public func ~~>=<T: BinaryFloatingPoint>(_ a: T, _ b: T) -> Bool {
   (a ~~> b) || (a ~~== b)
 }
-

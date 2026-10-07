@@ -6,7 +6,7 @@ import AppKit
 #endif
 
 public extension Selector {
-  
+
   @MainActor
   func sendToApp() -> Bool {
     #if canImport(UIKit)

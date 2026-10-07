@@ -4,7 +4,7 @@ import ModalityCore
 
 extension Ring {
   public struct Wedge: Identifiable, Hashable {
-    
+
     public struct Content: Hashable {
       public enum ContentType: Hashable {
         case label
@@ -15,7 +15,7 @@ extension Ring {
       let font: Font
       let text: String
       public let containing: Containing
-      
+
       public init(type: ContentType, containing: Containing, font: Font, text: String) {
         self.type = type
         self.containing = containing
@@ -23,22 +23,22 @@ extension Ring {
         self.text = text
       }
     }
-    
+
     public var id: String
 
     public private(set) var color: Color
     public private(set) var start: Angle
     public private(set) var width: Angle
-    
+
     public let zIndex: Double
 
     public var end: Angle { start + width }
     public var center: Angle { start + width / 2 }
-    
+
     public let isFocused: Bool
-    
+
     public let content: Content
-    
+
     public init(
       id: String,
       color: Color,
@@ -75,7 +75,7 @@ extension Ring.Wedge: Animatable {
 }
 
 extension Ring.Wedge {
-  
+
   var edgeColor: Color {
     color.opacity(0.95)
   }

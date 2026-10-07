@@ -4,7 +4,7 @@ public extension KeyedEncodingContainer {
       try encode(value, forKey: key)
     }
   }
-  
+
   mutating func encodeIfTrue(_ value: Bool, forKey key: K) throws {
     if value {
       try encode(value, forKey: key)

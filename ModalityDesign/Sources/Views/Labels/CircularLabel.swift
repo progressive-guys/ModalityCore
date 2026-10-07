@@ -1,23 +1,23 @@
 import SwiftUI
 
 public struct CircularLabel: View {
-  
+
   let text: String
   let radius: Double
   let startAngle: Angle
   let isUpsideDown: Bool
-  
+
   public init(text: String, radius: Double, startAngle: Angle) {
     self.radius = radius
     self.startAngle = startAngle
-    
+
     let degrees = {
       let degrees = Int(startAngle.degrees.rounded()) % 360
       return if degrees < -180 { degrees + 360 }
         else if degrees >= 180 { degrees - 360 }
         else { degrees }
     }()
-    
+
     self.isUpsideDown = abs(degrees) > 90
     self.text = isUpsideDown ? String(text.reversed()) : text
   }
@@ -58,7 +58,7 @@ public struct CircularLabel: View {
       .map { $0.value }
       .reduce(0, +)
 
-    let allTextWidth = textWidths 
+    let allTextWidth = textWidths
       .map { $0.value }
       .reduce(0, +)
 

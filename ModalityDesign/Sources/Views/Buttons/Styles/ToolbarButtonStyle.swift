@@ -1,9 +1,9 @@
 import SwiftUI
 
 public struct ToolbarButtonStyle: ButtonStyle {
-  
+
   public init() { }
-  
+
   public func makeBody(configuration: Configuration) -> some View {
     HStack(spacing: 0) {
       Spacer().frame(minWidth: 8, maxWidth: 16)
@@ -27,10 +27,10 @@ public struct ToolbarButtonStyle: ButtonStyle {
 #Preview {
   ZStack {
     Color.backgroundColor.frame(idealWidth: 500, idealHeight: 500)
-   
+
     HStack {
       ForEach(0..<15) { _ in
-        
+
         Button(action: { }) {
           Image(systemName: "forward.fill")
         }

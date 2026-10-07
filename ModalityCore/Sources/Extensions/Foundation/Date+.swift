@@ -6,11 +6,11 @@ public extension Date {
     formatter.dateFormat = "HH:mm:ss:SSS"
     return formatter
   }()
-  
+
   var timeFormatted: String {
     Self.formatter.string(from: self)
   }
-  
+
   var logging: String {
     "\(timeFormatted), ts: \(timeIntervalSince1970)"
   }

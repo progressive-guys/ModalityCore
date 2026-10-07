@@ -51,7 +51,7 @@ public struct SegmentedControl<Option: Hashable & Identifiable>: View {
     legacy
     #endif
   }
-  
+
   var legacy: some View {
     LegacySegmentedControl(
       selection: $selection,
@@ -111,7 +111,7 @@ private struct LegacySegmentedControl<Option: Hashable & Identifiable>: View {
 fileprivate struct SegmentButton: View {
 
   static let segmentLabelFontSize: CGFloat = 10
-  
+
   let label: String
   let selectionColor: Color
   let isSelected: Bool

@@ -1,7 +1,7 @@
 import AVFAudio
 
 public extension AVAudioTime {
-  
+
   func dateFromHostTime() -> Date {
     let seconds = AVAudioTime.seconds(forHostTime: hostTime)
     let bootTime = ProcessInfo.processInfo.systemUptime
@@ -16,15 +16,15 @@ public extension DispatchWallTime {
     let seconds = Int(interval)
     let frac = interval - Double(seconds)
     let nanoseconds = Int(Double(NSEC_PER_SEC) * frac)
-    
+
     let ts = timespec(tv_sec: seconds, tv_nsec: nanoseconds)
     self = DispatchWallTime(timespec: ts)
   }
-  
+
   func timeIntervalSince(_ other: DispatchWallTime) -> TimeInterval {
     let selfNanos = self.rawValue
     let otherNanos = other.rawValue
-    
+
     // rawValue is UInt64
     if selfNanos >= otherNanos {
       let diffNanos = selfNanos - otherNanos

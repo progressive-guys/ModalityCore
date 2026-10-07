@@ -9,11 +9,11 @@ public struct Ring<Containing: Equatable & Hashable>: Identifiable, Equatable, H
 
   public var innerRadius: CGFloat
   public let height: CGFloat
-  
+
   public let yShift: CGFloat
   public let scale: CGFloat
   public let aspectRatio: CGFloat
-      
+
   public var outerRadius: CGFloat { innerRadius + height }
 
   public init(
@@ -36,7 +36,7 @@ public struct Ring<Containing: Equatable & Hashable>: Identifiable, Equatable, H
 }
 
 extension Ring: Animatable {
-  
+
   public var animatableData: CGFloat {
     get { innerRadius }
     set { innerRadius = newValue }

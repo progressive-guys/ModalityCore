@@ -5,7 +5,7 @@ public struct WedgeView<Content: Equatable & Hashable>: View {
 
   var wedge: Ring<Content>.Wedge
   let ring: Ring<Content>
-  
+
   public init(
     wedge: Ring<Content>.Wedge,
     ring: Ring<Content>
@@ -26,7 +26,7 @@ public struct WedgeView<Content: Equatable & Hashable>: View {
         scaleFactor: ring.scale,
         aspectRatio: ring.aspectRatio
       )
-      
+
       wedgeShape(from: geometry)
         .fill(wedge.edgeColor)
         .overlay {
@@ -67,16 +67,16 @@ extension WedgeView: @preconcurrency Animatable {
 }
 
 fileprivate struct iOS16AnimationFixedLabel: View {
-  
+
   let text: String
   let rotation: Angle
   let radius: Double
-  
+
   var body: some View {
     VStack {
       Text(text)
         .rotationEffect(-rotation)
-      
+
       Spacer()
         .frame(height: radius * 2)
     }

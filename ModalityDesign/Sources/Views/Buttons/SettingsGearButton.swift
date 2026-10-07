@@ -6,7 +6,7 @@ public struct SettingsGearButton<Label: View, SettingsView: View>: View {
   @ViewBuilder let settingsView: () -> SettingsView
   @State var isSettingsPresented: Bool = false
   @Environment(\.dismiss) var dismiss
-  
+
   public init(
     @ViewBuilder label: @escaping () -> Label = {
       Image(systemName: "gear")
@@ -19,7 +19,7 @@ public struct SettingsGearButton<Label: View, SettingsView: View>: View {
     self.label = label
     self.settingsView = settingsView
   }
-  
+
   public var body: some View {
     Group {
 #if os(macOS)

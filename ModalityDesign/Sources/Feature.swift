@@ -9,24 +9,24 @@ import AppKit
 // Functional Block: Feature, Module, Screen, User Flow
 @MainActor
 public protocol Feature: Identifiable {
-  
+
   var id: ObjectIdentifier { get }
-  
+
   // Configuration data passed at creation: ID, initial state, display options
   associatedtype Input
   var input: Input { get }
-  
+
   // Callbacks the module triggers: Navigation actions, data emissions
   associatedtype Output
   var output: Output { get }
-  
+
   // Reactive (Combine Publishers, Observable objects, RxSwift Streams)
   associatedtype State
   var state: State { get }
-  
+
   associatedtype Body: View
   var view: Body { get }
-  
+
 #if canImport(UIKit)
   var vc: UIViewController { get }
 #elseif canImport(AppKit)
@@ -35,7 +35,7 @@ public protocol Feature: Identifiable {
 }
 
 extension Feature {
-  
+
   public var input: Void { () }
   public var output: Void { () }
   public var state: Void { () }
@@ -46,7 +46,7 @@ extension Feature {
   public var vc: UIViewController {
     UIHostingController(rootView: view)
   }
-  
+
 #elseif canImport(AppKit)
   public var vc: NSViewController {
     NSHostingController(rootView: view)
@@ -63,9 +63,9 @@ public struct MockFeature: Feature {
   public typealias Input = String
   public typealias Output = Void
   public typealias state = Void
-  
+
   public let input: Input
-  
+
   public init(input: Input) {
     self.input = input
   }

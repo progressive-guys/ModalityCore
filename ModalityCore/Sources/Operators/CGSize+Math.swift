@@ -7,7 +7,7 @@ extension CGSize {
       height: lhs.height - rhs.height
     )
   }
-  
+
   public static func * (lhs: CGSize, rhs: CGFloat) -> CGSize {
     CGSize(
       width: lhs.width * rhs,
@@ -15,4 +15,3 @@ extension CGSize {
     )
   }
 }
-

@@ -27,7 +27,7 @@ public extension View {
       .glassBackgroundEffect()
       #endif
   }
-  
+
   @ViewBuilder
   func popoverPresentationIfAvailable() -> some View {
     if #available(macOS 13.3, iOS 16.4, *) {
@@ -37,7 +37,7 @@ public extension View {
       self
     }
   }
-  
+
   @ViewBuilder
   func inspectorIfAvailable<V: View>(
     isPresented: Binding<Bool>,

@@ -5,7 +5,7 @@ public extension Logger {
   init(category: String) {
     self.init(subsystem: Bundle.main.bundleIdentifier ?? "unknown subsystem", category: category)
   }
-  
+
   init(bundle: Bundle, fileID: StaticString = #fileID) {
     let file = "\(fileID)".components(separatedBy: "/").first ?? "\(fileID)"
     self.init(subsystem: bundle.bundleIdentifier ?? "unknown", category: file)

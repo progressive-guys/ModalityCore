@@ -1,32 +1,32 @@
 import SwiftUI
- 
+
 extension Color {
   public static let cursorColor = Color(hue: 0.1, saturation: 0.8, brightness: 1)
   public static let primaryPurple = Color(hue: 0.732, saturation: 0.716, brightness: 0.851)
-  
-  public static let secondaryPurple = Color(hue: 0.732, saturation: 0.55,  brightness: 0.45)
-  
+
+  public static let secondaryPurple = Color(hue: 0.732, saturation: 0.55, brightness: 0.45)
+
   public static let backgroundColor = Color(hue: 0.222, saturation: 0.10, brightness: 0.07)
   public static let graphicsBackgroundColor = Color(hue: 0.222, saturation: 0.10, brightness: 0.04115)
   public static let controlBackgroundColor = Color(0x151515)
-  
+
   public static let veryDarkDesaturatedBlue = Color(0x1f2937)
   public static let cardsBackgroundColor = Color(0x202020)
-  
-  private static let ebony = Color(hue: 0.0, saturation: 0.0,  brightness: 0.1)
+
+  private static let ebony = Color(hue: 0.0, saturation: 0.0, brightness: 0.1)
 
   fileprivate static let mintCream = Color(0xF5FFFA)
   fileprivate static let vermilion = Color(0xE34234)
-  
-  public static let correctNote = Color(red: 60 / 255,  green: 220 / 255, blue: 70 / 255)
-  public static let lateNote =    Color(red: 235 / 255, green: 215 / 255, blue: 10 / 255)
-  public static let earlyNote =   Color(red: 255 / 255, green: 159 / 255, blue: 50 / 255)
-  public static let missedNote =  Color(red: 230 / 255, green: 60 / 255,  blue: 60 / 255)
+
+  public static let correctNote = Color(red: 60 / 255, green: 220 / 255, blue: 70 / 255)
+  public static let lateNote = Color(red: 235 / 255, green: 215 / 255, blue: 10 / 255)
+  public static let earlyNote = Color(red: 255 / 255, green: 159 / 255, blue: 50 / 255)
+  public static let missedNote = Color(red: 230 / 255, green: 60 / 255, blue: 60 / 255)
 }
 
 public enum VioletPalette {
   // Base
-  public static let bg              = Color(hue: 0.222, saturation: 0.10, brightness: 0.07)
+  public static let bg = Color(hue: 0.222, saturation: 0.10, brightness: 0.07)
 
   // Core violet (keep your electric vibe)
   public static let primary         = Color(hue: 0.722, saturation: 0.90, brightness: 0.95)
@@ -62,11 +62,11 @@ public enum VioletPalette {
   public static let errorViolet     = Color(hue: 0.860, saturation: 0.95, brightness: 0.85) // red-violet punch
 
   // Text & surfaces tuned for bg
-  public static let textHigh        = Color(hue: 0.16,  saturation: 0.05, brightness: 0.98)
-  public static let textLow         = Color(hue: 0.16,  saturation: 0.05, brightness: 0.68)
-  public static let surface         = Color(hue: 0.22,  saturation: 0.18, brightness: 0.12)
-  public static let surfaceHi       = Color(hue: 0.22,  saturation: 0.22, brightness: 0.16)
-  public static let border          = Color(hue: 0.16,  saturation: 0.05, brightness: 0.22)
+  public static let textHigh        = Color(hue: 0.16, saturation: 0.05, brightness: 0.98)
+  public static let textLow         = Color(hue: 0.16, saturation: 0.05, brightness: 0.68)
+  public static let surface         = Color(hue: 0.22, saturation: 0.18, brightness: 0.12)
+  public static let surfaceHi       = Color(hue: 0.22, saturation: 0.22, brightness: 0.16)
+  public static let border          = Color(hue: 0.16, saturation: 0.05, brightness: 0.22)
 
   // Glow utilities (shadows/outer glows)
   public static let glowViolet      = Color(hue: 0.722, saturation: 1.00, brightness: 1.00)

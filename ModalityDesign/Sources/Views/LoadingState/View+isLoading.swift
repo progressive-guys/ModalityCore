@@ -1,7 +1,7 @@
 import SwiftUI
 
 public extension View {
-  
+
   @ViewBuilder
   func isLoading(
     _ isLoading: Bool,

@@ -30,7 +30,7 @@ fileprivate struct CardBackgroundModifier: ViewModifier {
   let strokeWidth: CGFloat
   let backgroundColor: Color
   let borderColor: Color
-  
+
   func body(content: Content) -> some View {
     content
       .padding(paddings)
@@ -43,4 +43,4 @@ fileprivate struct CardBackgroundModifier: ViewModifier {
           }
       }
   }
-} 
+}

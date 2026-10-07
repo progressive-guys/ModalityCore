@@ -1,20 +1,20 @@
 import Foundation
 
 public extension String {
-  
+
   private static let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-  
+
   var isValidEmail: Bool {
     isMatch(regex: Self.emailRegex)
   }
 }
 
 public extension String {
-  
+
   func isMatch(regex regexPattern: String) -> Bool {
     range(of: regexPattern, options: .regularExpression) != nil
   }
-  
+
   var lastPathComponent: String {
     (self as NSString).lastPathComponent
   }

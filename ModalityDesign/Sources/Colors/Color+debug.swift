@@ -11,7 +11,7 @@ public extension View {
   var randomColorOverlay: some View {
     overlay { Color.randomColor }
   }
-  
+
   var randomColorBorder: some View {
     overlay(Rectangle().stroke(Color.randomColor, lineWidth: 1))
   }

@@ -1,10 +1,10 @@
 import SwiftUI
 
 public struct RingView<Content: Equatable & Hashable>: View {
-  
+
   var ring: Ring<Content>
   let onWedgeSelection: ((Ring<Content>.Wedge) -> Void)?
-  
+
   public init(
     ring: Ring<Content>,
     onWedgeSelection: ((Ring<Content>.Wedge) -> Void)? = nil
@@ -12,7 +12,7 @@ public struct RingView<Content: Equatable & Hashable>: View {
     self.ring = ring
     self.onWedgeSelection = onWedgeSelection
   }
-  
+
   public var body: some View {
     ZStack {
       ForEach(ring.wedges, id: \.id) { wedge in

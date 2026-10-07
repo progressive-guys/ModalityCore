@@ -1,11 +1,11 @@
 import SwiftUI
 
 public extension View {
-  
+
   func errorBorder(isError: Binding<Bool>, text: Binding<String>, cornerRadius: CGFloat = 8) -> some View {
     modifier(ErrorFlagBorderModifier(isError: isError, text: text, cornerRadius: cornerRadius))
   }
-  
+
   @ViewBuilder
   func errorPopup(
     isPresented: Bool,
@@ -33,13 +33,13 @@ public struct ErrorFlagBorderModifier: ViewModifier {
   @Binding private var isError: Bool
   @Binding private var text: String
   private let cornerRadius: CGFloat
-  
+
   public init(isError: Binding<Bool>, text: Binding<String>, cornerRadius: CGFloat) {
     self._isError = isError
     self._text = text
     self.cornerRadius = cornerRadius
   }
-  
+
   public func body(content: Content) -> some View {
     content
       .overlay(

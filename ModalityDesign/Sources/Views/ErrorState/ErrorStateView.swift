@@ -1,11 +1,11 @@
 import SwiftUI
 
 public struct ErrorPopupView: View {
-  
+
   public let title: String?
   public let description: String?
   public let onTryAgain: () -> Void
-  
+
   public init(
     title: String? = nil,
     description: String? = nil,
@@ -16,7 +16,7 @@ public struct ErrorPopupView: View {
     self.description = description
     self.onTryAgain = onTryAgain
   }
-  
+
   public var body: some View {
     VStack(spacing: 0) {
       if let title {
@@ -26,7 +26,7 @@ public struct ErrorPopupView: View {
           .font(.title3.bold())
           .foregroundColor(.primary)
       }
-      
+
       if let description {
         Text(description)
           .multilineTextAlignment(.center)
@@ -34,7 +34,7 @@ public struct ErrorPopupView: View {
           .font(.system(size: 12))
           .padding(.top, 4)
       }
-      
+
       Button(action: onTryAgain) {
         Text("Try Again")
           .padding(.horizontal, 24)

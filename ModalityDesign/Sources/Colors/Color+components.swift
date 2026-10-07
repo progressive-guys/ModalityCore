@@ -14,21 +14,21 @@ extension Color {
 #elseif canImport(AppKit)
     typealias NativeColor = NSColor
 #endif
-    
+
     var r: CGFloat = 0
     var g: CGFloat = 0
     var b: CGFloat = 0
     var a: CGFloat = 0
-    
+
     NativeColor(self)
 #if os(macOS)
       .usingColorSpace(.sRGB)?
 #endif
       .getRed(&r, green: &g, blue: &b, alpha: &a)
-    
+
     return (r, g, b, a)
   }
-  
+
   var hex: String {
     String(
       format: "#%02x%02x%02x%02x",

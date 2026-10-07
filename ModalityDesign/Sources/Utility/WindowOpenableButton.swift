@@ -3,20 +3,20 @@ import os
 
 public struct WindowID: Sendable, RawRepresentable, Hashable {
   public let rawValue: String
-  
+
   public init(rawValue: String) {
     self.rawValue = rawValue
   }
 }
 
 public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
-  
+
   @ViewBuilder let label: () -> Label
   @ViewBuilder var windowContent: () -> WindowContent
   let windowTitle: String?
   let windowId: WindowID?
   @State var isWindowOpened = false
-  
+
   #if os(macOS)
   @State var window: NSWindow?
   @State private var windowClosingDelegate: WindowClosingDelegate?
@@ -36,7 +36,7 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
     self.label = label
     self.windowContent = windowContent
   }
-  
+
   @ViewBuilder
   public var body: some View {
     Button(
@@ -70,7 +70,7 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
 #if os(macOS)
 @available(macOS 10.15, *)
 fileprivate extension View {
-  
+
   @discardableResult
   func openInWindow(title: String?, sender: Any?, windowClosingDelegate: WindowClosingDelegate?) -> NSWindow {
     let controller = NSHostingController(rootView: self)
@@ -87,13 +87,13 @@ fileprivate extension View {
 
 @available(macOS 10.15, *)
 fileprivate final class WindowClosingDelegate: NSObject, NSWindowDelegate {
-  
+
   @Binding var isWindowOpened: Bool
-  
+
   init(isWindowOpened: Binding<Bool>) {
     self._isWindowOpened = isWindowOpened
   }
-  
+
   func windowWillClose(_ notification: Notification) {
     isWindowOpened = false
   }

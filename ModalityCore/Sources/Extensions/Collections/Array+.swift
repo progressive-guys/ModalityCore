@@ -9,7 +9,7 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
     }
     self = result
   }
-  
+
   public var rawValue: String {
     guard let data = try? JSONEncoder().encode(self),
           let result = String(data: data, encoding: .utf8)
@@ -38,24 +38,23 @@ extension Array where Element: BinaryFloatingPoint {
 }
 
 extension Array {
-  
+
   public func average<Value: BinaryFloatingPoint>(_ keyPath: KeyPath<Element, Value>) -> Value {
     guard !isEmpty else { return 0 }
     return sum(keyPath) / Value(count)
   }
-  
+
   public func median<Value: BinaryFloatingPoint>(_ keyPath: KeyPath<Element, Value>) -> Value {
     guard !isEmpty else { return 0 }
     let sorted = lazy.map { $0[keyPath: keyPath] }.sorted()
     let mid = count / 2
     return count.isMultiple(of: 2) ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
   }
-  
+
   public func sum<Value: BinaryFloatingPoint>(_ keyPath: KeyPath<Element, Value>) -> Value {
     reduce(0) { $0 + $1[keyPath: keyPath] }
   }
 }
-
 
 extension Array {
   public func chunked(into size: Int) -> [[Element]] {

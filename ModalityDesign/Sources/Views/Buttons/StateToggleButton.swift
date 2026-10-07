@@ -6,7 +6,7 @@ public struct StateToggleButton: View {
   let systemImageFilled: String
   let accentColor: Color
   @Binding var isOn: Bool
-  
+
   public init(
     help: String,
     systemImage: String,
@@ -20,7 +20,7 @@ public struct StateToggleButton: View {
     self.accentColor = accentColor
     self._isOn = isOn
   }
-  
+
   public var body: some View {
     Button(action: { isOn.toggle() }) {
       Image(systemName: isOn ? systemImageFilled : systemImage)

@@ -14,4 +14,3 @@ public func ??=<Value>(lhs: inout Value?, rhs: @autoclosure () -> Value) {
     lhs = rhs()
   }
 }
-

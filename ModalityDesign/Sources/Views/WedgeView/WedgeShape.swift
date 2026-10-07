@@ -4,7 +4,7 @@ import ModalityCore
 public struct WedgeShape: Shape {
 
   let geometry: WedgeGeometry
-  
+
   public init(geometry: WedgeGeometry) {
     self.geometry = geometry
   }
@@ -59,14 +59,14 @@ public struct WedgeGeometry: Sendable {
     self.end = end
 
     let minDemension = min(size.height, size.width * aspectRatio) * scaleFactor
-    
+
     self.size = size
     self.yShift = minDemension * shiftFactor
     self.center = CGPoint(
       x: size.width / 2,
       y: size.height / 2 + yShift
     )
-    
+
     self.innerRadius = minDemension * (innerRadiusNorm)
     self.outerRadius = minDemension * (outerRadiusNorm)
     self.centerRadius = (innerRadius + outerRadius) / 2

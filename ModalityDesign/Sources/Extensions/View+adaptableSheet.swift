@@ -8,7 +8,7 @@ public extension View {
 
 fileprivate struct AdaptableSheetModifier: ViewModifier {
   @State private var size: CGSize?
-  
+
   func body(content: Content) -> some View {
     content
       .bindSize(to: $size)
@@ -17,7 +17,7 @@ fileprivate struct AdaptableSheetModifier: ViewModifier {
 }
 
 fileprivate extension View {
-  
+
   @ViewBuilder
   func presentationDetents(height: CGFloat?) -> some View {
     if #available(iOS 16.4, macOS 13.3, *) {

@@ -38,7 +38,7 @@ public extension Spiral<Note> {
       elements: {
         var notes = [Note.f.flat(3)]
         for noteIndex in (1..<49) { // 7 natural notes, 7 flats/sharps, 7 double flats/sharps, 7 triple
-          notes.append(notes[noteIndex-1] + .fifth())
+          notes.append(notes[noteIndex - 1] + .fifth())
         }
         return notes
       }(),

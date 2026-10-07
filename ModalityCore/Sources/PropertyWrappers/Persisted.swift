@@ -2,7 +2,6 @@ import Combine
 import Foundation
 import Dispatch
 
-
 @propertyWrapper
 public struct Persisted<Value> {
   private let key: String

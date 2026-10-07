@@ -4,7 +4,7 @@ import os
 fileprivate struct BindSizeModifier: ViewModifier {
 
   @Binding var size: CGSize?
-  
+
   func body(content: Content) -> some View {
     content
       .background(
@@ -21,7 +21,7 @@ fileprivate struct BindSizeModifier: ViewModifier {
 fileprivate struct ObserveSizeModifier: ViewModifier {
 
   var callback: (CGSize) -> Void
-  
+
   func body(content: Content) -> some View {
     content
       .background(
@@ -39,11 +39,11 @@ public extension View {
   func bindSize(to size: Binding<CGSize?>) -> some View {
     modifier(BindSizeModifier(size: size))
   }
-  
-  func observeSize(callback: @escaping (CGSize) -> Void) -> some View{
+
+  func observeSize(callback: @escaping (CGSize) -> Void) -> some View {
     modifier(ObserveSizeModifier(callback: callback))
   }
-  
+
   func printSize(label: String? = nil) -> some View {
     let label = label ?? Mirror(reflecting: self).description
     return observeSize { size in

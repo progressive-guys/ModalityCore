@@ -2,11 +2,11 @@ import SwiftUI
 
 public struct NoteTyingShape: Shape {
   let isFlipped: Bool
-  
+
   public init(isFlipped: Bool = false) {
     self.isFlipped = isFlipped
   }
-  
+
   public func path(in rect: CGRect) -> Path {
     Path { path in
       let startY = isFlipped ? rect.maxY : rect.minY
