@@ -3,7 +3,7 @@
 [![Tests](https://github.com/progressive-guys/ModalityCore/actions/workflows/package-contract.yml/badge.svg?branch=master&event=push)](https://github.com/progressive-guys/ModalityCore/actions/workflows/package-contract.yml)
 
 ![Version](https://img.shields.io/github/v/release/modality-lab/ModalityCore)
-![Swift](https://img.shields.io/badge/Swift-5.9+-orange?logo=swift)
+![Swift](https://img.shields.io/badge/Swift-6.0+-orange?logo=swift)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS%2016%20%7C%20macOS%2013%20%7C%20visionOS%201-blue)
 ![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen)
 
@@ -87,7 +87,7 @@ $speed.sink { newSpeed in print("Speed: \(newSpeed)") }
 - iOS 16.0+
 - macOS 13.0+
 - visionOS 1.0+
-- Swift 5.9+
+- Swift 6.0+
 
 ## Installation
 
@@ -127,4 +127,4 @@ Open `Workspace.xcworkspace`. Tuist 4.210.0 generates the libraries and tests fr
 
 To use local sources in another Tuist project, add this checkout and any local SwiftMusicTheory checkout as path dependencies in the consumer's `Tuist/Package.swift`. Use `.external(name: "ModalityCore")` or `.external(name: "ModalityDesign")` in its target dependencies. The consumer owns paths and package settings. A local package must keep its package identity; a consumer-owned symbolic link can provide the expected directory name.
 
-Development and tests need Swift 6 and the Metal toolchain. CI uses the latest stable Xcode on the macOS runner and the pinned Tuist version. It runs package resolution, unit tests, a Release package build, Tuist generation and both generated unit-test schemes.
+Development and tests need Swift 6.0 or later and the Metal toolchain. CI runs package resolution, unit tests and a Release package build with Xcode 16.2 (Swift 6.0), Xcode 16.3 (Swift 6.1) and the latest stable Xcode.
