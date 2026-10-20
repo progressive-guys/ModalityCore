@@ -4,7 +4,8 @@ import AppKit
 public extension NSView {
   @MainActor func snapshotPNG(in rect: CGRect? = nil, scale: Double = 1) throws -> Data {
     let rect = rect ?? bounds
-    guard scale.isFinite, scale > 0, !rect.isEmpty, bounds.contains(rect),
+    try NumericValidation.validate(scale, named: "Device scale", constraint: .positive)
+    guard !rect.isEmpty, bounds.contains(rect),
           let bitmap = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(ceil(rect.width * scale)), pixelsHigh: Int(ceil(rect.height * scale)), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0) else { throw CocoaError(.coderInvalidValue) }
     bitmap.size = rect.size
     layoutSubtreeIfNeeded()

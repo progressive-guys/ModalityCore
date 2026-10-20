@@ -9,7 +9,7 @@ public struct ImageComparison {
   public let pixelCount: Int
   public let diff: Data
 
-  public func matches(precision: Double = 0.999) -> Bool {
+  public func matches(precision: Double) -> Bool {
     dimensionsMatch && pixelCount > 0 && Double(changedPixels) / Double(pixelCount) <= 1 - precision
   }
 

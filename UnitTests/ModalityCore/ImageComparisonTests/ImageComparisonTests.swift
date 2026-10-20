@@ -7,9 +7,9 @@ struct ImageComparisonTests {
   @Test func toleranceKeepsSmallChannelChangesAndRejectsMissingInk() throws {
     let reference = try png(width: 16, red: 128)
     let antialiasing = try ImageComparison.compare(expected: reference, actual: png(width: 16, red: 132))
-    #expect(antialiasing.matches())
+    #expect(antialiasing.matches(precision: 1))
     let missingInk = try ImageComparison.compare(expected: reference, actual: png(width: 16, red: 255))
-    #expect(!missingInk.matches())
+    #expect(!missingInk.matches(precision: 1))
     #expect(missingInk.changedPixels == missingInk.pixelCount)
     #expect(!missingInk.diff.isEmpty)
   }
