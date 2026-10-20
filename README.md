@@ -25,7 +25,6 @@ Foundation utilities and extensions:
 - **File storage**: `FileSystemStore<Value>` reads and writes Codable, Sendable values as JSON at caller-supplied URLs. Writes are atomic; directory reads return `(trees: [Tree<Entry>], errors: [URL: any Error])`. Trees preserve empty folders. Consumers choose the display order. Hidden items and symbolic links are skipped. Nested file or directory failures are reported by URL while other entries remain available. A missing root returns an empty result; other root read errors propagate. Use `trees.flatMap(\.flattened)` for a flat list. A supplied decoder can fill profile defaults. Deletion uses the supplied file URL. Operations are synchronous; UI owners can run them in worker tasks.
 - **Trees**: `Tree<Value>` holds folders and leaf values. `map` changes leaf values and keeps folders and order; `flattened` returns all leaf values. Protocol support depends on the value type.
 - **Numeric validation**: `NumericValidation.validate` checks finite, positive, or non-negative values. It also checks named `Double` fields through `Mirror`. Errors name the field in readable form, such as “Content inset”.
-- **macOS image checks**: `try view.snapshotPNG(in:scale:)` captures an `NSView` or a rectangle inside its bounds. `ImageComparison.compare(expected:actual:)` returns a PNG diff and changed pixel count. It ignores channel changes up to 8/255. `matches(precision:)` requires equal dimensions and an explicit precision value.
 - **Utilities**: `SeededRandomNumberGenerator`, debug helpers, Logger extensions
 
 ### ModalityDesign
