@@ -22,7 +22,9 @@ struct TreeTests {
   }
 
   @Test func mapPropagatesLeafError() throws {
-    enum Failure: Error { case rejected }
+    enum Failure: Error {
+      case rejected
+    }
     let tree = try fixture()
     #expect(throws: Failure.self) {
       try tree.map { value -> Int in
