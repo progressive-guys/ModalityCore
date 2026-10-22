@@ -8,6 +8,7 @@ public enum EitherShape<First: Shape, Second: Shape>: Shape {
     switch self {
     case let .first(first):
       return first.path(in: rect)
+
     case let .second(second):
       return second.path(in: rect)
     }

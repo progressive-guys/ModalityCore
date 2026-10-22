@@ -79,16 +79,18 @@ public struct WidthDrivenVStack: Layout {
     for subview in subviews {
       let size = subview.sizeThatFits(constrainedProposal)
 
-      let xPosition: CGFloat
-      switch alignment {
+      let xPosition: CGFloat = switch alignment {
       case .leading:
-        xPosition = bounds.minX
+        bounds.minX
+
       case .center:
-        xPosition = bounds.minX + (constrainedWidth - size.width) / 2
+        bounds.minX + (constrainedWidth - size.width) / 2
+
       case .trailing:
-        xPosition = bounds.minX + constrainedWidth - size.width
+        bounds.minX + constrainedWidth - size.width
+
       default:
-        xPosition = bounds.minX
+        bounds.minX
       }
 
       subview.place(

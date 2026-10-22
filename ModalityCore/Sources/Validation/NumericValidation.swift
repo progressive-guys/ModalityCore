@@ -11,8 +11,11 @@ public extension NumericValidationError {
   var message: String {
     switch self {
     case .nonFinite(let name): "\(name) must be finite."
+
     case .nonPositive(let name): "\(name) must be positive."
+
     case .negative(let name): "\(name) must be non-negative."
+
     case .missingField(let name): "Numeric field \(name) is missing."
     }
   }
@@ -31,8 +34,10 @@ public enum NumericValidation {
     guard value.isFinite else { throw NumericValidationError.nonFinite(name) }
     switch constraint {
     case .finite: break
+
     case .positive:
       guard value > 0 else { throw NumericValidationError.nonPositive(name) }
+
     case .nonNegative:
       guard value >= 0 else { throw NumericValidationError.negative(name) }
     }

@@ -102,6 +102,7 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
       dragStartY = scrollView.contentOffset.y
       isOverscrolling = false
       overscrollTranslation = 0
+
     case .changed:
       let topOffset = -scrollView.adjustedContentInset.top
       let distanceToTop = max(0, dragStartY - topOffset)
@@ -111,11 +112,13 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
       isOverscrolling = true
       scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: topOffset)
       scrollHandler.onOverscroll(overscrollTranslation)
+
     case .ended, .cancelled:
       if isOverscrolling {
         scrollHandler.onOverscrollEnded(overscrollTranslation, velocity.y)
       }
       isOverscrolling = false
+
     default:
       break
     }

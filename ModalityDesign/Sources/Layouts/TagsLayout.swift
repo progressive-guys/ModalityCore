@@ -10,6 +10,7 @@ public struct TagsView: View {
       switch self {
       case .selectable:
         return true
+
       case .notSelectable:
         return false
       }
@@ -67,6 +68,7 @@ public struct TagsView: View {
       case .notSelectable:
         Capsule()
           .fill(tagColor)
+
       case .selectable(let selectionColor):
         Capsule()
           .fill(selectedTags.contains(tag) ? selectionColor : tagColor)
@@ -110,17 +112,18 @@ public struct TagsLayout: Layout {
 
     for row in rows {
       let rowWidth = row.totalWidth
-      let startX: CGFloat
-
-      switch alignment {
+      let startX: CGFloat = switch alignment {
       case .leading:
-        startX = bounds.minX
+        bounds.minX
+
       case .center:
-        startX = bounds.minX + (bounds.width - rowWidth) / 2
+        bounds.minX + (bounds.width - rowWidth) / 2
+
       case .trailing:
-        startX = bounds.maxX - rowWidth
+        bounds.maxX - rowWidth
+
       default:
-        startX = bounds.minX
+        bounds.minX
       }
 
       var currentX = startX

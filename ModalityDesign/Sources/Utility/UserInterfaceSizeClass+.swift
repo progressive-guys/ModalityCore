@@ -7,6 +7,7 @@ public extension UserInterfaceSizeClass {
     switch UIDevice.current.userInterfaceIdiom {
     case .phone:
       return .compact
+
     default:
       return .regular
     }

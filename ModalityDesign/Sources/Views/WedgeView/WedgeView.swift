@@ -36,6 +36,7 @@ public struct WedgeView<Content: Equatable & Hashable>: View {
             case .label:
               iOS16AnimationFixedLabel(text: wedge.content.text, rotation: angle, radius: geometry.centerRadius)
                 .id(wedge.id)
+
             case .circularLabel:
               CircularLabel(text: wedge.content.text, radius: geometry.centerRadius, startAngle: angle)
             }

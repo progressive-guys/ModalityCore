@@ -9,7 +9,9 @@ public enum CodableColor: Codable, Equatable, Sendable {
   public init(wrappedValue: Color) {
     switch wrappedValue {
     case .primary: self = .primary
+
     case .white: self = .white
+
     default:
       let components = wrappedValue.components
       self = .rgba(
@@ -25,7 +27,9 @@ public enum CodableColor: Codable, Equatable, Sendable {
     get {
       switch self {
       case .primary: .primary
+
       case .white: .white
+
       case let .rgba(red, green, blue, alpha):
         Color(.sRGB, red: Double(red), green: Double(green), blue: Double(blue), opacity: Double(alpha))
       }

@@ -19,7 +19,9 @@ public struct Shimmer: View {
   private func gradientX(for direction: HorizontalAlignment) -> (CGFloat, CGFloat) {
     switch direction {
     case .leading: return (phase - 1, phase)
+
     case .trailing: return (2 - phase, 1 - phase)
+
     default: return (0.5, 0.5)
     }
   }
@@ -27,7 +29,9 @@ public struct Shimmer: View {
   private func gradientY(for direction: VerticalAlignment) -> (CGFloat, CGFloat) {
     switch direction {
     case .top: return (phase - 1, phase)
+
     case .bottom: return (2 - phase, 1 - phase)
+
     default: return (0.5, 0.5)
     }
   }

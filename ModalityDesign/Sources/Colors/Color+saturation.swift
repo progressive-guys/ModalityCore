@@ -40,26 +40,32 @@ extension Color {
       newR = v
       newG = t
       newB = p
+
     case 1:
       newR = q
       newG = v
       newB = p
+
     case 2:
       newR = p
       newG = v
       newB = t
+
     case 3:
       newR = p
       newG = q
       newB = v
+
     case 4:
       newR = t
       newG = p
       newB = v
+
     case 5:
       newR = v
       newG = p
       newB = q
+
     default:
       break
     }

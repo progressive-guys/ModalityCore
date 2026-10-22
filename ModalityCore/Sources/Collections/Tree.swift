@@ -19,6 +19,7 @@ public struct Tree<Value> {
     switch node {
     case .folder(_, let children):
       return children
+
     case .leaf:
       return nil
     }
@@ -28,6 +29,7 @@ public struct Tree<Value> {
     switch node {
     case .folder:
       return nil
+
     case .leaf(let value):
       return value
     }
@@ -37,6 +39,7 @@ public struct Tree<Value> {
     switch node {
     case .folder(_, let children):
       return children.flatMap { $0.flattened }
+
     case .leaf(let value):
       return [value]
     }
@@ -46,6 +49,7 @@ public struct Tree<Value> {
     switch node {
     case .folder(let title, let children):
       return Tree<Mapped>(folder: title, children: try children.map { try $0.map(transform) })
+
     case .leaf(let value):
       return Tree<Mapped>(try transform(value))
     }
@@ -67,6 +71,7 @@ extension Tree.Node: Identifiable where Value: Identifiable {
   public var id: String {
     switch self {
     case .folder(let title, _): return "folder_\(title)"
+
     case .leaf(let value): return "leaf_\(value.id)"
     }
   }
