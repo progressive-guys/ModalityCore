@@ -1,6 +1,10 @@
 import SwiftUI
 
-public struct AnimatableTriplet<First, Second, Third>: VectorArithmetic where First: VectorArithmetic, Second: VectorArithmetic, Third: VectorArithmetic {
+public struct AnimatableTriplet<
+  First: VectorArithmetic,
+  Second: VectorArithmetic,
+  Third: VectorArithmetic
+>: VectorArithmetic {
   public var first: First
   public var second: Second
   public var third: Third

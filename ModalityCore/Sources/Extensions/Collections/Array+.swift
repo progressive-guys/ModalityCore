@@ -2,20 +2,20 @@ import Foundation
 
 extension Array: @retroactive RawRepresentable where Element: Codable {
   public init?(rawValue: String) {
-    guard let data = rawValue.data(using: .utf8),
-          let result = try? JSONDecoder().decode([Element].self, from: data)
-    else {
-      return nil
-    }
+    guard
+      let data = rawValue.data(using: .utf8),
+      let result = try? JSONDecoder().decode([Element].self, from: data)
+    else { return nil }
+
     self = result
   }
 
   public var rawValue: String {
-    guard let data = try? JSONEncoder().encode(self),
-          let result = String(data: data, encoding: .utf8)
-    else {
-      return "[]"
-    }
+    guard
+      let data = try? JSONEncoder().encode(self),
+      let result = String(data: data, encoding: .utf8)
+    else { return "[]" }
+
     return result
   }
 }
@@ -41,11 +41,13 @@ extension Array {
 
   public func average<Value: BinaryFloatingPoint>(_ keyPath: KeyPath<Element, Value>) -> Value {
     guard !isEmpty else { return 0 }
+
     return sum(keyPath) / Value(count)
   }
 
   public func median<Value: BinaryFloatingPoint>(_ keyPath: KeyPath<Element, Value>) -> Value {
     guard !isEmpty else { return 0 }
+
     let sorted = lazy.map { $0[keyPath: keyPath] }.sorted()
     let mid = count / 2
     return count.isMultiple(of: 2) ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]

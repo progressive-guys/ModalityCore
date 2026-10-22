@@ -46,7 +46,8 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
           window?.close()
         } else {
           windowClosingDelegate = WindowClosingDelegate(isWindowOpened: $isWindowOpened)
-          window = windowContent().openInWindow(title: windowTitle, sender: self, windowClosingDelegate: windowClosingDelegate)
+          window = windowContent()
+            .openInWindow(title: windowTitle, sender: self, windowClosingDelegate: windowClosingDelegate)
         }
         isWindowOpened.toggle()
         #elseif os(visionOS)
@@ -72,7 +73,11 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
 fileprivate extension View {
 
   @discardableResult
-  func openInWindow(title: String?, sender: Any?, windowClosingDelegate: WindowClosingDelegate?) -> NSWindow {
+  func openInWindow(
+    title: String?,
+    sender: Any?,
+    windowClosingDelegate: WindowClosingDelegate?
+  ) -> NSWindow {
     let controller = NSHostingController(rootView: self)
     let window = NSWindow(contentViewController: controller)
     window.contentViewController = controller

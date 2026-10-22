@@ -15,6 +15,7 @@ struct TreeTests {
     #expect(title == "Catalog")
     let folders = children.compactMap { child -> String? in
       guard case .folder(let title, _) = child.node else { return nil }
+
       return title
     }
     #expect(folders == ["Nested", "Empty"])
@@ -28,7 +29,9 @@ struct TreeTests {
     let tree = try fixture()
     #expect(throws: Failure.self) {
       try tree.map { value -> Int in
-        if value == 7 { throw Failure.rejected }
+        if value == 7 {
+          throw Failure.rejected
+        }
         return value
       }
     }

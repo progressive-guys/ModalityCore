@@ -81,7 +81,9 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
       scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
       hostingController.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
       hostingController.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-      hostingController.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+      hostingController.view.trailingAnchor.constraint(
+        equalTo: scrollView.contentLayoutGuide.trailingAnchor
+      ),
       hostingController.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
       hostingController.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
     ])
@@ -109,6 +111,7 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
       overscrollTranslation = max(0, translation.y - distanceToTop)
 
       guard isOverscrolling || overscrollTranslation > 0 else { return }
+
       isOverscrolling = true
       scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: topOffset)
       scrollHandler.onOverscroll(overscrollTranslation)

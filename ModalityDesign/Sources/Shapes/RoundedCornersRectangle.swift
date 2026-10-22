@@ -118,6 +118,6 @@ public struct RoundedCornersRectangle: Shape {
     }
     .frame(height: 150)
   }
-    .padding(32)
-    .frame(width: 400, height: 400)
+  .padding(32)
+  .frame(width: 400, height: 400)
 }

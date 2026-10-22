@@ -79,6 +79,7 @@ extension Persisted where Value: Codable {
     self.debounceInterval = debounce
     self.read = { key in
       guard let data = UserDefaults.standard.data(forKey: key) else { return nil }
+
       return try? JSONDecoder().decode(Value.self, from: data)
     }
     self.write = { value, key in
@@ -87,8 +88,11 @@ extension Persisted where Value: Codable {
       }
     }
     let initial: Value = {
-      guard let data = UserDefaults.standard.data(forKey: key),
-            let decoded = try? JSONDecoder().decode(Value.self, from: data) else { return defaultValue }
+      guard
+        let data = UserDefaults.standard.data(forKey: key),
+        let decoded = try? JSONDecoder().decode(Value.self, from: data)
+      else { return defaultValue }
+
       return decoded
     }()
     self.value = initial
@@ -103,6 +107,7 @@ extension Persisted where Value: RawRepresentable, Value.RawValue == String {
     self.debounceInterval = debounce
     self.read = { key in
       guard let raw = UserDefaults.standard.string(forKey: key) else { return nil }
+
       return Value(rawValue: raw)
     }
     self.write = { value, key in
@@ -110,6 +115,7 @@ extension Persisted where Value: RawRepresentable, Value.RawValue == String {
     }
     let initial: Value = {
       guard let raw = UserDefaults.standard.string(forKey: key) else { return defaultValue }
+
       return Value(rawValue: raw) ?? defaultValue
     }()
     self.value = initial

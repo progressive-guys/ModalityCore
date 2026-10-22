@@ -8,8 +8,7 @@ public extension View {
     phase: Angle = .zero,
     shimmerStartingPoint: Alignment = .leading
   ) -> some View {
-    self
-      .environment(\.isLoading, isLoading)
+    self.environment(\.isLoading, isLoading)
       .redacted(reason: isLoading ? .placeholder : [])
       .allowsHitTesting(!isLoading)
       .overlay {

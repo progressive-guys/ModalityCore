@@ -15,9 +15,9 @@ public struct BundledResource<Content>: Hashable, Sendable {
 
   public var url: URL {
     get throws {
-      guard let url = bundle.url(forResource: fileName, withExtension: nil) else {
-        throw CocoaError(.fileReadNoSuchFile, userInfo: [NSFilePathErrorKey: fileName])
-      }
+      guard let url = bundle.url(forResource: fileName, withExtension: nil)
+      else { throw CocoaError(.fileReadNoSuchFile, userInfo: [NSFilePathErrorKey: fileName]) }
+
       return url
     }
   }

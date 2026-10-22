@@ -18,9 +18,9 @@ public extension Logger {
 
 public extension Logger {
   func debugLog(_ level: OSLogType = .info, message: () -> String) {
-#if DEBUG
+    #if DEBUG
     let msg = message()
     self.log(level: level, "\(msg)")
-#endif
+    #endif
   }
 }

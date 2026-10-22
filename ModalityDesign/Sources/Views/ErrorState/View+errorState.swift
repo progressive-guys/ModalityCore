@@ -13,8 +13,7 @@ public extension View {
     description: String?,
     onTryAgain: @escaping () -> Void
   ) -> some View {
-    self
-      .opacity(isPresented ? 0.8 : 1)
+    self.opacity(isPresented ? 0.8 : 1)
       .saturation(isPresented ? 0.5 : 1)
       .overlay {
         if isPresented {
@@ -47,7 +46,9 @@ public struct ErrorFlagBorderModifier: ViewModifier {
           .stroke(isError ? VioletPalette.errorViolet : VioletPalette.border, lineWidth: 1)
       )
       .onChange(of: text) { _ in
-        if isError { isError = false }
+        if isError {
+          isError = false
+        }
       }
   }
 }

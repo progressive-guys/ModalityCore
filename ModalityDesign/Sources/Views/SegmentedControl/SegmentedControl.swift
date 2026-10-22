@@ -37,10 +37,11 @@ public struct SegmentedControl<Option: Hashable & Identifiable>: View {
       }
       .pickerStyle(.segmented)
       .onAppear {
-        UISegmentedControl.appearance().setTitleTextAttributes(
-          [.font: UIFont.systemFont(ofSize: SegmentButton.segmentLabelFontSize, weight: .semibold)],
-          for: .normal
-        )
+        UISegmentedControl.appearance()
+          .setTitleTextAttributes(
+            [.font: UIFont.systemFont(ofSize: SegmentButton.segmentLabelFontSize, weight: .semibold)],
+            for: .normal
+          )
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(selectionColor)
         UISegmentedControl.appearance().backgroundColor = UIColor(backgroundColor)
       }

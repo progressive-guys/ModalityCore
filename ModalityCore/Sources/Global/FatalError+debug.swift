@@ -4,24 +4,26 @@ public func debugFatalError<DefaultValue>(
   file: StaticString = #file,
   line: UInt = #line
 ) -> DefaultValue {
-#if DEBUG
+  #if DEBUG
   Swift.fatalError(message, file: file, line: line)
-#else
+  #else
   return defaultValue()
-#endif
+  #endif
 }
 
-public func debugAssert(
-  _ condition: @autoclosure () -> Bool,
-  _ message: @autoclosure () -> String = String(),
-  file: StaticString = #file,
-  line: UInt = #line
-) {
-#if DEBUG
-  if !condition() {
-    Swift.fatalError(message(), file: file, line: line)
+public enum DebugChecks {
+  public static func debugAssert(
+    _ condition: @autoclosure () -> Bool,
+    _ message: @autoclosure () -> String = String(),
+    file: StaticString = #file,
+    line: UInt = #line
+  ) {
+    #if DEBUG
+    if !condition() {
+      Swift.fatalError(message(), file: file, line: line)
+    }
+    #endif
   }
-#endif
 }
 
 public func debugFatalError(

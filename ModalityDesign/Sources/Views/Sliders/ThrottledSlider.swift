@@ -46,6 +46,7 @@ public struct ThrottledSlider<Value: BinaryFloatingPoint>: View where Value.Stri
     pendingCommitTask = Task { @MainActor in
       try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
       guard !Task.isCancelled else { return }
+
       pendingCommitTask = nil
       commit(currentValue)
     }
@@ -64,8 +65,11 @@ public struct ThrottledSlider<Value: BinaryFloatingPoint>: View where Value.Stri
   }
 
   private func commit(_ newValue: Value) {
-    if !isEditing { draftValue = nil }
+    if !isEditing {
+      draftValue = nil
+    }
     guard value != newValue else { return }
+
     value = newValue
     lastCommitDate = Date()
   }

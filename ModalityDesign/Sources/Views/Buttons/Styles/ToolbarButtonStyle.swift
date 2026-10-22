@@ -14,9 +14,9 @@ public struct ToolbarButtonStyle: ButtonStyle {
     }
     .padding(.vertical, 16)
     .contentShape(RoundedRectangle(cornerRadius: 16))
-#if os(visionOS)
+    #if os(visionOS)
     .hoverEffect()
-#endif
+    #endif
     .opacity(configuration.isPressed ? 0.5 : 1)
     .scaleEffect(configuration.isPressed ? 0.96 : 1)
     .border(Color.green)

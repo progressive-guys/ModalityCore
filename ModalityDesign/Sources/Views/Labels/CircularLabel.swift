@@ -13,9 +13,13 @@ public struct CircularLabel: View {
 
     let degrees = {
       let degrees = Int(startAngle.degrees.rounded()) % 360
-      return if degrees < -180 { degrees + 360 }
-        else if degrees >= 180 { degrees - 360 }
-        else { degrees }
+      return if degrees < -180 {
+        degrees + 360
+      } else if degrees >= 180 {
+        degrees - 360
+      } else {
+        degrees
+      }
     }()
 
     self.isUpsideDown = abs(degrees) > 90

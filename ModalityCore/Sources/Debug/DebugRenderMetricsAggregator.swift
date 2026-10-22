@@ -81,6 +81,7 @@ public struct DebugRenderMetricsAggregator: Sendable {
     }
 
     guard let lastFrameTimestamp, timestamp > lastFrameTimestamp else { return }
+
     totalFrameCount += 1
 
     let duration = timestamp - lastFrameTimestamp

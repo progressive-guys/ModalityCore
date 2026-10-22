@@ -9,11 +9,11 @@ import AppKit
 
 extension Color {
   public var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
-#if canImport(UIKit)
+    #if canImport(UIKit)
     typealias NativeColor = UIColor
-#elseif canImport(AppKit)
+    #elseif canImport(AppKit)
     typealias NativeColor = NSColor
-#endif
+    #endif
 
     var r: CGFloat = 0
     var g: CGFloat = 0
@@ -21,9 +21,9 @@ extension Color {
     var a: CGFloat = 0
 
     NativeColor(self)
-#if os(macOS)
+      #if os(macOS)
       .usingColorSpace(.sRGB)?
-#endif
+      #endif
       .getRed(&r, green: &g, blue: &b, alpha: &a)
 
     return (r, g, b, a)

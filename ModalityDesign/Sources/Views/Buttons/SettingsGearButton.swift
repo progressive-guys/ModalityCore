@@ -22,7 +22,7 @@ public struct SettingsGearButton<Label: View, SettingsView: View>: View {
 
   public var body: some View {
     Group {
-#if os(macOS)
+      #if os(macOS)
       if #available(macOS 14.0, *) {
         SettingsLink(label: label)
       } else {
@@ -34,7 +34,7 @@ public struct SettingsGearButton<Label: View, SettingsView: View>: View {
           label: label
         )
       }
-#else
+      #else
       Button(
         action: { isSettingsPresented = true },
         label: label
@@ -42,7 +42,7 @@ public struct SettingsGearButton<Label: View, SettingsView: View>: View {
       .sheet(isPresented: $isSettingsPresented) {
         settingsView()
       }
-#endif
+      #endif
     }
     .buttonStyle(.plain)
   }

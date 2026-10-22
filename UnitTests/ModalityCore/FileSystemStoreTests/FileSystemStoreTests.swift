@@ -17,13 +17,18 @@ struct FileSystemStoreTests {
     profile.name = "Edited"
     try store.save(profile, to: url)
     #expect(try store.read(from: url).name == "Edited")
-    #expect(try store.readDirectory(at: url.deletingLastPathComponent()).trees.flatMap(\.flattened).count == 1)
+    #expect(
+      try store.readDirectory(at: url.deletingLastPathComponent()).trees.flatMap(\.flattened).count == 1
+    )
   }
 
   @Test func directoryReportsBadFilesAndKeepsGoodRecords() throws {
     let directory = temporaryDirectory()
     defer { trashTemporaryDirectory(directory) }
-    try FileManager.default.createDirectory(at: directory.appendingPathComponent("subfolder"), withIntermediateDirectories: true)
+    try FileManager.default.createDirectory(
+      at: directory.appendingPathComponent("subfolder"),
+      withIntermediateDirectories: true
+    )
     let validURL = directory.appendingPathComponent("valid.json")
     let invalidURL = directory.appendingPathComponent("invalid.json")
     try FileManager.default.copyItem(at: fixture("storeProfile"), to: validURL)
@@ -31,7 +36,11 @@ struct FileSystemStoreTests {
 
     let result = try FileSystemStore<Profile>().readDirectory(at: directory)
 
-    #expect(result.trees.flatMap(\.flattened).map { $0.url.resolvingSymlinksInPath() } == [validURL.resolvingSymlinksInPath()])
+    #expect(
+      result.trees.flatMap(\.flattened).map { $0.url.resolvingSymlinksInPath() } == [
+        validURL.resolvingSymlinksInPath()
+      ]
+    )
     #expect(result.trees.flatMap(\.flattened).first?.value.name == "Practice")
     #expect(Set(result.errors.keys) == [invalidURL.standardizedFileURL])
   }
@@ -69,7 +78,11 @@ struct FileSystemStoreTests {
     #expect(entries.count == expectedURLs.count)
     #expect(Set(entries.map { $0.url.resolvingSymlinksInPath() }) == Set(expectedURLs))
     #expect(entries.map(\.value.name) == ["Practice", "Practice"])
-    #expect(Set(result.errors.keys) == [directory.appendingPathComponent("Nested/broken.json").standardizedFileURL])
+    #expect(
+      Set(result.errors.keys) == [
+        directory.appendingPathComponent("Nested/broken.json").standardizedFileURL
+      ]
+    )
   }
 
   @Test func fileCannotBeReadAsDirectory() throws {
@@ -135,7 +148,10 @@ struct FileSystemStoreTests {
   private func prepareDirectory(at directory: URL) throws {
     try FileManager.default.copyItem(at: fixture("StoreDirectory", withExtension: nil), to: directory)
     // Create links in the temporary copy so resource packaging does not follow the cycle.
-    try FileManager.default.createSymbolicLink(atPath: directory.appendingPathComponent("Nested/loop").path, withDestinationPath: "..")
+    try FileManager.default.createSymbolicLink(
+      atPath: directory.appendingPathComponent("Nested/loop").path,
+      withDestinationPath: ".."
+    )
     try FileManager.default.createSymbolicLink(
       atPath: directory.appendingPathComponent("linked.json").path,
       withDestinationPath: "root.json"
@@ -150,9 +166,13 @@ struct FileSystemStoreTests {
     }
   }
 
-  private func folder(_ title: String, in trees: [Tree<FileSystemStore<Profile>.Entry>]) throws -> [Tree<FileSystemStore<Profile>.Entry>] {
+  private func folder(
+    _ title: String,
+    in trees: [Tree<FileSystemStore<Profile>.Entry>]
+  ) throws -> [Tree<FileSystemStore<Profile>.Entry>] {
     let tree = try #require(trees.first {
       guard case .folder(let name, _) = $0.node else { return false }
+
       return name == title
     })
     return try #require(tree.children)
@@ -161,7 +181,9 @@ struct FileSystemStoreTests {
   private final class BundleToken {}
 
   private func temporaryDirectory() -> URL {
-    FileManager.default.temporaryDirectory.appendingPathComponent("FileSystemStoreTests-\(UUID().uuidString)")
+    FileManager.default.temporaryDirectory.appendingPathComponent(
+      "FileSystemStoreTests-\(UUID().uuidString)"
+    )
   }
 
   private func trashTemporaryDirectory(_ directory: URL) {

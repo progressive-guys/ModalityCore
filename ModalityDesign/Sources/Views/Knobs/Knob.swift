@@ -87,11 +87,11 @@ public struct Knob: View {
   private func updateValue(with event: DragGesture.Value) {
     let px = -event.translation.height + event.translation.width * 0.4
 
-#if os(macOS)
+    #if os(macOS)
     let fine = NSEvent.modifierFlags.contains(.shift) ? fineMultiplier : 1
-#else
+    #else
     let fine = 1.0
-#endif
+    #endif
 
     let delta = px * sensitivity * fine
     value = (anchor + delta).clamped(to: range)

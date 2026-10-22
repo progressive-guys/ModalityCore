@@ -62,7 +62,12 @@ public struct WidthDrivenVStack: Layout {
     return CGSize(width: constrainedWidth, height: totalHeight)
   }
 
-  public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+  public func placeSubviews(
+    in bounds: CGRect,
+    proposal: ProposedViewSize,
+    subviews: Subviews,
+    cache: inout ()
+  ) {
     guard let firstSubview = subviews.first else { return }
 
     // Find width drivers or fall back to first view

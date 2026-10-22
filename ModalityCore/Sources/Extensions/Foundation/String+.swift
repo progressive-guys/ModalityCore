@@ -31,7 +31,8 @@ public extension String.StringInterpolation {
   mutating func appendInterpolation(json JSONData: Data) {
     guard
       let JSONObject = try? JSONSerialization.jsonObject(with: JSONData, options: []),
-      let jsonData = try? JSONSerialization.data(withJSONObject: JSONObject, options: .prettyPrinted) else {
+      let jsonData = try? JSONSerialization.data(withJSONObject: JSONObject, options: .prettyPrinted)
+    else {
       appendInterpolation(String(data: JSONData, encoding: .utf8))
       return
     }

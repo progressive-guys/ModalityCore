@@ -85,17 +85,19 @@ private protocol DisplayFrameSampling: AnyObject {
   func stop()
 }
 
-@MainActor
-private func makeDisplayFrameSampler(
-  onFrame: @escaping @MainActor (TimeInterval, Double) -> Void
-) -> any DisplayFrameSampling {
-  #if os(iOS) || os(visionOS)
-  CADisplayFrameSampler(onFrame: onFrame)
-  #elseif os(macOS)
-  MacDisplayFrameSampler(onFrame: onFrame)
-  #else
-  TimerDisplayFrameSampler(displayHz: 60, onFrame: onFrame)
-  #endif
+private extension DebugRenderMetrics {
+  @MainActor
+  func makeDisplayFrameSampler(
+    onFrame: @escaping @MainActor (TimeInterval, Double) -> Void
+  ) -> any DisplayFrameSampling {
+    #if os(iOS) || os(visionOS)
+    CADisplayFrameSampler(onFrame: onFrame)
+    #elseif os(macOS)
+    MacDisplayFrameSampler(onFrame: onFrame)
+    #else
+    TimerDisplayFrameSampler(displayHz: 60, onFrame: onFrame)
+    #endif
+  }
 }
 
 #if os(iOS) || os(visionOS)
@@ -147,8 +149,9 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
     stop()
 
     var displayLink: CVDisplayLink?
-    guard CVDisplayLinkCreateWithActiveCGDisplays(&displayLink) == kCVReturnSuccess,
-          let displayLink
+    guard
+      CVDisplayLinkCreateWithActiveCGDisplays(&displayLink) == kCVReturnSuccess,
+      let displayLink
     else {
       startFallbackSampler()
       return
@@ -170,8 +173,9 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       return kCVReturnSuccess
     }
 
-    guard CVDisplayLinkSetOutputCallback(displayLink, callback, context) == kCVReturnSuccess,
-          CVDisplayLinkStart(displayLink) == kCVReturnSuccess
+    guard
+      CVDisplayLinkSetOutputCallback(displayLink, callback, context) == kCVReturnSuccess,
+      CVDisplayLinkStart(displayLink) == kCVReturnSuccess
     else {
       startFallbackSampler()
       return

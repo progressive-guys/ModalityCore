@@ -106,7 +106,12 @@ public struct TagsLayout: Layout {
     )
   }
 
-  public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+  public func placeSubviews(
+    in bounds: CGRect,
+    proposal: ProposedViewSize,
+    subviews: Subviews,
+    cache: inout ()
+  ) {
     let rows = calculateRows(proposal: proposal, subviews: subviews)
     var currentY = bounds.minY
 
@@ -199,8 +204,15 @@ extension TagsLayout {
 
 #Preview {
   TagsView(tags: [
-    "Harmonic Minor", "Tapping", "Chord Progression", "Melody", "Rhythm", "Songwriting", "Music Theory",
-    "Teqniqe", "Music Education"
+    "Harmonic Minor",
+    "Tapping",
+    "Chord Progression",
+    "Melody",
+    "Rhythm",
+    "Songwriting",
+    "Music Theory",
+    "Teqniqe",
+    "Music Education"
   ], alignment: .leading)
-  .frame(width: 750, height: 300)
+    .frame(width: 750, height: 300)
 }

@@ -40,7 +40,12 @@ extension Color: @retroactive VectorArithmetic {
   public var magnitudeSquared: Double {
     let components = self.components
 
-    return Double(components.red * components.red + components.green * components.green + components.blue * components.blue + components.alpha * components.alpha)
+    return Double(
+      components.red * components.red
+        + components.green * components.green
+        + components.blue * components.blue
+        + components.alpha * components.alpha
+    )
   }
 
   public static var zero: Color {

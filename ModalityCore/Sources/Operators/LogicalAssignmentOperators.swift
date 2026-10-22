@@ -1,16 +1,22 @@
 infix operator ||=
-public func ||= (lhs: inout Bool, rhs: @autoclosure () -> Bool) {
-  lhs = (lhs || rhs())
+extension Bool {
+  public static func ||= (lhs: inout Bool, rhs: @autoclosure () -> Bool) {
+    lhs = (lhs || rhs())
+  }
 }
 
 infix operator &&=
-public func &&= (lhs: inout Bool, rhs: @autoclosure () -> Bool) {
-  lhs = (lhs && rhs())
+extension Bool {
+  public static func &&= (lhs: inout Bool, rhs: @autoclosure () -> Bool) {
+    lhs = (lhs && rhs())
+  }
 }
 
 infix operator ??=
-public func ??=<Value>(lhs: inout Value?, rhs: @autoclosure () -> Value) {
-  if lhs == nil {
-    lhs = rhs()
+extension Optional {
+  public static func ??=(lhs: inout Self, rhs: @autoclosure () -> Wrapped) {
+    if lhs == nil {
+      lhs = rhs()
+    }
   }
 }

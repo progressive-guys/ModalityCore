@@ -56,10 +56,14 @@ public enum VioletPalette {
   public static let violetTintHi    = Color(hue: 0.722, saturation: 0.65, brightness: 0.88)
 
   // Semantic mapped into violet family (aggressive but cohesive)
-  public static let infoViolet      = Color(hue: 0.690, saturation: 0.70, brightness: 0.90) // cooler side
-  public static let successViolet   = Color(hue: 0.740, saturation: 0.55, brightness: 0.88) // softer green-less success
-  public static let warningViolet   = Color(hue: 0.800, saturation: 0.85, brightness: 0.90) // warm violet
-  public static let errorViolet     = Color(hue: 0.860, saturation: 0.95, brightness: 0.85) // red-violet punch
+  public static let infoViolet = Color(hue: 0.690, saturation: 0.70, brightness: 0.90) // cooler side
+  public static let successViolet = Color(
+    hue: 0.740,
+    saturation: 0.55,
+    brightness: 0.88
+  ) // softer green-less success
+  public static let warningViolet = Color(hue: 0.800, saturation: 0.85, brightness: 0.90) // warm violet
+  public static let errorViolet = Color(hue: 0.860, saturation: 0.95, brightness: 0.85)  // red-violet punch
 
   // Text & surfaces tuned for bg
   public static let textHigh        = Color(hue: 0.16, saturation: 0.05, brightness: 0.98)

@@ -108,7 +108,11 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
     }
   }
 
-  private func compactMetric(_ title: String, value: String, valueColor: Color = .white.opacity(0.86)) -> some View {
+  private func compactMetric(
+    _ title: String,
+    value: String,
+    valueColor: Color = .white.opacity(0.86)
+  ) -> some View {
     VStack(alignment: .leading, spacing: 1) {
       Text(title.uppercased())
         .font(.system(size: 7, weight: .semibold))
@@ -194,9 +198,8 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
   }
 
   private func averageFPS(fallback: Double) -> Double {
-    guard !fpsHistory.isEmpty else {
-      return fallback
-    }
+    guard !fpsHistory.isEmpty else { return fallback }
+
     return fpsHistory.reduce(0, +) / Double(fpsHistory.count)
   }
 
@@ -220,25 +223,22 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
   }
 
   private func warmupFramesElapsed(_ snapshot: DebugRenderMetricsSnapshot) -> Int {
-    guard let warmupStartFrameCount else {
-      return 0
-    }
+    guard let warmupStartFrameCount else { return 0 }
 
     return max(0, snapshot.totalFrameCount - warmupStartFrameCount)
   }
 
   private func appendSnapshot(_ snapshot: DebugRenderMetricsSnapshot, force: Bool = false) {
-    guard warmupFramesElapsed(snapshot) >= warmupFrameCount else {
-      return
-    }
+    guard warmupFramesElapsed(snapshot) >= warmupFrameCount else { return }
 
     let fps = snapshot.fps
-    guard fps.isFinite, fps > 0 else {
-      return
-    }
+    guard fps.isFinite, fps > 0 else { return }
 
     let now = Date()
-    if !force, let lastFPSHistoryUpdate, now.timeIntervalSince(lastFPSHistoryUpdate) < fpsHistoryMinimumInterval {
+    if !force,
+       let lastFPSHistoryUpdate,
+       now.timeIntervalSince(lastFPSHistoryUpdate) < fpsHistoryMinimumInterval
+    {
       return
     }
 

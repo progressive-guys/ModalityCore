@@ -9,7 +9,9 @@ public struct FileSystemStore<Value: Codable & Sendable>: Sendable {
 
   private let decode: @Sendable (Data) throws -> Value
 
-  public init(decode: @escaping @Sendable (Data) throws -> Value = { try JSONDecoder().decode(Value.self, from: $0) }) {
+  public init(
+    decode: @escaping @Sendable (Data) throws -> Value = { try JSONDecoder().decode(Value.self, from: $0) }
+  ) {
     self.decode = decode
   }
 
@@ -32,7 +34,10 @@ public struct FileSystemStore<Value: Codable & Sendable>: Sendable {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
     let data = try encoder.encode(value)
-    try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+    try FileManager.default.createDirectory(
+      at: url.deletingLastPathComponent(),
+      withIntermediateDirectories: true
+    )
     try data.write(to: url, options: .atomic)
     return Entry(value: value, url: url)
   }
@@ -54,6 +59,7 @@ public struct FileSystemStore<Value: Codable & Sendable>: Sendable {
         let attributes = try url.resourceValues(forKeys: keys)
         // Follow real directories only, so links cannot introduce cycles or leave the catalog.
         guard attributes.isSymbolicLink != true else { continue }
+
         if attributes.isDirectory == true {
           let children = try readTrees(at: url, errors: &errors)
           trees.append(Tree(folder: url.lastPathComponent, children: children))

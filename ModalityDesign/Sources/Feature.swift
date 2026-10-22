@@ -27,11 +27,11 @@ public protocol Feature: Identifiable {
   associatedtype Body: View
   var view: Body { get }
 
-#if canImport(UIKit)
+  #if canImport(UIKit)
   var vc: UIViewController { get }
-#elseif canImport(AppKit)
+  #elseif canImport(AppKit)
   var vc: NSViewController { get }
-#endif
+  #endif
 }
 
 extension Feature {
@@ -42,16 +42,16 @@ extension Feature {
 }
 
 extension Feature {
-#if canImport(UIKit)
+  #if canImport(UIKit)
   public var vc: UIViewController {
     UIHostingController(rootView: view)
   }
 
-#elseif canImport(AppKit)
+  #elseif canImport(AppKit)
   public var vc: NSViewController {
     NSHostingController(rootView: view)
   }
-#endif
+  #endif
 }
 
 public extension Feature where ID == ObjectIdentifier {
