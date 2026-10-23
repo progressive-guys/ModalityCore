@@ -39,3 +39,22 @@ jobs:
           swift package resolve
           swift test
           swift build -c release
+
+  swift-style:
+    name: SwiftStyle
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - uses: jdx/mise-action@v2
+      - name: Install Tuist
+        working-directory: SwiftStyle
+        run: mise install tuist
+      - name: Generate SwiftStyle tests
+        working-directory: SwiftStyle
+        run: tuist generate --no-open
+      - name: SwiftStyle fixtures
+        working-directory: SwiftStyle
+        run: xcodebuild test -workspace SwiftStyle.xcworkspace -scheme SwiftStyleTests -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO

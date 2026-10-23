@@ -1,0 +1,207 @@
+# Exclude fixtures, dependencies and build output from normal checks.
+excluded:
+  - "**/SwiftStyle/Tests/Fixtures/**"
+  - "**/.build/**"
+  - "**/.swiftpm/**"
+  - "**/Derived/**"
+  - "**/DerivedData/**"
+  - "**/build/**"
+  - "**/*.xcodeproj/**"
+  - "**/*.xcworkspace/**"
+  - "**/worktrees/**"
+  - "**/Evidence/**"
+  - "**/perf/**"
+
+# Check only the listed rules. --fix applies the available native corrections.
+# Examples apply to the specified rule. A middle dot marks a space at the end of a line.
+only_rules:
+  # Use lowerCamelCase for variable, property, function and enum case names.
+  # Permit short names. Check letter case, characters and the default maximum length.
+  - identifier_name
+  # Valid:
+  #   values.map { value in
+  #     value + 1
+  #   }
+  # Invalid:
+  #   values.map {
+  #     value in
+  #     value + 1
+  #   }
+  - closure_parameter_position
+  # Valid:
+  #   source
+  #     .first()
+  #     .second()
+  #     .third()
+  # Invalid:
+  #   source
+  #     .first().second()
+  #     .third()
+  - multiline_function_chains
+  # Valid: let value: Int = 1
+  # Invalid: let value : Int = 1
+  - colon
+  # Valid: [1, 2]
+  # Invalid: [1,2]
+  - comma
+  # Valid:
+  #   if ready {
+  #     run()
+  #   }
+  # Invalid:
+  #   if ready
+  #   {
+  #     run()
+  #   }
+  # Valid for multiline conditions:
+  #   if first,
+  #     second
+  #   {
+  #     run()
+  #   }
+  - opening_brace
+  # Valid: values.map { $0 + 1 }
+  # Invalid: values.map {$0 + 1}
+  - closure_spacing
+  # Valid: func value() -> Int { 1 }
+  # Invalid: func value()->Int { 1 }
+  - return_arrow_whitespace
+  # Valid: let sum = a + b
+  # Invalid: let sum = a+b
+  - operator_usage_whitespace
+  # Valid:
+  #   let value = 1
+  #
+  # Invalid:
+  #   let value = 1·
+  #
+  - trailing_whitespace
+  # Valid:
+  #   let value = 1
+  #
+  # Invalid: let value = 1 (no newline at end of file)
+  - trailing_newline
+  # Valid:
+  #   first()
+  #
+  #   second()
+  # Invalid:
+  #   first()
+  #
+  #
+  #   second()
+  - vertical_whitespace
+  # Valid: a 120-character code line, including indentation.
+  # Invalid: a 121-character code line without an exception below.
+  - line_length
+  # Valid:
+  #   if ready {
+  #     run()
+  #   }
+  # Invalid:
+  #   if ready {
+  #       run()
+  #   }
+  - indentation_width
+  # Valid: value ?? fallback
+  # Invalid: value!
+  - force_unwrapping
+  # Valid: value as? Int
+  # Invalid: value as! Int
+  - force_cast
+  # Valid: try load()
+  # Invalid: try! load()
+  - force_try
+  # Valid:
+  #   func f(a: Int, b: Int, c: Int) {} or func f(
+  #     a: Int,
+  #     b: Int,
+  #     c: Int
+  #   ) {}
+  # Invalid:
+  #   func f(
+  #     a: Int, b: Int,
+  #     c: Int
+  #   ) {}
+  - multiline_parameters
+  # Valid:
+  #   func f(
+  #     a: Int,
+  #     b: Int
+  #   ) {}
+  # Invalid:
+  #   func f(a: Int,
+  #     b: Int) {}
+  - multiline_parameters_brackets
+  # Valid:
+  #   f(a: 1, b: 2, c: 3) or f(
+  #     a: 1,
+  #     b: 2,
+  #     c: 3
+  #   )
+  # Invalid:
+  #   f(
+  #     a: 1, b: 2,
+  #     c: 3
+  #   )
+  - multiline_call_arguments
+  # Valid:
+  #   f(
+  #     a: 1,
+  #     b: 2
+  #   )
+  # Invalid:
+  #   f(a: 1,
+  #     b: 2)
+  - multiline_arguments_brackets
+
+identifier_name:
+  min_length: 1
+
+# SwiftStyle rules check the opening brace after multiline conditions.
+opening_brace:
+  ignore_multiline_statement_conditions: true
+
+closure_parameter_position:
+  severity: error
+
+multiline_function_chains:
+  severity: error
+
+multiline_parameters:
+  allows_single_line: true
+
+# Spaces inside literals are part of their text or layout.
+trailing_whitespace:
+  ignores_literals: true
+
+multiline_call_arguments:
+  allows_single_line: true
+
+line_length:
+  warning: 120
+  error: 120
+  ignores_comments: true
+  ignores_interpolated_strings: false
+  ignores_multiline_strings: true
+  ignores_regex_literals: true
+  excluded_lines_patterns:
+    # The field, key and default property have the same name.
+    # Valid even above 120 characters: field = try container.decode(.field, default: defaults.field)
+    # Invalid above 120 characters: field = try container.decode(.other, default: defaults.field)
+    - '^\s*([A-Za-z_][A-Za-z0-9_]*) = try container\.decode(?:Optional)?\(\.\1, default: defaults\.\1\)\s*$'
+    # Valid above 120 characters: field = try container.decodeIfPresent(Bool.self, forKey: .field) ?? defaults.field
+    # Invalid above 120 characters: field = try container.decodeIfPresent(Bool.self, forKey: .other) ?? defaults.field
+    - '^\s*([A-Za-z_][A-Za-z0-9_]*) = try container\.decodeIfPresent\([A-Za-z_][A-Za-z0-9_]*(?:<[A-Za-z_][A-Za-z0-9_]*>)?\.self, forKey: \.\1\) \?\? defaults\.\1\s*$'
+
+indentation_width:
+  indentation_width: 2
+  include_comments: false
+  include_multiline_strings: false
+  include_compiler_directives: false
+
+# Permit an empty input scope. Any violation causes the check to fail.
+allow_zero_lintable_files: true
+strict: true
+reporter: xcode
+check_for_updates: false

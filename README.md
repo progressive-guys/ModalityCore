@@ -129,3 +129,7 @@ Open `Workspace.xcworkspace`. Tuist 4.210.0 generates the libraries and tests fr
 To use local sources in another Tuist project, add this checkout and any local SwiftMusicTheory checkout as path dependencies in the consumer's `Tuist/Package.swift`. Use `.external(name: "ModalityCore")` or `.external(name: "ModalityDesign")` in its target dependencies. The consumer owns paths and package settings. A local package must keep its package identity; a consumer-owned symbolic link can provide the expected directory name.
 
 Development and tests need Swift 6.0 or later and the Metal toolchain. CI runs package resolution, unit tests and a Release package build with Xcode 16.2 (Swift 6.0), Xcode 16.3 (Swift 6.1) and the latest stable Xcode.
+
+## SwiftStyle
+
+The main Modality repository uses the configs and checker in [[SwiftStyle/README]]. This folder also owns the `SwiftStyleTests` scheme.
