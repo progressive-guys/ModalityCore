@@ -24,11 +24,11 @@ Modality uses its existing ModalityCore submodule. The main repository links the
 From the main repository root:
 
 ```sh
-(cd Modules/Open-source/ModalityCore/SwiftStyle && mise install)
+mise install
 sh Tuist/Scripts/lint.sh
 ```
 
-The main repository selects source folders and build hooks. Root config links keep editor support and make SwiftLint exclusions use the main repository root. Library checkouts keep their own build and CI setup.
+The main repository includes this folder's `.mise.toml` in its root config. The main repository selects source folders and build hooks. Root config links keep editor support and make SwiftLint exclusions use the main repository root. Library checkouts keep their own build and CI setup.
 
 ## Checks
 
