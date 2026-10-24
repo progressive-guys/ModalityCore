@@ -161,7 +161,6 @@ struct FileSystemStoreTests {
   private func nodeName(_ tree: Tree<FileSystemStore<Profile>.Entry>) -> String {
     switch tree.node {
     case .folder(let title, _): title
-
     case .leaf(let entry): entry.url.lastPathComponent
     }
   }

@@ -71,7 +71,6 @@ extension Tree.Node: Identifiable where Value: Identifiable {
   public var id: String {
     switch self {
     case .folder(let title, _): return "folder_\(title)"
-
     case .leaf(let value): return "leaf_\(value.id)"
     }
   }

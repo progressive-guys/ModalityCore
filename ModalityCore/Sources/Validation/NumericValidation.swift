@@ -11,11 +11,8 @@ public extension NumericValidationError {
   var message: String {
     switch self {
     case .nonFinite(let name): "\(name) must be finite."
-
     case .nonPositive(let name): "\(name) must be positive."
-
     case .negative(let name): "\(name) must be non-negative."
-
     case .missingField(let name): "Numeric field \(name) is missing."
     }
   }
