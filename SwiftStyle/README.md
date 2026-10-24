@@ -65,7 +65,7 @@ The tests run `swiftc -typecheck` on every input. Only explicit parser-error cas
 
 ## Tuist plugin
 
-`Plugin.swift` exports `ModalityBuild`. A consumer declares the ModalityCore Git URL, `tag: "1.1.0"` and `directory: "SwiftStyle"` in `Tuist.swift`. ModalityCore uses the same Git plugin. Run `tuist install` before `tuist generate --no-open`. The plugin includes its configs, checker and scripts. It needs Xcode and mise; the script selects the tool versions from this directory's `.mise.toml`.
+`Plugin.swift` exports `ModalityBuild`. A consumer declares the ModalityCore Git URL, `sha: "refs/tags/1.1.1"` and `directory: "SwiftStyle"` in `Tuist.swift`. Tuist 4.210.0 treats the root `Package.swift` as an executable plugin when using `tag:`. The `sha:` loader accepts a Git tag reference and loads the source plugin from `SwiftStyle`. ModalityCore uses the same Git plugin. Run `tuist install` before `tuist generate --no-open`. The plugin includes its configs, checker and scripts. It needs Xcode and mise; the script selects the tool versions from this directory's `.mise.toml`.
 
 `Project.linted` adds the same checks before compilation for each target's `lintPaths`. It runs on every build. `TargetDependency.library` uses a package product by default. A consumer can set `TUIST_LOCAL_PROJECTS_ROOT` to the absolute directory that contains its local projects. Use the `package` argument when a product name differs from its repository name. The Modality root sets this option in its `.mise.toml`; standalone checkouts leave it unset.
 

@@ -98,7 +98,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/modality-lab/ModalityCore.git", from: "1.1.0"),
+  .package(url: "https://github.com/modality-lab/ModalityCore.git", from: "1.1.1"),
 ]
 ```
 
@@ -124,7 +124,7 @@ mise exec -- tuist install
 mise exec -- tuist generate --no-open
 ```
 
-`Project.swift` declares the native libraries and tests. Keep sources, resources and dependencies consistent with `Package.swift`. The `ModalityBuild` Git plugin provides the lint phase at tag `1.1.0`. Its source is in `SwiftStyle`. SwiftMusicTheory resolves from version `1.0.0` or later in the same major version. A consumer can set `TUIST_LOCAL_PROJECTS_ROOT` to select its local projects; standalone checkouts leave it unset.
+`Project.swift` declares the native libraries and tests. Keep sources, resources and dependencies consistent with `Package.swift`. The `ModalityBuild` Git plugin provides the lint phase at tag `1.1.1`. Its source is in `SwiftStyle`. SwiftMusicTheory resolves from version `1.0.0` or later in the same major version. A consumer can set `TUIST_LOCAL_PROJECTS_ROOT` to select its local projects; standalone checkouts leave it unset.
 
 SwiftPM remains available through `Package.swift`:
 
