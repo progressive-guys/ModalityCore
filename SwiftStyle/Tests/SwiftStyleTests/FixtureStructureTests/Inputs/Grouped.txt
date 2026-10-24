@@ -1,0 +1,6 @@
+/// Text that names another enum does not add a group: enum Extra {}
+enum Accepted {
+  static let text = "enum Extra {}"
+}
+
+enum Rejected {}

@@ -17,8 +17,9 @@
 # Start guard else on a new line after a multiline condition.
 --else-position same-line
 --guard-else next-line
-# wrapArguments: put each argument, parameter or collection element on its own line in a wrapped list.
-# Put the first item after the opening bracket line. Expand partially wrapped lists fully.
+# wrapArguments: put each argument, parameter, tuple element or collection element
+# on its own line in a wrapped list. Put the first item on the line after the
+# opening parenthesis or bracket. Expand partially wrapped lists fully.
 --wrap-arguments before-first
 --wrap-parameters before-first
 --wrap-collections before-first

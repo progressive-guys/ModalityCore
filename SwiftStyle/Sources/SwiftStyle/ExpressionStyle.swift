@@ -184,12 +184,12 @@ extension StyleVisitor {
       compactCallArgument(argument.expression),
       call.trailingClosure == nil,
       layout.line(call) != layout.endLine(call),
-      layout.compact(call.trimmedDescription).count <= 120,
+      SourceLayout.compact(call.trimmedDescription).count <= 120,
       !layout.hasComments(call)
     else { return }
 
     let prefix = layout.converter.location(for: call.positionAfterSkippingLeadingTrivia).column - 1
-    guard prefix + layout.compact(call.trimmedDescription).count <= 120 else { return }
+    guard prefix + SourceLayout.compact(call.trimmedDescription).count <= 120 else { return }
 
     report(.arithmeticCallArgumentsWrap, operatorToken)
   }

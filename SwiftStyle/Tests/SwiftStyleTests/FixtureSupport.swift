@@ -84,7 +84,6 @@ enum FixtureSupport {
 struct ProcessResult {
   let status: Int32
   let output: Data
-
   var text: String { String(decoding: output, as: UTF8.self) }
 }
 

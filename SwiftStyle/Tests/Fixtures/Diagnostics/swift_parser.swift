@@ -1,6 +1,10 @@
-// MARK: - MalformedIf
+// MARK: - Accepted
 
-enum MalformedIf {
+enum Accepted {}
+
+// MARK: - Rejected
+
+enum Rejected {
   static func invalid() {
     if true
   }

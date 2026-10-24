@@ -1,0 +1,31 @@
+{
+  "counts": {
+    "Rejected": 24
+  },
+  "caseCounts": {
+    "Rejected.PublicAfterPrivate": 1,
+    "Rejected.PublicAfterPrivateAcrossMethod": 1,
+    "Rejected.PrivateAfterFileprivate": 1,
+    "Rejected.StaticAfterInstance": 1,
+    "Rejected.LetAfterVar": 1,
+    "Rejected.PlainPropertyAfterWrapper": 1,
+    "Rejected.RepeatedExplicitTypeGroup": 1,
+    "Rejected.RepeatedInferredTypeGroup": 1,
+    "Rejected.RepeatedConstructorTypeGroup": 1,
+    "Rejected.RepeatedWrapperGroup": 1,
+    "Rejected.MissingVisibilityGroupGap": 1,
+    "Rejected.MissingStaticGroupGap": 1,
+    "Rejected.BlankLineWithinSameType": 1,
+    "Rejected.MissingGapBeforeLongGetter": 1,
+    "Rejected.MissingGapAfterLongGetter": 1,
+    "Rejected.MissingGapBetweenAccessors": 1,
+    "Rejected.ExtraGapBetweenAccessors": 1,
+    "Rejected.MultipleBindingsCountTowardGroupSize": 1,
+    "Rejected.WrongVisibilityInConditionalBranch": 1,
+    "Rejected.RepeatedSharedTypeGroup": 1,
+    "Rejected.RepeatedArrayTypeGroup": 1,
+    "Rejected.MissingGapBetweenTwoTypes": 1,
+    "Rejected.MissingGapBetweenTwoWrappers": 1,
+    "Rejected.BlankLineAfterGroupHeader": 1
+  }
+}

@@ -1,15 +1,23 @@
 // MARK: - Accepted
 
-struct Accepted {
-  let member: Int
-  var value: Int { self.member }
+enum Accepted {
+  static func value() {
+    struct Value {
+      let member: Int
+      var value: Int { self.member }
+    }
+  }
 }
 
 // MARK: - Rejected
 
-struct Rejected {
-  let member: Int
-  var value: Int { self
-    .member
+enum Rejected {
+  static func value() {
+    struct Value {
+      let member: Int
+      var value: Int { self
+        .member
+      }
+    }
   }
 }

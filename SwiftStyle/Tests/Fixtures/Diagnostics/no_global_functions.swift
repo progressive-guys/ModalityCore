@@ -12,6 +12,8 @@ extension Accepted {
 
 // MARK: - Rejected
 
+enum Rejected {}
+
 #if os(macOS)
 @MainActor
 func example() {}

@@ -1,0 +1,2 @@
+struct Accepted {}
+enum Rejected {}

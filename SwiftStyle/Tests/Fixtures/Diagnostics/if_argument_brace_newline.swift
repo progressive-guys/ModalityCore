@@ -7,12 +7,8 @@ enum Accepted {
     ) { return true }
     return false
   }
-}
 
-// MARK: - ArrayLiteral
-
-enum ArrayLiteral {
-  static func value(_ value: String) -> Bool {
+  static func arrayLiteral(_ value: String) -> Bool {
     if [
       "first", "second"
     ].contains(value)

@@ -13,6 +13,8 @@ final class StyleVisitor: SyntaxVisitor {
 
   override func visit(_ node: IfExprSyntax) -> SyntaxVisitorContinueKind {
     checkConditions(node)
+    checkSyntaxDispatch(node)
+    checkTypeDispatch(node)
     if node.elseBody == nil,
        node.body.statements.count == 1,
        let statement = node.body.statements.first?.item.as(ExpressionStmtSyntax.self),
@@ -34,14 +36,19 @@ final class StyleVisitor: SyntaxVisitor {
   }
 
   override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
-    checkSyntaxDispatch(node)
-    checkTypeDispatch(node)
+    checkStatementGrouping(node)
+    return .visitChildren
+  }
+
+  override func visit(_ node: MemberBlockItemListSyntax) -> SyntaxVisitorContinueKind {
+    checkMemberSpacing(node)
+    checkPropertyGrouping(node)
     return .visitChildren
   }
 
   override func visit(_ node: GuardStmtSyntax) -> SyntaxVisitorContinueKind {
     checkElse(node.body, keyword: node.elseKeyword)
-    let header = "guard " + layout.compact(node.conditions.trimmedDescription)
+    let header = "guard " + SourceLayout.compact(node.conditions.trimmedDescription)
     let starts = node.conditions.map { layout.line($0) }
     if layout.indent(node) + header.count > 120,
        !layout.hasComments(node.conditions),
@@ -168,7 +175,7 @@ final class StyleVisitor: SyntaxVisitor {
   }
 
   /// Reports each rule once per source line, including chains with multiple nested syntax nodes.
-  func report(_ rule: StyleRule, _ token: TokenSyntax) {
+  func report(_ rule: StyleRule, _ token: TokenSyntax, reason: String? = nil) {
     let location = layout.converter.location(for: token.positionAfterSkippingLeadingTrivia)
     guard !diagnostics.contains(where: { $0.ruleID == rule.rawValue && $0.line == location.line }) else { return }
 
@@ -177,7 +184,7 @@ final class StyleVisitor: SyntaxVisitor {
       line: location.line,
       character: location.column,
       ruleID: rule.rawValue,
-      reason: rule.message
+      reason: reason ?? rule.message
     ))
   }
 

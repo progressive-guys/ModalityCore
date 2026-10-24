@@ -8,8 +8,14 @@ struct DiagnosticTests {
     let fixture = try FixtureSupport.fixture("Diagnostics", name)
     let file = fixture.appendingPathExtension("swift")
     let source = try String(contentsOf: file, encoding: .utf8)
+    let structure = FixtureStructure(source)
+
+    #expect(structure.isValid, "\(name): use one enum Accepted and one enum Rejected")
+
     let sections = FixtureSupport.sectionNames(in: source)
     let expected = try Expectation.load(from: fixture, sections: Set(sections))
+
+    #expect(Set(expected.counts.keys) == ["Accepted", "Rejected"], "\(name)")
     try FixtureSupport.typecheck(file, succeeds: expected.compilerSucceeds)
     #expect(Set(sections.filter { !$0.isEmpty }) == Set(expected.counts.keys), "\(name)")
     for ending in ["\n", "\r\n"] {
@@ -33,13 +39,23 @@ struct DiagnosticTests {
           #expect(actualCount > 0, "\(name)/\(section)")
         }
       }
+
+      for (name, count) in expected.caseCounts {
+        let lines = try #require(structure.lines(for: name), "Missing fixture case: \(name)")
+
+        #expect(diagnostics.filter { lines.contains($0.line) }.count == count, "\(name): \(result.text)")
+      }
     }
   }
 }
 
 private struct Expectation {
   let rule: String
+
   let counts: [String: Int?]
+
+  let caseCounts: [String: Int]
+
   let compilerSucceeds: Bool
 
   static func load(from fixture: URL, sections: Set<String>) throws -> Self {
@@ -47,7 +63,7 @@ private struct Expectation {
     let overrides = if FileManager.default.fileExists(atPath: file.path) {
       try JSONDecoder().decode(Overrides.self, from: Data(contentsOf: file))
     } else {
-      Overrides(counts: nil, compilerSucceeds: nil)
+      Overrides(counts: nil, caseCounts: nil, compilerSucceeds: nil)
     }
     let defaults: [String: Int?] = ["Accepted": 0, "Rejected": 1]
     let counts = defaults.filter { sections.contains($0.key) }
@@ -55,12 +71,16 @@ private struct Expectation {
     return Self(
       rule: fixture.lastPathComponent,
       counts: counts,
+      caseCounts: overrides.caseCounts ?? [:],
       compilerSucceeds: overrides.compilerSucceeds ?? true
     )
   }
 
   private struct Overrides: Decodable {
     let counts: [String: Int?]?
+
+    let caseCounts: [String: Int]?
+
     let compilerSucceeds: Bool?
   }
 }

@@ -1,0 +1,3 @@
+enum Accepted {}
+enum Rejected {}
+enum MoreRejected {}

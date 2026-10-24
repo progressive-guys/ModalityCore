@@ -1,5 +1,26 @@
 {
   "counts": {
-    "Rejected": 9
+    "Rejected": 45
+  },
+  "caseCounts": {
+    "Rejected.singleCheck": 1,
+    "Rejected.differentReceiver": 2,
+    "Rejected.extraCondition": 2,
+    "Rejected.withElse": 2,
+    "Rejected.nonterminal": 3,
+    "Rejected.interruption": 2,
+    "Rejected.repeatedCalls": 3,
+    "Rejected.repeatedProperties": 3,
+    "Rejected.duplicateType": 2,
+    "Rejected.unconditionalCast": 2,
+    "Rejected.negatedCheck": 2,
+    "Rejected.twoChecks": 2,
+    "Rejected.conditionalCasts": 3,
+    "Rejected.classChecks": 3,
+    "Rejected.mixedChecks": 3,
+    "Rejected.throwsFromEachBranch": 2,
+    "Rejected.genericTypes": 3,
+    "Rejected.mutableBinding": 2,
+    "Rejected.nativeChecks": 3
   }
 }

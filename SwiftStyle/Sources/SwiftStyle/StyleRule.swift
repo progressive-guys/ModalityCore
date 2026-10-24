@@ -2,6 +2,7 @@
 ///
 /// Rule checks define their exceptions. SwiftLint disable directives apply to native SwiftLint rules.
 enum StyleRule: String, CaseIterable {
+
   /// Keep ?? operands on one line, or put each continuation on a new line with a leading ??. Keep nested groups
   /// together.
   case mixedNilCoalescingWrap = "mixed_nil_coalescing_wrap"
@@ -32,12 +33,26 @@ enum StyleRule: String, CaseIterable {
   /// Count attached comments as part of each case. Put separation before leading comments.
   case switchCaseSpacing = "switch_case_spacing"
 
-  /// Prefer a syntax-kind switch for two or more consecutive type checks on one expression.
-  /// Require one binding per condition, concrete syntax node types and an early exit in each body.
+  /// Keep adjacent single-line methods and protocol requirements of the same kind together.
+  /// Use one blank line if either member spans multiple lines, including comments and attributes.
+  /// Properties, methods, initializers, subscripts and associated types form separate groups.
+  /// Put one blank line after the opening brace of a nonempty type or extension. MARK comments start new groups.
+  case memberSpacing = "member_spacing"
+
+  /// Group properties by read visibility, static/let/var/attribute kind, type and attribute name.
+  /// Separate groups of more than two properties and computed properties longer than three lines.
+  case propertyGrouping = "property_grouping"
+
+  /// Separate local declarations, checks and final exits with one blank line between groups.
+  /// Keep compact checks together. Permit zero or one blank line next to a multiline check.
+  case statementGrouping = "statement_grouping"
+
+  /// Use a switch for each if condition that projects or tests a SwiftSyntax node type.
+  /// Include single checks, wrapper calls and extra conditions. Preserve evaluation order.
   case preferSyntaxKindSwitch = "prefer_syntax_kind_switch"
 
-  /// Prefer a type switch for two or more consecutive native as? or is checks on one named value.
-  /// Require one condition and a return or throw at the end of each branch. Keep the type order.
+  /// Use a switch for each if condition with a native as? or is check, including negated checks.
+  /// Keep calls, property reads and extra conditions in their original evaluation order.
   case preferTypeSwitch = "prefer_type_switch"
 
   /// Keep an operand and its member access together after an arithmetic, logical or comparison operator.
@@ -171,6 +186,7 @@ enum StyleRule: String, CaseIterable {
 }
 
 extension StyleRule {
+
   var message: String {
     switch self {
     case .mixedNilCoalescingWrap: "Put ?? operands on one line or each continuation on its own line."
@@ -192,8 +208,11 @@ extension StyleRule {
     case .mixedIfConditions: "Put if conditions on one line or each condition on its own line."
     case .collapsibleNestedIf: "Combine these nested if conditions in their current evaluation order."
     case .switchCaseSpacing: "Keep compact switch cases together; separate multiline cases with one blank line."
-    case .preferTypeSwitch: "Use a type switch for these consecutive as? or is checks on one value."
-    case .preferSyntaxKindSwitch: "Use a syntax-kind switch for these consecutive type checks on one expression."
+    case .memberSpacing: "Separate type openings, member kinds and multiline members with one blank line."
+    case .propertyGrouping: "Group properties by visibility, kind, type and attribute; use the required blank lines."
+    case .statementGrouping: "Separate statement groups; allow at most one blank line next to multiline checks."
+    case .preferTypeSwitch: "Use a switch for this as? or is condition."
+    case .preferSyntaxKindSwitch: "Use a syntax-kind switch for this type check."
 
     case .binaryOperandMemberWrap:
       """

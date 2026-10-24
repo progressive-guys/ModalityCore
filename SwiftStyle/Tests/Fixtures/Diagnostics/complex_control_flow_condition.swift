@@ -1,45 +1,66 @@
-// MARK: - APIInsertedResult
-
-enum APIInsertedResult {
-  static func value(_ values: inout Set<Int>, _ value: Int) -> Bool {
-    if values.insert(value).inserted { return true }
-    return false
-  }
-}
-
-// MARK: - APIResult
-
-enum APIResult {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if values.contains(value) { return true }
-    return false
-  }
-}
-
 // MARK: - Accepted
 
 enum Accepted {
+  static func apiInsertedResult(_ values: inout Set<Int>, _ value: Int) -> Bool {
+    if values.insert(value).inserted { return true }
+    return false
+  }
+
+  static func apiResult(_ value: Int, _ values: [Int]) -> Bool {
+    if values.contains(value) { return true }
+    return false
+  }
+
   static func value(_ value: Int) -> Bool {
     if abs(value) > 0 { return true }
     return false
   }
-}
 
-// MARK: - Backticks
-
-enum Backticks {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
+  static func backticks(_ `default`: Int) -> Bool {
     if `default` > 0 { return true }
     return false
   }
-}
 
-// MARK: - CaseWhere
+  static func indexing(_ values: [Int], _ index: Int) -> Bool {
+    if values[index] > 0 { return true }
+    return false
+  }
 
-enum CaseWhere {
-  static func value(_ value: Int) -> Bool {
+  // if abs(abs(value)) > 0 { return }
+  static let text = #"if abs(abs(value)) > 0 { return }"#
+  static var regex: Regex<(Substring, Substring)> { #/if check(value)/# }
+
+  static func optionalCall(_ callback: (() -> Bool)?) -> Bool {
+    if callback?() == true { return true }
+    return false
+  }
+
+  static func repeatExcluded(_ value: Int) {
+    repeat {
+      print(value)
+    } while abs(abs(value)) > 0
+  }
+
+  static func shortPredicate(_ values: [Int]) -> Bool {
+    if values.contains(where: { $0 > 0 }) { return true }
+    return false
+  }
+
+  static func simpleArithmetic(_ value: Int, _ offset: Int, _ limit: Int) -> Bool {
+    if value + offset > limit { return true }
+    return false
+  }
+
+  static func unicode(_ значение: Int) -> Bool {
+    if значение > 0 { return true }
+    return false
+  }
+
+  static func whileExcluded(_ value: Int) {
+    while abs(abs(value)) > 0 { return }
+  }
+
+  static func caseWhere(_ value: Int) -> Bool {
     switch value {
     case let number where abs(abs(number)) > 0:
       return true
@@ -47,15 +68,12 @@ enum CaseWhere {
       return false
     }
   }
-}
 
-// MARK: - CatchWhere
-
-enum CatchWhere {
   enum Failure: Error {
     case invalid
   }
-  static func value() -> Bool {
+
+  static func catchWhere() -> Bool {
     do {
       throw Failure.invalid
     } catch where String(describing: type(of: error)).isEmpty {
@@ -64,92 +82,60 @@ enum CatchWhere {
       return false
     }
   }
-}
 
-// MARK: - ComplexPredicate
-
-enum ComplexPredicate {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if values.contains(where: { $0 > 0 && $0 < limit && $0 != value }) { return true }
-    return false
-  }
-}
-
-// MARK: - ForBinding
-
-enum ForBinding {
-  static func value(_ values: [Int]) {
+  static func forBinding(_ values: [Int]) {
     for value in values
     where abs(abs(value)) > 0 {
       print(value)
     }
   }
-}
 
-// MARK: - ForWhere
-
-enum ForWhere {
-  static func value(_ values: [Int]) -> Void {
+  static func forWhere(_ values: [Int]) -> Void {
     for value in values where abs(abs(value)) > 0 {
       print(value)
     }
   }
-}
 
-// MARK: - GuardNestedCall
-
-enum GuardNestedCall {
-  static func value(_ value: Int) -> Bool {
+  static func guardNestedCall(_ value: Int) -> Bool {
     guard abs(abs(value)) > 0 else { return false }
 
     return true
   }
-}
 
-// MARK: - Indexing
-
-enum Indexing {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if values[index] > 0 { return true }
-    return false
-  }
-}
-
-// MARK: - LiteralSafety
-
-enum LiteralSafety {
-  // if abs(abs(value)) > 0 { return }
-  static let text = #"if abs(abs(value)) > 0 { return }"#
-  static var regex: Regex<(Substring, Substring)> { #/if check(value)/# }
-}
-
-// MARK: - MultipleArithmetic
-
-enum MultipleArithmetic {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if value + offset + 1 > limit { return true }
-    return false
-  }
-}
-
-// MARK: - NestedComment
-
-enum NestedComment {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
+  static func nestedComment(_ value: Int) -> Bool {
     if abs(/* input */ abs(value)) > 0 { return true }
     return false
   }
-}
 
-// MARK: - OptionalCall
+  static func nestedCall(_ value: Int) -> Bool {
+    if abs(abs(value)) > 0 { return true }
+    return false
+  }
 
-enum OptionalCall {
-  static func value(_ callback: (() -> Bool)?) -> Bool {
-    if callback?() == true { return true }
+  static func typedBinding(_ text: String) -> Bool {
+    if let parsed: Int = Int(text), abs(abs(parsed)) > 0 { return true }
+    return false
+  }
+
+  static func deepShortCall(_ value: Int) -> Bool {
+    if abs(abs(abs(value))) > 0 { return true }
+    return false
+  }
+
+  static func multipleNestedCalls(_ first: Int, _ second: Int) -> Bool {
+    if max(abs(first), abs(second)) > 0 { return true }
+    return false
+  }
+
+  static func multilineNestedCall(_ value: Int) -> Bool {
+    if abs(abs(
+      value
+    )) > 0 { return true }
+    return false
+  }
+
+  static func nestedAtLimit(_ text: String) -> Bool {
+    if text.hasPrefix("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234".lowercased()) { return true }
     return false
   }
 }
@@ -157,66 +143,28 @@ enum OptionalCall {
 // MARK: - Rejected
 
 enum Rejected {
-  static func value(_ value: Int) -> Bool {
-    if abs(abs(value)) > 0 { return true }
+  static func complexPredicate(_ value: Int, _ limit: Int, _ values: [Int]) -> Bool {
+    if values.contains(where: { $0 > 0 && $0 < limit && $0 != value }) { return true }
     return false
   }
-}
 
-// MARK: - RepeatExcluded
-
-enum RepeatExcluded {
-  static func value(_ value: Int) {
-    repeat {
-      print(value)
-    } while abs(abs(value)) > 0
-  }
-}
-
-// MARK: - ShortPredicate
-
-enum ShortPredicate {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if values.contains(where: { $0 > 0 }) { return true }
+  static func multipleArithmetic(_ value: Int, _ offset: Int, _ limit: Int) -> Bool {
+    if value + offset + 1 > limit { return true }
     return false
   }
-}
 
-// MARK: - SimpleArithmetic
-
-enum SimpleArithmetic {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if value + offset > limit { return true }
+  static func nestedOverLimit(_ text: String) -> Bool {
+    if text.hasPrefix("0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345".lowercased()) { return true }
     return false
   }
-}
 
-// MARK: - TypedBinding
-
-enum TypedBinding {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if let parsed: Int = Int(text), abs(abs(parsed)) > 0 { return true }
+  static func nestedArithmetic(_ value: Int, _ offset: Int) -> Bool {
+    if abs(abs(value + offset + 1)) > 0 { return true }
     return false
   }
-}
 
-// MARK: - Unicode
-
-enum Unicode {
-  static func value(_ value: Int, _ offset: Int, _ limit: Int, _ values: [Int], _ index: Int, _ text: String,
-    _ значение: Int, _ `default`: Int) -> Bool {
-    if значение > 0 { return true }
+  static func nestedClosure(_ values: [Int]) -> Bool {
+    if values.contains(where: { value in values.contains(where: { $0 == value }) }) { return true }
     return false
-  }
-}
-
-// MARK: - WhileExcluded
-
-enum WhileExcluded {
-  static func value(_ value: Int) {
-    while abs(abs(value)) > 0 { return }
   }
 }

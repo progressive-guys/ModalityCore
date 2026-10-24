@@ -1,0 +1,10 @@
+{
+  "counts": {
+    "Rejected": 11
+  },
+  "caseCounts": {
+    "Rejected.GetterBeforeMethod": 1,
+    "Rejected.MissingOpeningGap": 1,
+    "Rejected.MissingOpeningGapBeforeComment": 1
+  }
+}

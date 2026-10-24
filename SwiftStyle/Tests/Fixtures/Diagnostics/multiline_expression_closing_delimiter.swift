@@ -20,13 +20,15 @@ enum Accepted {
   }
 
   static func tuple(_ first: Int, _ second: Int) -> (Int, Int) {
-    (first,
+    (
+      first,
       second
     )
   }
 
   static func collection(_ first: Int, _ second: Int) -> [Int] {
-    [first,
+    [
+      first,
       second
     ]
   }
@@ -99,12 +101,14 @@ enum Rejected {
   }
 
   static func tuple(_ first: Int, _ second: Int) -> (Int, Int) {
-    (first,
+    (
+      first,
       second)
   }
 
   static func array(_ first: Int, _ second: Int) -> [Int] {
-    [first,
+    [
+      first,
       second]
   }
 

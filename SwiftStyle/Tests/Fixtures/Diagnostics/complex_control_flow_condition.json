@@ -1,24 +1,12 @@
 {
   "counts": {
-    "APIInsertedResult": 0,
-    "APIResult": 0,
-    "Backticks": 0,
-    "CaseWhere": 1,
-    "CatchWhere": 1,
-    "ComplexPredicate": 1,
-    "ForBinding": 1,
-    "ForWhere": 1,
-    "GuardNestedCall": 1,
-    "Indexing": 0,
-    "LiteralSafety": 0,
-    "MultipleArithmetic": 1,
-    "NestedComment": 1,
-    "OptionalCall": 0,
-    "RepeatExcluded": 0,
-    "ShortPredicate": 0,
-    "SimpleArithmetic": 0,
-    "TypedBinding": 1,
-    "Unicode": 0,
-    "WhileExcluded": 0
+    "Rejected": 5
+  },
+  "caseCounts": {
+    "Rejected.complexPredicate": 1,
+    "Rejected.multipleArithmetic": 1,
+    "Rejected.nestedOverLimit": 1,
+    "Rejected.nestedArithmetic": 1,
+    "Rejected.nestedClosure": 1
   }
 }

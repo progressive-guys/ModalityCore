@@ -7,12 +7,8 @@ enum Accepted {
     { 1 } else { 0 }
     return result
   }
-}
 
-// MARK: - NestedArguments
-
-enum NestedArguments {
-  static func value(_ argument: Int, _ first: Bool) -> Int {
+  static func nestedArguments(_ argument: Int, _ first: Bool) -> Int {
     let result = if abs(
       abs(
         argument

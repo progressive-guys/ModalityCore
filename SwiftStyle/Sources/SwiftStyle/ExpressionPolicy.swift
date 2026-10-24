@@ -3,6 +3,7 @@ import SwiftSyntax
 /// Checks expression structure for the complex_control_flow_condition rule, independent of API names.
 ///
 /// Permit subscripts, properties, API result comparisons, ranges, key paths and output arguments.
+/// Permit nested argument calls whose compact text is at most 120 characters. Check their contents recursively.
 /// Permit one arithmetic operation per operand. Require named values for multiple operations.
 /// The compiler and code review check names, types, side effects and conditional evaluation.
 ///
@@ -135,14 +136,15 @@ enum ExpressionPolicy {
     }
   }
 
-  /// Permits a nested call without arguments for an API with an output argument: api(currentID(), &output).
+  /// Permits short nested calls, constructors and empty calls for output arguments: api(currentID(), &output).
   private static func isSimpleArgument(_ expression: ExprSyntax, permitsEmptyCall: Bool = false) -> Bool {
     let value = unwrapped(expression)
     if arithmeticCount(value) > 1 { return false }
 
     switch value.as(ExprSyntaxEnum.self) {
     case .functionCallExpr(let call):
-      let permitsCall = isConstructor(call) || (permitsEmptyCall && call.arguments.isEmpty)
+      let permitsCall = isConstructor(call) || SourceLayout.compact(call.trimmedDescription).count <= 120
+        || (permitsEmptyCall && call.arguments.isEmpty)
       return permitsCall && !isComplexCall(call)
 
     case .closureExpr(let closure): return isSimpleClosure(closure)
@@ -214,7 +216,7 @@ enum ExpressionPolicy {
   }
 
   /// Accepts one expression or return: a simple call or up to two predicates joined by &&.
-  /// Nested argument calls, nested closures and multiple statements require a named value.
+  /// Long nested argument calls, nested closures and multiple statements require a named value.
   /// Each predicate can compare two values with one arithmetic operation per operand.
   private static func isSimpleClosure(_ closure: ClosureExprSyntax) -> Bool {
     guard closure.statements.count == 1, let statement = closure.statements.first else { return false }

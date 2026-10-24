@@ -1,6 +1,5 @@
 {
   "counts": {
-    "ExplicitNewline": 0,
-    "RawLiteral": 0
+    "Rejected": 1
   }
 }

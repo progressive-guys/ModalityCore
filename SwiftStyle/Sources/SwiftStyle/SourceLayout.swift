@@ -23,27 +23,77 @@ struct SourceLayout {
   /// Includes attached comments in each element. Places separation before the next element's leading comments.
   func elementSpacing(
     between previous: some SyntaxProtocol,
+    and current: some SyntaxProtocol,
+    ignoringSectionMarkers: Bool = false
+  ) -> (blankLines: Range<Int>, required: Int)? {
+    let previousEnd = commentedEndLine(previous)
+    let currentStart = commentedStartLine(current, ignoringSectionMarkers: ignoringSectionMarkers)
+    guard previousEnd < currentStart else { return nil }
+
+    let previousStart = commentedStartLine(previous, ignoringSectionMarkers: ignoringSectionMarkers)
+    let compact = previousStart == previousEnd && currentStart == commentedEndLine(current)
+    return ((previousEnd + 1)..<currentStart, compact ? 0 : 1)
+  }
+
+  /// Identifies an explicit member group boundary.
+  func hasSectionMarker(_ node: some SyntaxProtocol) -> Bool {
+    node.leadingTrivia.contains(where: isSectionMarker)
+  }
+
+  /// Treats ordinary leading comments as group headers. DocC comments remain part of the declaration.
+  /// A header needs separation before the group, but does not make its first element multiline.
+  func groupSpacing(
+    between previous: some SyntaxProtocol,
     and current: some SyntaxProtocol
   ) -> (blankLines: Range<Int>, required: Int)? {
     let previousEnd = commentedEndLine(previous)
     let currentStart = commentedStartLine(current)
     guard previousEnd < currentStart else { return nil }
 
-    let compact = commentedStartLine(previous) == previousEnd && currentStart == commentedEndLine(current)
-    return ((previousEnd + 1)..<currentStart, compact ? 0 : 1)
+    let previousStart = commentedStartLine(previous, ignoringGroupHeaders: true)
+    let currentBodyStart = commentedStartLine(current, ignoringGroupHeaders: true)
+    let compact = previousStart == previousEnd && currentBodyStart == commentedEndLine(current)
+    return ((previousEnd + 1)..<currentStart, hasGroupHeader(current) || !compact ? 1 : 0)
   }
 
-  private func commentedStartLine(_ node: some SyntaxProtocol) -> Int {
+  func hasGroupHeader(_ node: some SyntaxProtocol) -> Bool {
+    node.leadingTrivia.contains(where: isGroupComment) && commentedStartLine(node) < line(node)
+  }
+
+  private func commentedStartLine(
+    _ node: some SyntaxProtocol,
+    ignoringSectionMarkers: Bool = false,
+    ignoringGroupHeaders: Bool = false
+  ) -> Int {
     var position = node.position
+    var firstComment: Int?
     for piece in node.leadingTrivia {
       switch piece {
       case .lineComment, .docLineComment, .blockComment, .docBlockComment:
-        return converter.location(for: position).line
+        if ignoringSectionMarkers && isSectionMarker(piece) || ignoringGroupHeaders && isGroupComment(piece) {
+          firstComment = nil
+        } else if firstComment == nil {
+          firstComment = converter.location(for: position).line
+        }
 
-      default: position = position.advanced(by: piece.sourceLength.utf8Length)
+      default: break
       }
+      position = position.advanced(by: piece.sourceLength.utf8Length)
     }
-    return line(node)
+    return firstComment ?? line(node)
+  }
+
+  private func isSectionMarker(_ piece: TriviaPiece) -> Bool {
+    guard case .lineComment(let text) = piece else { return false }
+
+    return text.hasPrefix("// MARK:")
+  }
+
+  private func isGroupComment(_ piece: TriviaPiece) -> Bool {
+    switch piece {
+    case .lineComment, .blockComment: true
+    default: false
+    }
   }
 
   private func commentedEndLine(_ node: some SyntaxProtocol) -> Int {
@@ -88,7 +138,7 @@ struct SourceLayout {
     }
   }
 
-  func compact(_ text: String) -> String {
+  static func compact(_ text: String) -> String {
     text.split(whereSeparator: \.isNewline).map { $0.trimmingCharacters(in: .whitespaces) }.joined(separator: " ")
   }
 

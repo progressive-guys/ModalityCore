@@ -1,12 +1,23 @@
 {
   "counts": {
-    "DifferentReceiver": 0,
-    "ExtraCondition": 0,
-    "Interruption": 0,
-    "Nonterminal": 0,
-    "OtherMethod": 0,
-    "MixedFamilies": 0,
-    "DuplicateType": 0,
-    "Rejected": 4
+    "Rejected": 31
+  },
+  "caseCounts": {
+    "Rejected.singleCheck": 1,
+    "Rejected.differentReceiver": 2,
+    "Rejected.extraCondition": 2,
+    "Rejected.interruption": 2,
+    "Rejected.nonterminal": 2,
+    "Rejected.otherMethod": 2,
+    "Rejected.mixedFamilies": 2,
+    "Rejected.duplicateType": 2,
+    "Rejected.select": 2,
+    "Rejected.threeChecks": 3,
+    "Rejected.endingRun": 2,
+    "Rejected.comments": 2,
+    "Rejected.throwing": 2,
+    "Rejected.syntaxProjection": 3,
+    "Rejected.typeTest": 1,
+    "Rejected.qualifiedType": 1
   }
 }

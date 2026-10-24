@@ -1,14 +1,11 @@
 {
   "counts": {
-    "After": 0,
-    "Before": 0,
-    "Binding": 1,
-    "Comments": 1,
-    "InnerElse": 0,
-    "Merged": 0,
-    "MergedBinding": 0,
-    "Nested": 1,
-    "OuterElse": 0,
-    "ThreeLevels": 2
+    "Rejected": 5
+  },
+  "caseCounts": {
+    "Rejected.binding": 1,
+    "Rejected.comments": 1,
+    "Rejected.nested": 1,
+    "Rejected.threeLevels": 2
   }
 }

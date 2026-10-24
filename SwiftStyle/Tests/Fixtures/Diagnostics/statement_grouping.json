@@ -1,0 +1,15 @@
+{
+  "counts": {
+    "Rejected": 8
+  },
+  "caseCounts": {
+    "Rejected.blankLineBetweenLocalDeclarations": 1,
+    "Rejected.missingGapBeforeChecks": 1,
+    "Rejected.missingGapBeforeReturn": 1,
+    "Rejected.missingGapBetweenLocalTypes": 1,
+    "Rejected.blankLineAfterGroupHeader": 1,
+    "Rejected.twoBlankLinesBeforeReturn": 1,
+    "Rejected.blankLineBetweenCompactChecks": 1,
+    "Rejected.twoBlankLinesBetweenChecks": 1
+  }
+}
