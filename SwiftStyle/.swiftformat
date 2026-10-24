@@ -5,8 +5,9 @@
 --ifdef no-indent
 # Only the listed SwiftFormat rules change code. All other rules are disabled.
 --rules blankLineAfterSwitchCase,conditionalAssignment,elseOnSameLine,wrapArguments,wrapIfExpressionBodies,indent,trailingSpace
-# blankLineAfterSwitchCase: insert a blank line between switch cases.
---blank-line-after-switch-case always
+# blankLineAfterSwitchCase: add separation after multiline switch cases.
+# SwiftStyle checks both compact and multiline case boundaries.
+--blank-line-after-switch-case multiline-only
 # conditionalAssignment: let value: Int; if ready { value = 1 } else { value = 0 }
 # becomes let value: Int = if ready { ... } else { ... }.
 --conditional-assignment after-property

@@ -1,8 +1,8 @@
 // MARK: - Accepted
 
 enum Accepted {
-  static func value(_ ready: Bool) -> Void {
-    if ready {
+  static func value(_ first: Bool) -> Void {
+    if first {
       print("value")
     }
   }
@@ -11,7 +11,7 @@ enum Accepted {
 // MARK: - Rejected
 
 enum Rejected {
-  static func value(_ ready: Bool) -> Void {
-    if ready { print("value") }
+  static func value(_ first: Bool) -> Void {
+    if first { print("value") }
   }
 }

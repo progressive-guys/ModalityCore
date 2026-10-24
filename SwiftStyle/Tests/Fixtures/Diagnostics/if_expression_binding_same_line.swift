@@ -1,8 +1,8 @@
 // MARK: - Accepted
 
 enum Accepted {
-  static func value(_ ready: Bool) -> Int {
-    let result = if ready { 1 } else { 0 }
+  static func value(_ first: Bool) -> Int {
+    let result = if first { 1 } else { 0 }
     return result
   }
 }
@@ -10,9 +10,9 @@ enum Accepted {
 // MARK: - Rejected
 
 enum Rejected {
-  static func value(_ ready: Bool) -> Int {
+  static func value(_ first: Bool) -> Int {
     let
-      result = if ready { 1 } else { 0 }
+      result = if first { 1 } else { 0 }
     return result
   }
 }

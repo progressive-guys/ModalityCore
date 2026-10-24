@@ -1,15 +1,5 @@
 {
   "counts": {
-    "AssociatedValues": 1,
-    "CommentMissing": 1,
-    "CommentSeparated": 0,
-    "ConditionalMissing": 1,
-    "ConditionalSeparated": 0,
-    "GapAfterComment": 1,
-    "Grouped": 0,
-    "Missing": 1,
-    "OtherDeclarations": 0,
-    "Separated": 0,
-    "TrailingComment": 0
+    "Rejected": 7
   }
 }

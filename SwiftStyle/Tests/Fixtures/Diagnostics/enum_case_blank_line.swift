@@ -1,92 +1,138 @@
-// MARK: - AssociatedValues
+// MARK: - Accepted
 
-enum AssociatedValues {
-  case first(
-    Int,
-    String
-  )
-  case second
+enum Accepted {
+  static func compact() {
+    enum Value {
+      case first
+      case second
+    }
+  }
+
+  static func grouped() {
+    enum Value {
+      case first, second
+    }
+  }
+
+  static func associatedValues() {
+    enum Value {
+      case first(
+        Int,
+        String
+      )
+
+      case second
+    }
+  }
+
+  static func documented() {
+    enum Value {
+      case first
+
+      /// The middle value.
+      case second
+
+      case third
+    }
+  }
+
+  static func inlineComment() {
+    enum Value {
+      case first // First value.
+      case second
+    }
+  }
+
+  static func blockComment() {
+    enum Value {
+      case first /* First
+        value. */
+
+      case second
+    }
+  }
+
+  static func conditional() {
+    enum Value {
+      #if os(macOS)
+      case first
+      case second
+      #endif
+    }
+  }
+
+  static func otherDeclarations() {
+    enum Value {
+      case first
+      static var value: Int { 1 }
+      case second
+    }
+  }
 }
 
-// MARK: - CommentMissing
+// MARK: - Rejected
 
-enum CommentMissing {
-  case first
-  /// Next value.
-  case second
-}
+enum Rejected {
+  static func compactGap() {
+    enum Value {
+      case first
 
-// MARK: - CommentSeparated
+      case second
+    }
+  }
 
-enum CommentSeparated {
-  case first
+  static func associatedValues() {
+    enum Value {
+      case first(
+        Int,
+        String
+      )
+      case second
+    }
+  }
 
-  /// Next value.
-  case second
-}
+  static func beforeComment() {
+    enum Value {
+      case first
+      /// The next value.
+      case second
+    }
+  }
 
-// MARK: - ConditionalMissing
+  static func afterComment() {
+    enum Value {
+      /// The first value.
+      case first
+      case second
+    }
+  }
 
-enum ConditionalMissing {
-  #if os(macOS)
-  case first
-  case second
-  #endif
-}
+  static func gapAfterComment() {
+    enum Value {
+      case first
+      /// The next value.
 
-// MARK: - ConditionalSeparated
+      case second
+    }
+  }
 
-enum ConditionalSeparated {
-  #if os(macOS)
-  case first
+  static func conditionalGap() {
+    enum Value {
+      #if os(macOS)
+      case first
 
-  case second
-  #endif
-}
+      case second
+      #endif
+    }
+  }
 
-// MARK: - GapAfterComment
+  static func extraGap() {
+    enum Value {
+      case first
 
-enum GapAfterComment {
-  case first
-  /// Next value.
 
-  case second
-}
-
-// MARK: - Grouped
-
-enum Grouped {
-  case first, second
-}
-
-// MARK: - Missing
-
-enum Missing {
-  case first
-  case second
-}
-
-// MARK: - OtherDeclarations
-
-enum OtherDeclarations {
-  case first
-  static var value: Int { 1 }
-  case second
-}
-
-// MARK: - Separated
-
-enum Separated {
-  case first
-
-  case second
-}
-
-// MARK: - TrailingComment
-
-enum TrailingComment {
-  case first // First value.
-
-  /* Next value. */
-  case second
+      /// The next value.
+      case second
+    }
+  }
 }

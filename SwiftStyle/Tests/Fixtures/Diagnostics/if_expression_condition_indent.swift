@@ -1,9 +1,9 @@
 // MARK: - Accepted
 
 enum Accepted {
-  static func value(_ ready: Bool, _ available: Bool) -> Int {
-    let result = if ready,
-      available
+  static func value(_ first: Bool, _ second: Bool) -> Int {
+    let result = if first,
+      second
     { 1 } else { 0 }
     return result
   }
@@ -12,13 +12,13 @@ enum Accepted {
 // MARK: - NestedArguments
 
 enum NestedArguments {
-  static func value(_ argument: Int, _ ready: Bool) -> Int {
+  static func value(_ argument: Int, _ first: Bool) -> Int {
     let result = if abs(
       abs(
         argument
       )
     ) > 0,
-      ready
+      first
     { 1 } else { 0 }
     return result
   }
@@ -27,9 +27,9 @@ enum NestedArguments {
 // MARK: - Rejected
 
 enum Rejected {
-  static func value(_ ready: Bool, _ available: Bool) -> Int {
-    let result = if ready,
-                    available
+  static func value(_ first: Bool, _ second: Bool) -> Int {
+    let result = if first,
+                    second
     { 1 } else { 0 }
     return result
   }

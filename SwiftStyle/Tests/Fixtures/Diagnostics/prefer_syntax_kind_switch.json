@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "DifferentReceiver": 0,
+    "ExtraCondition": 0,
+    "Interruption": 0,
+    "Nonterminal": 0,
+    "OtherMethod": 0,
+    "MixedFamilies": 0,
+    "DuplicateType": 0,
+    "Comments": 1,
+    "Throws": 1
+  }
+}

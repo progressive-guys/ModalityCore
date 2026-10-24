@@ -18,11 +18,17 @@ extension StyleVisitor {
     {
       report(.assignmentRhsSameLine, token)
     }
-    if Self.comparisons.contains(name), layout.startsLine(token) {
+    if Self.comparisons.contains(name), layout.line(token) != layout.line(right) {
       report(.comparisonOperatorNewline, token)
     }
-    if Self.arithmetic.contains(name), layout.line(token) != layout.line(right) {
-      report(.arithmeticOperatorEndOfLine, token)
+    if !node.operator.is(AssignmentExprSyntax.self), layout.line(token) != layout.line(right) {
+      report(.binaryOperatorWrap, token)
+      if Self.arithmetic.contains(name) {
+        report(.arithmeticOperatorEndOfLine, token)
+      }
+    }
+    if Self.arithmetic.contains(name) {
+      checkArithmeticPrecedence(node)
     }
     if Self.arithmetic.contains(name), brokenMember(left) || brokenMember(right) {
       report(.arithmeticMemberWrap, token)
@@ -45,7 +51,7 @@ extension StyleVisitor {
     if name == "+", left.is(StringLiteralExprSyntax.self), right.is(StringLiteralExprSyntax.self) {
       report(.concatenatedStringLiterals, token)
     }
-    if Self.arithmetic.contains(name), let call = right.as(FunctionCallExprSyntax.self) {
+    if let call = left.as(FunctionCallExprSyntax.self) {
       checkShortCall(call, operatorToken: token)
     }
   }
@@ -97,19 +103,57 @@ extension StyleVisitor {
     }
   }
 
+  /// Puts the closing delimiter on its own line after multiline expression content.
+  func checkClosingDelimiter(_ token: TokenSyntax) {
+    guard token.tokenKind == .rightParen || token.tokenKind == .rightSquare,
+          let expression = token.parent?.as(ExprSyntax.self)
+    else { return }
+
+    let opening: TokenSyntax? = switch expression.as(ExprSyntaxEnum.self) {
+    case .functionCallExpr(let call): call.leftParen
+    case .tupleExpr(let tuple): tuple.leftParen
+    case .subscriptCallExpr(let subscriptCall): subscriptCall.leftSquare
+    case .arrayExpr(let array): array.leftSquare
+    case .dictionaryExpr(let dictionary): dictionary.leftSquare
+    default: nil
+    }
+    guard let opening,
+          layout.line(opening) != layout.line(token),
+          let previous = token.previousToken(viewMode: .sourceAccurate),
+          layout.endLine(previous) == layout.line(token)
+    else { return }
+
+    let location = layout.converter.location(for: token.positionAfterSkippingLeadingTrivia)
+    let prefix = String(decoding: layout.text(at: location.line).utf8.prefix(location.column - 1), as: UTF8.self)
+    if prefix.allSatisfy({ $0.isWhitespace || ")]},".contains($0) }) { return }
+
+    report(.multilineExpressionClosingDelimiter, token)
+  }
+
   private func checkShortCall(_ call: FunctionCallExprSyntax, operatorToken: TokenSyntax) {
     guard
       call.arguments.count == 1,
       let argument = call.arguments.first,
       argument.label == nil,
-      simpleProperty(argument.expression),
+      compactCallArgument(argument.expression),
       call.trailingClosure == nil,
       layout.line(call) != layout.endLine(call),
       layout.compact(call.trimmedDescription).count <= 120,
       !layout.hasComments(call)
     else { return }
 
+    let prefix = layout.converter.location(for: call.positionAfterSkippingLeadingTrivia).column - 1
+    guard prefix + layout.compact(call.trimmedDescription).count <= 120 else { return }
+
     report(.arithmeticCallArgumentsWrap, operatorToken)
+  }
+
+  /// Keeps single-argument arithmetic calls whole when their text fits on one line.
+  private func compactCallArgument(_ expression: ExprSyntax) -> Bool {
+    if let operation = expression.as(InfixOperatorExprSyntax.self) {
+      return Self.arithmetic.contains(operation.operator.trimmedDescription)
+    }
+    return simpleProperty(expression)
   }
 
   private func simpleProperty(_ node: ExprSyntax) -> Bool {
@@ -124,13 +168,9 @@ extension StyleVisitor {
   private func chainRule(_ name: String) -> StyleRule? {
     switch name {
     case "+", "-": .mixedAdditiveExpressionWrap
-
     case "*", "/", "%": .mixedMultiplicativeExpressionWrap
-
     case "&&", "||": .mixedBooleanConditionWrap
-
     case "??": .mixedNilCoalescingWrap
-
     default: nil
     }
   }
@@ -143,8 +183,20 @@ extension StyleVisitor {
     }
     let operations = chainOperations(node, rule: rule)
     let tokens = operations.compactMap { $0.operator.firstToken(viewMode: .sourceAccurate) }
-    let leading = tokens.map { layout.startsLine($0) }
-    if leading.contains(true), leading.contains(false) {
+    let isArithmeticChain = Self.arithmetic.contains(token.text)
+    let wrappedTokens = if isArithmeticChain {
+      tokens.filter { token in
+        guard let next = token.nextToken(viewMode: .sourceAccurate) else { return false }
+
+        return layout.startsLine(token) || layout.line(token) != layout.line(next)
+      }
+    } else {
+      tokens
+    }
+    let leading = wrappedTokens.map { layout.startsLine($0) }
+    let partialWrap = isArithmeticChain && !wrappedTokens.isEmpty && wrappedTokens.count != tokens.count
+    let trailingWrap = isArithmeticChain && wrappedTokens.contains { !layout.startsLine($0) }
+    if partialWrap || trailingWrap || (leading.contains(true) && leading.contains(false)) {
       report(rule, token)
     }
   }
@@ -172,30 +224,22 @@ extension StyleVisitor {
   }
 
   private func receiverCall(_ expression: ExprSyntax) -> FunctionCallExprSyntax? {
-    if let call = expression.as(FunctionCallExprSyntax.self) { return call }
-
-    if let optional = expression.as(OptionalChainingExprSyntax.self) { return receiverCall(optional.expression) }
-
-    if let forced = expression.as(ForceUnwrapExprSyntax.self) { return receiverCall(forced.expression) }
-
-    return nil
+    switch expression.as(ExprSyntaxEnum.self) {
+    case .functionCallExpr(let call): call
+    case .optionalChainingExpr(let optional): receiverCall(optional.expression)
+    case .forceUnwrapExpr(let forced): receiverCall(forced.expression)
+    default: nil
+    }
   }
 
   private func memberChain(_ expression: ExprSyntax) -> [MemberAccessExprSyntax] {
     switch expression.as(ExprSyntaxEnum.self) {
-    case .memberAccessExpr(let member):
-      (member.base.map(memberChain) ?? []) + [member]
-
+    case .memberAccessExpr(let member): (member.base.map(memberChain) ?? []) + [member]
     case .functionCallExpr(let call): memberChain(call.calledExpression)
-
     case .subscriptCallExpr(let indexed): memberChain(indexed.calledExpression)
-
     case .optionalChainingExpr(let optional): memberChain(optional.expression)
-
     case .forceUnwrapExpr(let forced): memberChain(forced.expression)
-
     case .genericSpecializationExpr(let specialized): memberChain(specialized.expression)
-
     default: []
     }
   }

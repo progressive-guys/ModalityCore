@@ -1,8 +1,8 @@
 // MARK: - Accepted
 
 enum Accepted {
-  static func value(_ ready: Bool) -> Int {
-    guard ready else { return 0 }
+  static func value(_ first: Bool) -> Int {
+    guard first else { return 0 }
 
     return 1
   }
@@ -11,8 +11,8 @@ enum Accepted {
 // MARK: - Rejected
 
 enum Rejected {
-  static func value(_ ready: Bool) -> Int {
-    guard ready else {
+  static func value(_ first: Bool) -> Int {
+    guard first else {
       return 0
     }
 

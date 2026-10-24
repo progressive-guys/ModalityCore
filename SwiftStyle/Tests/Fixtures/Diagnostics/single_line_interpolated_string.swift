@@ -1,17 +1,17 @@
 // MARK: - Accepted
 
 enum Accepted {
-  static func value(_ name: String) -> String {
-    "Hello \(name)"
+  static func value(_ text: String) -> String {
+    "Hello \(text)"
   }
 }
 
 // MARK: - ExplicitNewline
 
 enum ExplicitNewline {
-  static func value(_ name: String) -> String {
+  static func value(_ text: String) -> String {
     """
-    Hello \(name)\n
+    Hello \(text)\n
     """
   }
 }
@@ -20,16 +20,16 @@ enum ExplicitNewline {
 
 enum RawLiteral {
   static let raw = #"""
-    Hello \(name)
+    Hello \(text)
     """#
 }
 
 // MARK: - Rejected
 
 enum Rejected {
-  static func value(_ name: String) -> String {
+  static func value(_ text: String) -> String {
     """
-    Hello \(name)
+    Hello \(text)
     """
   }
 }

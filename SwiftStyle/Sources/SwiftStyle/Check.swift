@@ -14,9 +14,7 @@ struct LintDiagnostic: Encodable {
 
   private enum CodingKeys: String, CodingKey {
     case file, line, character
-
     case ruleID = "rule_id"
-
     case reason, severity
   }
 }
@@ -70,9 +68,7 @@ final class ConditionVisitor: SyntaxVisitor {
         binding.initializer.map { ExpressionPolicy.bindingIsComplex($0.value) } ?? false
 
       case .matchingPattern(let pattern): ExpressionPolicy.bindingIsComplex(pattern.initializer.value)
-
       case .availability: false
-
       @unknown default: false
       }
     }
@@ -243,9 +239,7 @@ enum SwiftStyle {
 
 enum CheckError: Error {
   case invalidUTF8
-
   case invalidArguments
-
   case missingInput(String)
 }
 
@@ -253,9 +247,7 @@ extension CheckError: CustomStringConvertible {
   var description: String {
     switch self {
     case .invalidUTF8: "Input must use UTF-8."
-
     case .invalidArguments: "Use --json, --stdin, --rules name1,name2, or source paths."
-
     case .missingInput(let path): "Cannot read input: \(path)"
     }
   }

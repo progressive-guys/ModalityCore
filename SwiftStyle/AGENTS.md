@@ -9,4 +9,5 @@ Read [[README]] and comments in the affected configs or checker source files bef
 - Use two-space Swift indentation. Keep existing blocks in place.
 - Explain SwiftFormat and SwiftLint settings with comments in their configs.
 - Diagnostic cases use `Tests/Fixtures/Diagnostics/<case>.swift`. Defaults are `Accepted: 0`, `Rejected: 1`, and successful compilation. Use an independent `<case>.json` beside the Swift file for exceptions. Each input must compile, except parser-error cases.
+- Group rejected examples for each rule in one `enum Rejected`. Give each case a named method.
 - Run the `SwiftStyleTests` scheme and `sh Scripts/lint.sh Sources Tests/SwiftStyleTests Project.swift` after changes.

@@ -28,6 +28,14 @@ enum StyleRule: String, CaseIterable {
   /// Keep the condition order. Statements before or after the inner if prevent this change.
   case collapsibleNestedIf = "collapsible_nested_if"
 
+  /// Keep compact switch cases together. Use one blank line if either adjacent case spans multiple lines.
+  /// Count attached comments as part of each case. Put separation before leading comments.
+  case switchCaseSpacing = "switch_case_spacing"
+
+  /// Prefer a syntax-kind switch for three or more consecutive type checks on one expression.
+  /// Require one binding per condition, concrete syntax node types and an early exit in each body.
+  case preferSyntaxKindSwitch = "prefer_syntax_kind_switch"
+
   /// Keep an operand and its member access together after an arithmetic, logical or comparison operator.
   case binaryOperandMemberWrap = "binary_operand_member_wrap"
 
@@ -39,7 +47,7 @@ enum StyleRule: String, CaseIterable {
   /// statement.
   case singleLineElseExit = "single_line_else_exit"
 
-  /// Keep a comparison operator with its left operand. Wrap long calls inside their argument lists.
+  /// Keep a comparison operator with its right operand when the expression wraps.
   case comparisonOperatorNewline = "comparison_operator_newline"
 
   /// Keep self and the following member on the same line.
@@ -65,8 +73,7 @@ enum StyleRule: String, CaseIterable {
   /// the body indent as two spaces after SwiftFormat. Keep complex bodies multiline.
   case compactGuardExit = "compact_guard_exit"
 
-  /// Keep product, division or remainder operands on one line, or put each continuation on a new line with a
-  /// leading *, / or %.
+  /// Keep a *, / and % chain on one line, or put each operand on its own line. Use leading operators.
   case mixedMultiplicativeExpressionWrap = "mixed_multiplicative_expression_wrap"
 
   /// Keep generic, tuple, array and dictionary return types on one line after ->. Wrap function parameters
@@ -107,8 +114,8 @@ enum StyleRule: String, CaseIterable {
   /// declaration.
   case enumCaseNewline = "enum_case_newline"
 
-  /// Separate adjacent enum case declarations with a blank line before the next case comment. Keep
-  /// comma-separated values in one declaration together.
+  /// Keep single-line enum case declarations together. Use one blank line if either declaration spans multiple lines.
+  /// Count attached comments as part of each declaration. Put separation before leading comments.
   case enumCaseBlankLine = "enum_case_blank_line"
 
   /// Keep member access within an arithmetic operand together, such as components.blue or measure(...).height.
@@ -128,23 +135,38 @@ enum StyleRule: String, CaseIterable {
   /// Keep -> after the closing parameter parenthesis. Wrap long declarations inside the parameter list.
   case returnArrowNewline = "return_arrow_newline"
 
-  /// Keep additive operands on one line, or put each continuation on a new line with a leading + or -. Check
-  /// nested groups separately.
+  /// Keep a + and - chain on one line, or put each operand on its own line. Use leading operators.
+  /// Check parenthesized groups separately.
   case mixedAdditiveExpressionWrap = "mixed_additive_expression_wrap"
 
-  /// Put a wrapped +, -, *, / or % on the next line with the following operand.
+  /// Put a wrapped +, -, *, / or % at the start of the continuation with its right operand.
   case arithmeticOperatorEndOfLine = "arithmetic_operator_end_of_line"
 
-  /// Keep short single-argument calls with name or member arguments together inside arithmetic. Wrap the outer
-  /// expression first. Check calls that fit within 120 characters after joining their lines.
+  /// Keep short single-argument calls with name, member or arithmetic arguments together as left operands.
+  /// Check calls that fit within 120 characters after joining their lines.
   case arithmeticCallArgumentsWrap = "arithmetic_call_arguments_wrap"
+
+  /// Keep arithmetic on one line when the full source line fits within 120 characters. Otherwise, prefer
+  /// breaks in the outer expression before call arguments or parenthesized groups. At the same nesting level,
+  /// wrap + or - before *, / or %. Split a nested group only when its segment still exceeds the limit.
+  /// Indent continuations two spaces.
+  /// Skip comments, multiline tokens and breaks outside arithmetic boundaries. Preserve all expression syntax.
+  case arithmeticPrecedenceWrap = "arithmetic_precedence_wrap"
+
+  /// Put each wrapped binary operator with its right operand, including custom operators. The = token uses
+  /// assignment_rhs_same_line. Unary operators are separate syntax nodes and do not enter this check.
+  case binaryOperatorWrap = "binary_operator_wrap"
+
+  /// After multiline call arguments, tuples, subscript arguments or collection elements, put the closing
+  /// parenthesis or bracket on a separate line. Nested closing delimiters can share that line.
+  /// An outer operator can follow the delimiter on the same line.
+  case multilineExpressionClosingDelimiter = "multiline_expression_closing_delimiter"
 }
 
 extension StyleRule {
   var message: String {
     switch self {
     case .mixedNilCoalescingWrap: "Put ?? operands on one line or each continuation on its own line."
-
     case .ifExpressionBindingSameLine: "Keep let or var and the if expression binding on the same line."
 
     case .ifExpressionConditionIndent:
@@ -160,10 +182,10 @@ extension StyleRule {
       """
 
     case .ifArgumentBraceNewline: "Keep the opening brace with the condition when only call arguments wrap."
-
     case .mixedIfConditions: "Put if conditions on one line or each condition on its own line."
-
     case .collapsibleNestedIf: "Combine these nested if conditions in their current evaluation order."
+    case .switchCaseSpacing: "Keep compact switch cases together; separate multiline cases with one blank line."
+    case .preferSyntaxKindSwitch: "Use a syntax-kind switch for these consecutive type checks on one expression."
 
     case .binaryOperandMemberWrap:
       """
@@ -172,17 +194,11 @@ extension StyleRule {
       """
 
     case .singleLineIfExit: "Use a single-line if body only for return, throw, break or continue."
-
     case .singleLineElseExit: "Use a single-line else body only for return, throw, break or continue."
-
-    case .comparisonOperatorNewline: "Keep a comparison operator with its left operand; wrap call arguments instead."
-
+    case .comparisonOperatorNewline: "Keep the comparison operator with its right operand on the continuation line."
     case .selfMemberNewline: "Keep self and its member on the same line."
-
     case .compactElseBlankLine: "Add a blank line after a compact else block before the next statement."
-
     case .assignmentRhsSameLine: "Start the assigned expression on the same line as =."
-
     case .multilineInlineBlock: "Keep an inline block on one line, or start its body on the next line."
 
     case .multilineGuardConditions:
@@ -199,14 +215,11 @@ extension StyleRule {
 
     case .mixedMultiplicativeExpressionWrap:
       """
-      Put product operands on one line or each continuation on its own line with \
-      a leading operator.
+      Put product operands on one line or one per line; use leading operators.
       """
 
     case .multilineReturnType: "Keep the return type on one line; wrap function parameters instead."
-
     case .splitReturnTypeMember: "Keep qualified return type names on one line."
-
     case .mixedBooleanConditionWrap: "Put boolean operands on one line or each continuation on its own line."
 
     case .mixedMemberChainWrap:
@@ -216,21 +229,13 @@ extension StyleRule {
       """
 
     case .chainedCallArgumentsWrap: "Start a chained call on a new line before wrapping its arguments."
-
     case .chainedClosureNewline: "Start a chained call with a multiline closure on a new line."
-
     case .singleLineInterpolatedString: "Use a single-line literal when interpolated text has one content line."
-
     case .nilCoalescingMemberWrap: "Keep ?? and the fallback together; wrap before ??."
-
     case .noGlobalFunctions: "Declare the function in its owning type or extension; debugFatalError may be global."
-
     case .enumCaseNewline: "Start enum cases on a new line after the opening brace."
-
-    case .enumCaseBlankLine: "Add a blank line between enum case declarations, before the next case's comment."
-
+    case .enumCaseBlankLine: "Keep compact enum cases together; separate multiline cases with one blank line."
     case .arithmeticMemberWrap: "Keep member access within an operand; split additive terms between lines."
-
     case .longNilCoalescing: "Move ?? and the fallback to the next line when the line exceeds 120 characters."
 
     case .concatenatedStringLiterals:
@@ -240,18 +245,19 @@ extension StyleRule {
       """
 
     case .castOperatorNewline: "Keep as, as? and as! with the expression being cast."
-
     case .returnArrowNewline: "Keep the return arrow and type with the closing parenthesis; wrap parameters instead."
 
-    case .mixedAdditiveExpressionWrap: "Put additive terms on one line or one term per line, with leading + or -."
+    case .mixedAdditiveExpressionWrap:
+      "Put additive terms on one line or one per line; use leading operators."
 
-    case .arithmeticOperatorEndOfLine: "Move the arithmetic operator to the next line with the following operand."
+    case .arithmeticOperatorEndOfLine: "Move the arithmetic operator to the continuation with its right operand."
 
-    case .arithmeticCallArgumentsWrap:
-      """
-      Wrap the outer arithmetic expression before splitting a short \
-      single-argument call.
-      """
+    case .arithmeticPrecedenceWrap:
+      "Keep short arithmetic on one line; wrap outer operations before nested groups, with + or - before *, / or %."
+
+    case .binaryOperatorWrap: "Put the binary operator with its right operand on the continuation line."
+    case .multilineExpressionClosingDelimiter: "Put the closing delimiter on a separate line after multiline content."
+    case .arithmeticCallArgumentsWrap: "Keep a short single-argument call whole before the outer operator."
     }
   }
 }

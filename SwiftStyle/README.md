@@ -38,7 +38,7 @@ sh Scripts/lint.sh --fix Sources Tests/SwiftStyleTests Project.swift
 sh Scripts/run.sh --json Sources
 ```
 
-Run checks from a directory with the root config links. Without paths, the script checks the current directory. SwiftFormat, SwiftLint and the approved SwiftStyle rules `enum_case_blank_line` and `collapsible_nested_if` run. Each failure returns a nonzero status. With `--fix`, SwiftFormat and SwiftLint apply their fixes first. A nonempty `CI` value other than `false` or `0` turns fixes off. Other structural rules are available through `Scripts/run.sh` for manual checks while they await approval.
+Run checks from a directory with the root config links. Without paths, the script checks the current directory. SwiftFormat, SwiftLint and the approved SwiftStyle rules run: `enum_case_blank_line`, `collapsible_nested_if`, `arithmetic_precedence_wrap`, `arithmetic_call_arguments_wrap`, `binary_operator_wrap`, `multiline_expression_closing_delimiter`, `mixed_additive_expression_wrap`, `mixed_multiplicative_expression_wrap`, `switch_case_spacing` and `prefer_syntax_kind_switch`. Each failure returns a nonzero status. With `--fix`, SwiftFormat and SwiftLint apply their fixes first. A nonempty `CI` value other than `false` or `0` turns fixes off. Other structural rules are available through `Scripts/run.sh` for manual checks while they await approval.
 
 The checker also accepts `--stdin` and `--rules name1,name2`. JSON output has SwiftLint diagnostic fields. Syntax errors use `swift_parser`. Rule comments are in [[Sources/SwiftStyle/StyleRule]], [[Sources/SwiftStyle/ExpressionPolicy]] and the shared configs.
 

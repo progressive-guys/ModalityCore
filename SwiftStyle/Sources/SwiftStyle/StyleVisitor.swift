@@ -28,6 +28,16 @@ final class StyleVisitor: SyntaxVisitor {
     return .visitChildren
   }
 
+  override func visit(_ node: SwitchExprSyntax) -> SyntaxVisitorContinueKind {
+    checkSwitchCaseSpacing(node.cases)
+    return .visitChildren
+  }
+
+  override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
+    checkSyntaxDispatch(node)
+    return .visitChildren
+  }
+
   override func visit(_ node: GuardStmtSyntax) -> SyntaxVisitorContinueKind {
     checkElse(node.body, keyword: node.elseKeyword)
     let header = "guard " + layout.compact(node.conditions.trimmedDescription)
@@ -149,6 +159,7 @@ final class StyleVisitor: SyntaxVisitor {
   }
 
   override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
+    checkClosingDelimiter(token)
     if token.tokenKind == .leftBrace, let parent = token.parent {
       checkInlineBlock(parent, brace: token)
     }
@@ -175,11 +186,9 @@ final class StyleVisitor: SyntaxVisitor {
             let nextCase = current.decl.as(EnumCaseDeclSyntax.self)
       else { continue }
 
-      let firstLine = layout.endLine(previous) + 1
-      let caseLine = layout.line(current)
-      let hasBlankLine = firstLine < caseLine
-        && layout.text(at: firstLine).allSatisfy { $0 == " " || $0 == "\t" }
-      if !hasBlankLine {
+      if let spacing = layout.elementSpacing(between: previous, and: current),
+         spacing.blankLines.count != spacing.required
+      {
         report(.enumCaseBlankLine, nextCase.caseKeyword)
       }
     }

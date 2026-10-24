@@ -58,15 +58,13 @@ enum ExpressionPolicy {
     {
       return unwrapped(element.expression)
     }
-    if let prefix = expression.as(PrefixOperatorExprSyntax.self) { return unwrapped(prefix.expression) }
-
-    if let optional = expression.as(OptionalChainingExprSyntax.self) { return unwrapped(optional.expression) }
-
-    if let attempt = expression.as(TryExprSyntax.self) { return unwrapped(attempt.expression) }
-
-    if let awaited = expression.as(AwaitExprSyntax.self) { return unwrapped(awaited.expression) }
-
-    return expression
+    return switch expression.as(ExprSyntaxEnum.self) {
+    case .prefixOperatorExpr(let prefix): unwrapped(prefix.expression)
+    case .optionalChainingExpr(let optional): unwrapped(optional.expression)
+    case .tryExpr(let attempt): unwrapped(attempt.expression)
+    case .awaitExpr(let awaited): unwrapped(awaited.expression)
+    default: expression
+    }
   }
 
   /// Counts operations through parentheses, result properties and conversions such as Double(...).
@@ -110,10 +108,11 @@ enum ExpressionPolicy {
 
   private static func isSimpleReceiver(_ expression: ExprSyntax, permitsPipeline: Bool) -> Bool {
     let value = unwrapped(expression)
-    if let specialization = value.as(GenericSpecializationExprSyntax.self) {
+    switch value.as(ExprSyntaxEnum.self) {
+    case .genericSpecializationExpr(let specialization):
       return isSimpleReceiver(specialization.expression, permitsPipeline: permitsPipeline)
-    }
-    if let member = value.as(MemberAccessExprSyntax.self) {
+
+    case .memberAccessExpr(let member):
       guard let base = member.base else { return true }
 
       let receiver = unwrapped(base)
@@ -122,15 +121,16 @@ enum ExpressionPolicy {
         return permitsCall && !isComplexCall(call)
       }
       return isSimpleReceiver(receiver, permitsPipeline: permitsPipeline)
-    }
-    if let subscriptCall = value.as(SubscriptCallExprSyntax.self) {
+
+    case .subscriptCallExpr(let subscriptCall):
       return isSimpleReceiver(subscriptCall.calledExpression, permitsPipeline: permitsPipeline)
         && subscriptCall.arguments.allSatisfy { isSimpleArgument($0.expression) }
-    }
-    if let call = value.as(FunctionCallExprSyntax.self) {
+
+    case .functionCallExpr(let call):
       return isConstructor(call) && !isComplexCall(call)
+
+    default: return isSimpleArgument(value)
     }
-    return isSimpleArgument(value)
   }
 
   /// Permits a nested call without arguments for an API with an output argument: api(currentID(), &output).
@@ -193,16 +193,14 @@ enum ExpressionPolicy {
   /// The compiler and code review check the name's actual meaning.
   private static func isConstructor(_ call: FunctionCallExprSyntax) -> Bool {
     let callee = unwrapped(call.calledExpression)
-    if let specialization = callee.as(GenericSpecializationExprSyntax.self) {
-      return startsWithUppercase(specialization.expression.trimmedDescription)
+    return switch callee.as(ExprSyntaxEnum.self) {
+    case .genericSpecializationExpr(let specialization):
+      startsWithUppercase(specialization.expression.trimmedDescription)
+
+    case .memberAccessExpr(let member): member.base == nil || startsWithUppercase(member.declName.baseName.text)
+    case .declReferenceExpr(let reference): startsWithUppercase(reference.baseName.text)
+    default: callee.is(ArrayExprSyntax.self) || callee.is(DictionaryExprSyntax.self)
     }
-    if let member = callee.as(MemberAccessExprSyntax.self) {
-      return member.base == nil || startsWithUppercase(member.declName.baseName.text)
-    }
-    if let reference = callee.as(DeclReferenceExprSyntax.self) {
-      return startsWithUppercase(reference.baseName.text)
-    }
-    return callee.is(ArrayExprSyntax.self) || callee.is(DictionaryExprSyntax.self)
   }
 
   private static func startsWithUppercase(_ name: String) -> Bool {

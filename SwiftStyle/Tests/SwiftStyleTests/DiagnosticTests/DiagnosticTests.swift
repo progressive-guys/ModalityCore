@@ -72,7 +72,6 @@ private struct Diagnostic: Decodable {
 
   private enum CodingKeys: String, CodingKey {
     case ruleID = "rule_id"
-
     case severity, line
   }
 }

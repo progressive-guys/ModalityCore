@@ -19,6 +19,49 @@ struct SourceLayout {
     converter.location(for: node.endPositionBeforeTrailingTrivia).line
   }
 
+  /// Keeps adjacent single-line elements together. Uses one blank line if either element spans multiple lines.
+  /// Includes attached comments in each element. Places separation before the next element's leading comments.
+  func elementSpacing(
+    between previous: some SyntaxProtocol,
+    and current: some SyntaxProtocol
+  ) -> (blankLines: Range<Int>, required: Int)? {
+    let previousEnd = commentedEndLine(previous)
+    let currentStart = commentedStartLine(current)
+    guard previousEnd < currentStart else { return nil }
+
+    let compact = commentedStartLine(previous) == previousEnd && currentStart == commentedEndLine(current)
+    return ((previousEnd + 1)..<currentStart, compact ? 0 : 1)
+  }
+
+  private func commentedStartLine(_ node: some SyntaxProtocol) -> Int {
+    var position = node.position
+    for piece in node.leadingTrivia {
+      switch piece {
+      case .lineComment, .docLineComment, .blockComment, .docBlockComment:
+        return converter.location(for: position).line
+
+      default: position = position.advanced(by: piece.sourceLength.utf8Length)
+      }
+    }
+    return line(node)
+  }
+
+  private func commentedEndLine(_ node: some SyntaxProtocol) -> Int {
+    var position = node.endPositionBeforeTrailingTrivia
+    var result = endLine(node)
+    for piece in node.trailingTrivia {
+      let length = piece.sourceLength.utf8Length
+      switch piece {
+      case .lineComment, .docLineComment, .blockComment, .docBlockComment:
+        result = converter.location(for: position.advanced(by: length - 1)).line
+
+      default: break
+      }
+      position = position.advanced(by: length)
+    }
+    return result
+  }
+
   func indent(_ node: some SyntaxProtocol) -> Int {
     text(at: line(node)).prefix(while: { $0 == " " || $0 == "\t" }).count
   }
@@ -39,7 +82,6 @@ struct SourceLayout {
       (token.leadingTrivia + token.trailingTrivia).contains { piece in
         switch piece {
         case .lineComment, .blockComment, .docLineComment, .docBlockComment: true
-
         default: false
         }
       }
