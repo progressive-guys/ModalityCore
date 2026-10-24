@@ -1,11 +1,11 @@
 // MARK: - Accepted
 
 enum Accepted {
-  static func value(_ first: Int, _ expectedFirst: Int,
-    _ second: Int, _ expectedSecond: Int) -> Bool {
+  static func value(_ firstConditionWithLongName: Int, _ expectedValueWithLongName: Int,
+    _ secondConditionWithLongName: Int, _ anotherExpectedValueWithLongName: Int) -> Bool {
     guard
-      first == expectedFirst,
-      second == expectedSecond
+      firstConditionWithLongName == expectedValueWithLongName,
+      secondConditionWithLongName == anotherExpectedValueWithLongName
     else { return false }
 
     return true
@@ -15,10 +15,10 @@ enum Accepted {
 // MARK: - Rejected
 
 enum Rejected {
-  static func value(_ first: Int, _ expectedFirst: Int,
-    _ second: Int, _ expectedSecond: Int) -> Bool {
-    guard first == expectedFirst,
-      second == expectedSecond
+  static func value(_ firstConditionWithLongName: Int, _ expectedValueWithLongName: Int,
+    _ secondConditionWithLongName: Int, _ anotherExpectedValueWithLongName: Int) -> Bool {
+    guard firstConditionWithLongName == expectedValueWithLongName,
+      secondConditionWithLongName == anotherExpectedValueWithLongName
     else { return false }
 
     return true
