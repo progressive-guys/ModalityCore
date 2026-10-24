@@ -98,7 +98,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/modality-lab/ModalityCore.git", branch: "master"),
+  .package(url: "https://github.com/modality-lab/ModalityCore.git", from: "1.1.1"),
 ]
 ```
 
@@ -116,19 +116,23 @@ Then add products to your target:
 
 ## Tuist
 
-The libraries and tests are defined in `Package.swift`. Run from the checkout:
+Use Xcode with Swift 6.4 or later and mise. From a standalone checkout:
+
+```sh
+mise install
+mise exec -- tuist install
+mise exec -- tuist generate --no-open
+```
+
+`Project.swift` declares the native libraries and tests. Keep sources, resources and dependencies consistent with `Package.swift`. The `ModalityBuild` Git plugin provides the lint phase at tag `1.1.1`. Its source is in `SwiftStyle`. SwiftMusicTheory resolves from version `1.0.0` or later in the same major version. A consumer can set `TUIST_LOCAL_PROJECTS_ROOT` to select its local projects; standalone checkouts leave it unset.
+
+SwiftPM remains available through `Package.swift`:
 
 ```sh
 swift package resolve
 swift test
 swift build -c release
 ```
-
-Open `Workspace.xcworkspace`. Tuist 4.210.0 generates the libraries and tests from `Package.swift`. The package owns products, resources, platforms and dependency requirements. SwiftMusicTheory resolves from its declared remote repository. The local `ModalityCoreProjectDescription` plugin exports test and coverage names for consumer workspace schemes.
-
-To use local sources in another Tuist project, add this checkout and any local SwiftMusicTheory checkout as path dependencies in the consumer's `Tuist/Package.swift`. Use `.external(name: "ModalityCore")` or `.external(name: "ModalityDesign")` in its target dependencies. The consumer owns paths and package settings. A local package must keep its package identity; a consumer-owned symbolic link can provide the expected directory name.
-
-Development and tests need Swift 6.0 or later and the Metal toolchain. CI runs package resolution, unit tests and a Release package build with Xcode 16.2 (Swift 6.0), Xcode 16.3 (Swift 6.1) and the latest stable Xcode.
 
 ## SwiftStyle
 

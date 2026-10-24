@@ -9,7 +9,7 @@ let package = Package(
     .library(name: "ModalityDesign", targets: ["ModalityDesign"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/modality-lab/SwiftMusicTheory.git", branch: "main"),
+    .package(url: "https://github.com/modality-lab/SwiftMusicTheory.git", from: "1.0.0"),
   ],
   targets: [
     .target(

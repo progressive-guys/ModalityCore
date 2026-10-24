@@ -224,7 +224,7 @@ enum SwiftStyle {
       "Derived",
       "DerivedData",
       "build",
-      "worktrees",
+      // "worktrees": Codex stores active checkouts in this directory.
       "Evidence",
       "perf",
     ])
