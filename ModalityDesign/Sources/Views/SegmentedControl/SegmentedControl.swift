@@ -71,12 +71,9 @@ private struct LegacySegmentedControl<Option: Hashable & Identifiable>: View {
   let label: KeyPath<Option, String>
   let selectionColor: Color
   let backgroundColor: Color
-
   @State private var optionIsPressed: [Option.ID: Bool] = [:]
-
   @Namespace private var namespaceID
   private let buttonBackgroundID = "buttonBackgroundID"
-
   private let insets = EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
   private let interSegmentSpacing: CGFloat = 2
   private let animation: Animation = .bouncy
@@ -112,7 +109,6 @@ private struct LegacySegmentedControl<Option: Hashable & Identifiable>: View {
 fileprivate struct SegmentButton: View {
 
   static let segmentLabelFontSize: CGFloat = 10
-
   let label: String
   let selectionColor: Color
   let isSelected: Bool

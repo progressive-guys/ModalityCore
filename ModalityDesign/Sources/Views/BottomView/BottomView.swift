@@ -6,7 +6,6 @@ public struct BottomView<Content: View>: View {
   @Binding private var progress: CGFloat
   private let maxHeight: CGFloat
   private let content: () -> Content
-
   @State private var dragStartProgress: CGFloat?
   @State private var scrollViewDragging = false
 

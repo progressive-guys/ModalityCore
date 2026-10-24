@@ -8,11 +8,8 @@ public struct RangeRestrictedSlider: View {
   private let trackHeight: CGFloat
   private let thumbSize: CGFloat
   private let defaultValue: Double
-
   private let disabledWidth: Double
-
   private let tintColor: Color
-
   @State private var isDragging: Bool = false
 
   private var activeWidth: CGFloat {

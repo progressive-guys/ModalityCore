@@ -7,16 +7,13 @@ public struct Knob: View {
   public let range: ClosedRange<Double>
   public let defaultValue: Double
   public let label: String
-
   public let diameter: CGFloat
   public let trackWidth: CGFloat
   public let sensitivity: Double
   public let fineMultiplier: Double
   public let strokeColor: Color
-
   @GestureState private var drag = CGSize.zero
   @State private var anchor: Double = 0
-
   @State private var isDragging: Bool = false
 
   public init(

@@ -25,18 +25,13 @@ extension Ring {
     }
 
     public var id: String
-
     public private(set) var color: Color
     public private(set) var start: Angle
     public private(set) var width: Angle
-
     public let zIndex: Double
-
     public var end: Angle { start + width }
     public var center: Angle { start + width / 2 }
-
     public let isFocused: Bool
-
     public let content: Content
 
     public init(

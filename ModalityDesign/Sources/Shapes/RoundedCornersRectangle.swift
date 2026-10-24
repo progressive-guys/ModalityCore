@@ -11,9 +11,7 @@ public struct RectCorner: OptionSet, Sendable {
   public static let topRight    = RectCorner(rawValue: 1 << 1)
   public static let bottomLeft  = RectCorner(rawValue: 1 << 2)
   public static let bottomRight = RectCorner(rawValue: 1 << 3)
-
   public static let allCorners: RectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
-
   public static let left: RectCorner = [.topLeft, .bottomLeft]
   public static let right: RectCorner = [.topRight, .bottomRight]
   public static let top: RectCorner = [.topRight, .topLeft]
@@ -24,6 +22,7 @@ public struct RectCorner: OptionSet, Sendable {
 public struct RoundedCornersRectangle: Shape {
 
   public var radius: CGFloat
+
   public var corners: RectCorner
 
   public init(

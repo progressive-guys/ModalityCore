@@ -5,14 +5,17 @@ import SwiftUI
 public struct DebugRenderingPerformanceFPS_HUD: View {
   public static let isVisibleStorageKey = "DebugRenderingPerformanceFPS_HUD.isVisible"
   public static let defaultVisibility = false
-
   @ObservedObject private var metrics: DebugRenderMetrics
+
   @State private var fpsHistory: [Double] = []
+
   @State private var lastFPSHistoryUpdate: Date?
+
   @State private var warmupStartFrameCount: Int?
 
   private let warmupFrameCount = 120
   private let maximumFPSHistoryCount = 40
+
   private let fpsHistoryMinimumInterval: TimeInterval = 0.25
 
   @MainActor
@@ -252,8 +255,10 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
 
 private struct DebugRenderingPerformanceFPS_HUDOverlayModifier: ViewModifier {
   let enabled: Bool
+
   @AppStorage(DebugRenderingPerformanceFPS_HUD.isVisibleStorageKey)
   private var isVisible = DebugRenderingPerformanceFPS_HUD.defaultVisibility
+
   @ObservedObject private var metrics: DebugRenderMetrics
 
   @MainActor

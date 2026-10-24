@@ -40,7 +40,6 @@ public struct WedgeGeometry: Sendable {
   public let innerRadius: CGFloat
   public let outerRadius: CGFloat
   public let centerRadius: CGFloat
-
   public let size: CGSize
   public let center: CGPoint
   public let yShift: CGFloat

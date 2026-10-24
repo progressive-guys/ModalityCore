@@ -5,12 +5,10 @@ import SwiftUI
 public struct ThrottledSlider<Value: BinaryFloatingPoint>: View where Value.Stride: BinaryFloatingPoint {
   @Binding private var value: Value
   private let range: ClosedRange<Value>
-
   @State private var draftValue: Value?
   @State private var isEditing = false
   @State private var lastCommitDate = Date.distantPast
   @State private var pendingCommitTask: Task<Void, Never>?
-
   private let commitInterval: TimeInterval = 1.0 / 30.0
 
   public init(value: Binding<Value>, in range: ClosedRange<Value>) {

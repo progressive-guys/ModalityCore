@@ -4,16 +4,12 @@ import SwiftUI
 public struct Ring<Containing: Equatable & Hashable>: Identifiable, Equatable, Hashable {
 
   public let id: String
-
   public let wedges: [Wedge]
-
   public var innerRadius: CGFloat
   public let height: CGFloat
-
   public let yShift: CGFloat
   public let scale: CGFloat
   public let aspectRatio: CGFloat
-
   public var outerRadius: CGFloat { innerRadius + height }
 
   public init(

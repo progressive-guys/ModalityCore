@@ -44,7 +44,6 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
   private let scrollView = UIScrollView()
   private var hostingController: UIHostingController<Content>
   var scrollHandler: BottomViewScrollHandler
-
   private var isOverscrolling = false
   private var dragStartY: CGFloat = 0
   private var overscrollTranslation: CGFloat = 0

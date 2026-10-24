@@ -194,10 +194,8 @@ extension TagsLayout {
   static let hashTagFontSize: CGFloat = 10
   static let fontSize: CGFloat = 9
   static let textSpacing: CGFloat = 0
-
   static let horizontalTextPaddings: CGFloat = 0
   static let verticalTextPaddings: CGFloat = 1
-
   static let horizontalTagPaddings: CGFloat = 6
   static let verticalTagSpacing: CGFloat = 2
 }
