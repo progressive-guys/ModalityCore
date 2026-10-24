@@ -32,9 +32,13 @@ enum StyleRule: String, CaseIterable {
   /// Count attached comments as part of each case. Put separation before leading comments.
   case switchCaseSpacing = "switch_case_spacing"
 
-  /// Prefer a syntax-kind switch for three or more consecutive type checks on one expression.
+  /// Prefer a syntax-kind switch for two or more consecutive type checks on one expression.
   /// Require one binding per condition, concrete syntax node types and an early exit in each body.
   case preferSyntaxKindSwitch = "prefer_syntax_kind_switch"
+
+  /// Prefer a type switch for two or more consecutive native as? or is checks on one named value.
+  /// Require one condition and a return or throw at the end of each branch. Keep the type order.
+  case preferTypeSwitch = "prefer_type_switch"
 
   /// Keep an operand and its member access together after an arithmetic, logical or comparison operator.
   case binaryOperandMemberWrap = "binary_operand_member_wrap"
@@ -153,13 +157,16 @@ enum StyleRule: String, CaseIterable {
   /// Skip comments, multiline tokens and breaks outside arithmetic boundaries. Preserve all expression syntax.
   case arithmeticPrecedenceWrap = "arithmetic_precedence_wrap"
 
-  /// Put each wrapped binary operator with its right operand, including custom operators. The = token uses
-  /// assignment_rhs_same_line. Unary operators are separate syntax nodes and do not enter this check.
+  /// Put each wrapped binary operator with its right operand, including custom operators.
+  /// Standard assignment operators use assignment layout. Check operations in their right operands separately.
+  /// Unary operators are separate syntax nodes and do not enter this check.
   case binaryOperatorWrap = "binary_operator_wrap"
 
   /// After multiline call arguments, tuples, subscript arguments or collection elements, put the closing
   /// parenthesis or bracket on a separate line. Nested closing delimiters can share that line.
-  /// An outer operator can follow the delimiter on the same line.
+  /// An outer operator can follow the delimiter on the same line. A nested closing delimiter or multiline
+  /// string closing quote can start a compact tail with arguments, casts, member access or calls.
+  /// Arithmetic and ternary expressions still require their own closing line.
   case multilineExpressionClosingDelimiter = "multiline_expression_closing_delimiter"
 }
 
@@ -185,6 +192,7 @@ extension StyleRule {
     case .mixedIfConditions: "Put if conditions on one line or each condition on its own line."
     case .collapsibleNestedIf: "Combine these nested if conditions in their current evaluation order."
     case .switchCaseSpacing: "Keep compact switch cases together; separate multiline cases with one blank line."
+    case .preferTypeSwitch: "Use a type switch for these consecutive as? or is checks on one value."
     case .preferSyntaxKindSwitch: "Use a syntax-kind switch for these consecutive type checks on one expression."
 
     case .binaryOperandMemberWrap:

@@ -20,14 +20,16 @@ enum ExpressionPolicy {
     {
       return !isSimpleComparedValue(operation.leftOperand) || !isSimpleComparedValue(operation.rightOperand)
     }
-    if let call = expression.as(FunctionCallExprSyntax.self) { return isComplexCall(call) }
+    switch expression.as(ExprSyntaxEnum.self) {
+    case .functionCallExpr(let call): return isComplexCall(call)
+    case .closureExpr(let closure): return !isSimpleClosure(closure)
 
-    if let closure = expression.as(ClosureExprSyntax.self) { return !isSimpleClosure(closure) }
+    default:
+      return expression.children(viewMode: .sourceAccurate).contains { child in
+        if let nested = child.as(ExprSyntax.self) { return isComplex(nested) }
 
-    return expression.children(viewMode: .sourceAccurate).contains { child in
-      if let nested = child.as(ExprSyntax.self) { return isComplex(nested) }
-
-      return containsComplexExpression(child)
+        return containsComplexExpression(child)
+      }
     }
   }
 
@@ -138,16 +140,18 @@ enum ExpressionPolicy {
     let value = unwrapped(expression)
     if arithmeticCount(value) > 1 { return false }
 
-    if let call = value.as(FunctionCallExprSyntax.self) {
+    switch value.as(ExprSyntaxEnum.self) {
+    case .functionCallExpr(let call):
       let permitsCall = isConstructor(call) || (permitsEmptyCall && call.arguments.isEmpty)
       return permitsCall && !isComplexCall(call)
-    }
-    if let closure = value.as(ClosureExprSyntax.self) { return isSimpleClosure(closure) }
 
-    if value.is(IfExprSyntax.self) || value.is(SwitchExprSyntax.self) { return false }
+    case .closureExpr(let closure): return isSimpleClosure(closure)
+    case .ifExpr, .switchExpr: return false
 
-    return value.children(viewMode: .sourceAccurate).allSatisfy { child in
-      simpleArgumentChild(child, permitsEmptyCall: permitsEmptyCall)
+    default:
+      return value.children(viewMode: .sourceAccurate).allSatisfy { child in
+        simpleArgumentChild(child, permitsEmptyCall: permitsEmptyCall)
+      }
     }
   }
 

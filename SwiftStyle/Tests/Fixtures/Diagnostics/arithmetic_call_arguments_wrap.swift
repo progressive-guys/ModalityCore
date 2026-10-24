@@ -2,7 +2,7 @@
 
 enum Accepted {
   struct Item {
-    let numericValueStorage: Int
+    let value: Int
   }
 
   struct Input {
@@ -13,18 +13,18 @@ enum Accepted {
     first + abs(second)
   }
 
-  static func conversion(_ input: Input, _ secondaryData: Input, _ normalizationValue: Int) -> Double {
-    let computedValue = Double(input.item.numericValueStorage - secondaryData.item.numericValueStorage)
-      / Double(normalizationValue)
-    return computedValue
+  static func conversion(_ input: Input, _ second: Input, _ divisor: Int) -> Double {
+    let result = Double(input.item.value - second.item.value)
+      / Double(divisor)
+    return result
   }
 
-  static func longFirstLine(_ firstNumericInputParameter: Double, _ secondNumericInputParameter: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = Double(firstNumericInputParameter
-      - secondNumericInputParameter
-      + firstNumericInputParameter
+  static func longFirstLine(_ first: Double, _ second: Double) -> Double {
+    let result = Double(first
+      - second
+      + first
     ) / 12
-    return resultWithAnExplicitNameForTheComputedValue
+    return result
   }
 
   static func expandedRightValue(_ first: Int, _ second: Int) -> Int {
@@ -43,11 +43,11 @@ enum Accepted {
 // MARK: - Rejected
 
 enum Rejected {
-  static func expandedConversion(_ input: Accepted.Input, _ secondaryData: Accepted.Input, _ normalizationValue: Int) -> Double {
-    let computedValue = Double(
-      input.item.numericValueStorage - secondaryData.item.numericValueStorage
-    ) / Double(normalizationValue)
-    return computedValue
+  static func expandedConversion(_ input: Accepted.Input, _ second: Accepted.Input, _ divisor: Int) -> Double {
+    let result = Double(
+      input.item.value - second.item.value
+    ) / Double(divisor)
+    return result
   }
 
   static func splitConversion(_ first: Int, _ second: Int) -> Double {

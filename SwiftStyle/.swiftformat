@@ -15,15 +15,21 @@
 # Start guard else on a new line after a multiline condition.
 --else-position same-line
 --guard-else next-line
-# wrapArguments: put each argument or parameter on its own line in a wrapped list.
+# wrapArguments: put each argument, parameter or collection element on its own line in a wrapped list.
 # Put the first item after the opening bracket line. Expand partially wrapped lists fully.
 --wrap-arguments before-first
 --wrap-parameters before-first
+--wrap-collections before-first
 --allow-partial-wrapping false
+# Close wrapped argument lists on a separate line. Nested closing brackets can stay together.
+--closing-paren balanced
+--call-site-paren balanced
 --wrap-return-type never
 # wrapIfExpressionBodies: use multiline bodies in assigned if expressions.
 # indent aligns nested blocks. trailingSpace removes spaces at line ends.
-# SwiftLint checks line length. SwiftFormat formats existing line breaks.
+# SwiftLint checks line length. SwiftFormat formats existing list breaks.
+# SwiftStyle checks leading binary operators, arithmetic boundaries and other closing delimiters.
+# Keep wrap disabled: its line breaks do not enforce the SwiftStyle operator policy.
 --max-width none
 --wrap-ternary before-operators
 # Skip fixtures, dependencies and build output during formatting.

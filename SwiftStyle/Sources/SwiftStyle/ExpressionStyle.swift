@@ -1,3 +1,4 @@
+import SwiftOperators
 import SwiftSyntax
 
 extension StyleVisitor {
@@ -21,7 +22,9 @@ extension StyleVisitor {
     if Self.comparisons.contains(name), layout.line(token) != layout.line(right) {
       report(.comparisonOperatorNewline, token)
     }
-    if !node.operator.is(AssignmentExprSyntax.self), layout.line(token) != layout.line(right) {
+    let isAssignment = node.operator.is(AssignmentExprSyntax.self)
+      || OperatorTable.standardOperators.infixOperator(named: name)?.precedenceGroup == "AssignmentPrecedence"
+    if !isAssignment, layout.line(token) != layout.line(right) {
       report(.binaryOperatorWrap, token)
       if Self.arithmetic.contains(name) {
         report(.arithmeticOperatorEndOfLine, token)
@@ -104,6 +107,8 @@ extension StyleVisitor {
   }
 
   /// Puts the closing delimiter on its own line after multiline expression content.
+  /// Allows compact arguments, casts, member access and calls after a nested closing delimiter.
+  /// Allows the closing quotes of a multiline string to start the closing line.
   func checkClosingDelimiter(_ token: TokenSyntax) {
     guard token.tokenKind == .rightParen || token.tokenKind == .rightSquare,
           let expression = token.parent?.as(ExprSyntax.self)
@@ -125,9 +130,50 @@ extension StyleVisitor {
 
     let location = layout.converter.location(for: token.positionAfterSkippingLeadingTrivia)
     let prefix = String(decoding: layout.text(at: location.line).utf8.prefix(location.column - 1), as: UTF8.self)
-    if prefix.allSatisfy({ $0.isWhitespace || ")]},".contains($0) }) { return }
+    if prefix.allSatisfy({ $0.isWhitespace || ")]},".contains($0) })
+      || hasClosingContinuation(expression, before: token)
+    { return }
 
     report(.multilineExpressionClosingDelimiter, token)
+  }
+
+  /// Checks that the final line starts by closing a nested multiline expression.
+  /// Arithmetic and ternary expressions keep their own closing-line requirement.
+  private func hasClosingContinuation(_ expression: ExprSyntax, before closing: TokenSyntax) -> Bool {
+    let line = layout.line(closing)
+    guard let first = expression.tokens(viewMode: .sourceAccurate).first(where: {
+      !$0.text.isEmpty && layout.line($0) == line
+    }), layout.startsLine(first)
+    else { return false }
+
+    let boundary: ExprSyntax
+    switch first.tokenKind {
+    case .multilineStringQuote:
+      guard let literal = first.parent?.as(StringLiteralExprSyntax.self), literal.closingQuote.id == first.id
+      else { return false }
+
+      boundary = ExprSyntax(literal)
+
+    case .rightParen, .rightSquare, .rightBrace:
+      guard let nested = first.parent?.as(ExprSyntax.self),
+            nested.lastToken(viewMode: .sourceAccurate)?.id == first.id
+      else { return false }
+
+      boundary = nested
+
+    default: return false
+    }
+    guard layout.line(boundary) < line else { return false }
+
+    var node: Syntax? = Syntax(boundary)
+    while let current = node, current.id != expression.id {
+      if current.is(InfixOperatorExprSyntax.self) || current.is(TernaryExprSyntax.self)
+        || current.is(SequenceExprSyntax.self)
+      { return false }
+
+      node = current.parent
+    }
+    return node?.id == expression.id
   }
 
   private func checkShortCall(_ call: FunctionCallExprSyntax, operatorToken: TokenSyntax) {

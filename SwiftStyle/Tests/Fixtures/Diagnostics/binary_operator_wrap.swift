@@ -3,7 +3,7 @@
 infix operator <+>: AdditionPrecedence
 
 enum Accepted {
-  struct Number {
+  struct Value {
     let value: Int
 
     static func <+> (_ lhs: Self, _ rhs: Self) -> Self {
@@ -36,7 +36,7 @@ enum Accepted {
       ... second
   }
 
-  static func custom(_ first: Number, _ second: Number) -> Number {
+  static func custom(_ first: Value, _ second: Value) -> Value {
     first
       <+> second
   }
@@ -50,6 +50,30 @@ enum Accepted {
       first
     return value
   }
+
+  static func compoundAssignment(_ input: Int) -> Int {
+    var value = input
+    value +=
+      input
+    value <<=
+      input
+    value |=
+      input
+    value &+=
+      input
+    return value
+  }
+
+  static func multilineStringAssignment() -> String {
+    var value = ""
+    value +=
+      """
+      first
+      second
+      """
+    return value
+  }
+
 }
 
 // MARK: - Rejected
@@ -80,7 +104,7 @@ enum Rejected {
       second
   }
 
-  static func custom(_ first: Accepted.Number, _ second: Accepted.Number) -> Accepted.Number {
+  static func custom(_ first: Accepted.Value, _ second: Accepted.Value) -> Accepted.Value {
     first <+>
       second
   }
@@ -93,7 +117,7 @@ enum Rejected {
 
   static func compound(_ first: Int, _ second: Int) -> Int {
     var value = first
-    value +=
+    value += first +
       second
     return value
   }

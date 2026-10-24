@@ -33,7 +33,13 @@ enum FixtureSupport {
   }
 
   static func typecheck(_ file: URL, succeeds: Bool = true) throws {
-    let result = try run("/usr/bin/xcrun", ["swiftc", "-swift-version", "6", "-typecheck", file.path])
+    let compiler = try run("/usr/bin/xcrun", ["--find", "swiftc"])
+    let host = URL(fileURLWithPath: compiler.text.trimmingCharacters(in: .whitespacesAndNewlines))
+      .deletingLastPathComponent()
+      .deletingLastPathComponent()
+      .appendingPathComponent("lib/swift/host")
+    let arguments = ["swiftc", "-swift-version", "6", "-I", host.path, "-typecheck", file.path]
+    let result = try run("/usr/bin/xcrun", arguments)
     #expect((result.status == 0) == succeeds, "\(file.path): \(result.text)")
   }
 

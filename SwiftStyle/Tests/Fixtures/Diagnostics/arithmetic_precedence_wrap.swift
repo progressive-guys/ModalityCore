@@ -1,55 +1,56 @@
 // MARK: - Accepted
 
 enum Accepted {
-  struct Note {
-    let semitonesNormalized: Int
+  struct Item {
+    let value: Int
   }
 
-  struct Pitch {
-    let note: Note
+  struct Input {
+    let item: Item
   }
 
-  static func notesDistance(_ pitch: Pitch, _ relativePitch: Pitch, _ octaveSubdivisions: Int) -> Double {
-    let notesDistance = Double(pitch.note.semitonesNormalized - relativePitch.note.semitonesNormalized)
-      / Double(octaveSubdivisions)
-    return notesDistance
+  static func computedValue(_ input: Input, _ second: Input, _ divisor: Int) -> Double {
+    let result = Double(input.item.value - second.item.value)
+      / Double(divisor)
+    return result
   }
 
-  static func product(_ leadingContentInset: Double, _ availableContentWidth: Double, _ horizontalScale: Double, _ trailingContentInset: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedWidth = leadingContentInset
-      + availableContentWidth * horizontalScale
-      - trailingContentInset
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func product(_ first: Double, _ second: Double, _ third: Double, _ fourth: Double) -> Double {
+    let result = first
+      + second * third
+      - fourth
+    return result
   }
 
-  static func longProduct(_ firstMeasuredWidthInPoints: Double, _ secondMeasuredWidthInPoints: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedWidth = firstMeasuredWidthInPoints
-      * secondMeasuredWidthInPoints
-      / firstMeasuredWidthInPoints
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func longProduct(_ first: Double, _ second: Double) -> Double {
+    let result = first
+      * second
+      / first
+    return result
   }
 
-  static func grouped(_ firstMeasuredWidthInPoints: Double, _ secondMeasuredWidthInPoints: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedWidth = (firstMeasuredWidthInPoints - secondMeasuredWidthInPoints)
-      / firstMeasuredWidthInPoints
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func grouped(_ first: Double, _ second: Double) -> Double {
+    let result = (first - second)
+      / first
+    return result
   }
 
-  static func longAdditiveSegment(_ firstMeasuredWidthInPoints: Double, _ secondMeasuredWidthInPoints: Double) -> Double {
-    let combinedWidth = firstMeasuredWidthInPoints
-      + abs(firstMeasuredWidthInPoints)
-      * abs(secondMeasuredWidthInPoints)
-      * abs(firstMeasuredWidthInPoints)
-      * abs(secondMeasuredWidthInPoints)
-    return combinedWidth
+  static func longAdditiveSegment(_ first: Double, _ second: Double) -> Double {
+    let result = first
+      + abs(first)
+      * abs(second)
+      * abs(first)
+      * abs(second)
+    return result
   }
 
-  static func longCall(_ firstMeasuredWidthInPoints: Double, _ secondMeasuredWidthInPoints: Double) -> Double {
-    let combinedWidth = Double(abs(firstMeasuredWidthInPoints) +
-      abs(secondMeasuredWidthInPoints) +
-      abs(firstMeasuredWidthInPoints) +
-      abs(secondMeasuredWidthInPoints)) / firstMeasuredWidthInPoints
-    return combinedWidth
+  static func longCall(_ first: Double, _ second: Double) -> Double {
+    let result = Double(abs(first)
+      + abs(second)
+      + abs(first)
+      + abs(second)
+    ) / first
+    return result
   }
 
   static func short(_ first: Double, _ second: Double) -> Double {
@@ -57,8 +58,9 @@ enum Accepted {
   }
 
   static func commented(_ first: Double, _ second: Double) -> Double {
-    first * // Keep the documented boundary.
-      second
+    first
+      // Keep the documented boundary.
+      * second
   }
 
   static func multipleArguments(_ first: Double, _ second: Double) -> Double {
@@ -68,10 +70,10 @@ enum Accepted {
     ) / 2
   }
 
-  static func unary(_ firstMeasuredWidthInPoints: Double, _ secondMeasuredWidthInPoints: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedWidth = -(firstMeasuredWidthInPoints - secondMeasuredWidthInPoints)
-      / firstMeasuredWidthInPoints
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func unary(_ first: Double, _ second: Double) -> Double {
+    let result = -(first - second)
+      / first
+    return result
   }
 
   static func shortConversion(_ first: Int, _ second: Int) -> Double {
@@ -82,10 +84,10 @@ enum Accepted {
 // MARK: - Rejected
 
 enum Rejected {
-  static func notesDistance(_ pitch: Accepted.Pitch, _ relativePitch: Accepted.Pitch, _ octaveSubdivisions: Int) -> Double {
-    let notesDistance = Double(pitch.note.semitonesNormalized -
-      relativePitch.note.semitonesNormalized) / Double(octaveSubdivisions)
-    return notesDistance
+  static func computedValue(_ input: Accepted.Input, _ second: Accepted.Input, _ divisor: Int) -> Double {
+    let result = Double(input.item.value -
+      second.item.value) / Double(divisor)
+    return result
   }
 
   static func shortExpression(_ first: Double, _ second: Double) -> Double {
@@ -93,28 +95,28 @@ enum Rejected {
       + second
   }
 
-  static func splitProduct(_ leadingContentInset: Double, _ availableContentWidth: Double, _ horizontalScale: Double, _ trailingContentInset: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedWidth = leadingContentInset + availableContentWidth
-      * horizontalScale - trailingContentInset
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func splitProduct(_ first: Double, _ second: Double, _ third: Double, _ fourth: Double) -> Double {
+    let result = first + second
+      * third - fourth
+    return result
   }
 
-  static func wrongIndent(_ firstMeasuredWidthInPoints: Double, _ secondMeasuredWidthInPoints: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedWidth = (firstMeasuredWidthInPoints -
-        secondMeasuredWidthInPoints) / firstMeasuredWidthInPoints
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func wrongIndent(_ first: Double, _ second: Double) -> Double {
+    let result = (first -
+        second) / first
+    return result
   }
 
-  static func laterAdditiveTerm(_ firstMeasuredWidthInPoints: Double, _ secondMeasuredWidthInPoints: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedWidth = firstMeasuredWidthInPoints
-      / secondMeasuredWidthInPoints + firstMeasuredWidthInPoints
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func laterAdditiveTerm(_ first: Double, _ second: Double) -> Double {
+    let result = first
+      / second + first
+    return result
   }
 
-  static func splitRemainder(_ firstMeasuredWidthInPoints: Int, _ secondMeasuredWidthInPoints: Int) -> Int {
-    let resultWithAnExplicitNameForTheComputedWidth = firstMeasuredWidthInPoints
-      % secondMeasuredWidthInPoints + firstMeasuredWidthInPoints
-    return resultWithAnExplicitNameForTheComputedWidth
+  static func splitRemainder(_ first: Int, _ second: Int) -> Int {
+    let result = first
+      % second + first
+    return result
   }
 
   static func shortConversion(_ first: Int, _ second: Int) -> Double {

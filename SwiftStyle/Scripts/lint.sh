@@ -68,6 +68,6 @@ run_swiftlint "$@" || status=1
 # Run approved structural rules, including arithmetic wrap checks.
 rules=enum_case_blank_line,collapsible_nested_if,arithmetic_precedence_wrap
 rules=$rules,arithmetic_call_arguments_wrap,binary_operator_wrap,multiline_expression_closing_delimiter,mixed_additive_expression_wrap,mixed_multiplicative_expression_wrap
-rules=$rules,switch_case_spacing,prefer_syntax_kind_switch
+rules=$rules,switch_case_spacing,prefer_syntax_kind_switch,prefer_type_switch
 sh "$kit_root/Scripts/run.sh" --rules "$rules" "$@" || status=1
 exit "$status"

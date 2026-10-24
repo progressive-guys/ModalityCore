@@ -118,17 +118,12 @@ struct SourceLayout {
   }
 
   private func receiverBreaks(_ node: Syntax) -> Bool {
-    if let call = node.as(FunctionCallExprSyntax.self) { return headerBreaks(call.calledExpression) }
-
-    if let indexed = node.as(SubscriptCallExprSyntax.self) { return headerBreaks(indexed.calledExpression) }
-
-    if node.is(ClosureExprSyntax.self)
-      || node.is(StringLiteralExprSyntax.self)
-      || node.is(RegexLiteralExprSyntax.self)
-    {
-      return false
+    switch node.as(SyntaxEnum.self) {
+    case .functionCallExpr(let call): return headerBreaks(call.calledExpression)
+    case .subscriptCallExpr(let indexed): return headerBreaks(indexed.calledExpression)
+    case .closureExpr, .stringLiteralExpr, .regexLiteralExpr: return false
+    default: return node.children(viewMode: .sourceAccurate).contains { receiverBreaks($0) }
     }
-    return node.children(viewMode: .sourceAccurate).contains { receiverBreaks($0) }
   }
 
 }

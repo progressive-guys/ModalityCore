@@ -27,13 +27,30 @@ extension StyleVisitor {
     }
   }
 
-  /// Reports runs of at least three concrete syntax type checks on one named expression with early exits.
+  /// Reports runs of at least two concrete syntax type checks on one named expression with early exits.
   /// Restricts checks to ExprSyntax, StmtSyntax or DeclSyntax node names. Does not rewrite code.
   func checkSyntaxDispatch(_ statements: CodeBlockItemListSyntax) {
-    var run: [(receiver: String, family: String, type: String, keyword: TokenSyntax)] = []
+    checkDispatch(statements, rule: .preferSyntaxKindSwitch, match: syntaxDispatch)
+  }
+
+  /// Reports two or more native as? or is checks on one named value with early exits.
+  /// Extra conditions, else branches and intervening statements end the run. Keeps type order.
+  /// Calls and property reads are excluded because repeated evaluation can change their value.
+  func checkTypeDispatch(_ statements: CodeBlockItemListSyntax) {
+    checkDispatch(statements, rule: .preferTypeSwitch, match: typeDispatch)
+  }
+
+  private typealias DispatchCheck = (receiver: String, family: String, type: String, keyword: TokenSyntax)
+
+  private func checkDispatch(
+    _ statements: CodeBlockItemListSyntax,
+    rule: StyleRule,
+    match: (CodeBlockItemSyntax) -> DispatchCheck?
+  ) {
+    var run: [DispatchCheck] = []
     for statement in statements {
-      guard let check = syntaxDispatch(statement) else {
-        if run.count >= 3, let first = run.first { report(.preferSyntaxKindSwitch, first.keyword) }
+      guard let check = match(statement) else {
+        if run.count >= 2, let first = run.first { report(rule, first.keyword) }
 
         run = []
         continue
@@ -42,18 +59,18 @@ extension StyleVisitor {
          previous.receiver != check.receiver || previous.family != check.family
          || run.contains(where: { $0.type == check.type })
       {
-        if run.count >= 3, let first = run.first { report(.preferSyntaxKindSwitch, first.keyword) }
+        if run.count >= 2, let first = run.first { report(rule, first.keyword) }
 
         run = []
       }
       run.append(check)
     }
-    if run.count >= 3, let first = run.first { report(.preferSyntaxKindSwitch, first.keyword) }
+    if run.count >= 2, let first = run.first { report(rule, first.keyword) }
   }
 
   private func syntaxDispatch(
     _ item: CodeBlockItemSyntax
-  ) -> (receiver: String, family: String, type: String, keyword: TokenSyntax)? {
+  ) -> DispatchCheck? {
     guard let statement = item.item.as(ExpressionStmtSyntax.self),
           let conditional = statement.expression.as(IfExprSyntax.self),
           conditional.elseBody == nil,
@@ -78,5 +95,44 @@ extension StyleVisitor {
     else { return nil }
 
     return (receiver.baseName.text, family, type.baseName.text, conditional.ifKeyword)
+  }
+
+  private func typeDispatch(_ item: CodeBlockItemSyntax) -> DispatchCheck? {
+    guard let statement = item.item.as(ExpressionStmtSyntax.self),
+          let conditional = statement.expression.as(IfExprSyntax.self),
+          conditional.elseBody == nil,
+          conditional.conditions.count == 1,
+          let condition = conditional.conditions.first,
+          let last = conditional.body.statements.last,
+          last.item.is(ReturnStmtSyntax.self) || last.item.is(ThrowStmtSyntax.self)
+    else { return nil }
+
+    let expression: ExprSyntax
+    let type: TypeSyntax
+    switch condition.condition {
+    case .optionalBinding(let binding):
+      guard let cast = binding.initializer?.value.as(AsExprSyntax.self),
+            cast.questionOrExclamationMark?.tokenKind == .postfixQuestionMark
+      else { return nil }
+
+      expression = cast.expression
+      type = cast.type
+
+    case .expression(let check):
+      guard let cast = check.as(IsExprSyntax.self) else { return nil }
+
+      expression = cast.expression
+      type = cast.type
+
+    default: return nil
+    }
+    guard let receiver = expression.as(DeclReferenceExprSyntax.self) else { return nil }
+
+    return (
+      receiver.baseName.text,
+      "native",
+      type.tokens(viewMode: .sourceAccurate).map(\.text).joined(),
+      conditional.ifKeyword
+    )
   }
 }

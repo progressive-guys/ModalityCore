@@ -35,6 +35,7 @@ final class StyleVisitor: SyntaxVisitor {
 
   override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
     checkSyntaxDispatch(node)
+    checkTypeDispatch(node)
     return .visitChildren
   }
 

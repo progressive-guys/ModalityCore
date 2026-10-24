@@ -1,18 +1,21 @@
-private struct ExprSyntax {
-  func `as`<Node>(_ type: Node.Type) -> Node? { nil }
-  func convert<Node>(_ type: Node.Type) -> Node? { nil }
+import SwiftSyntax
+
+private extension ExprSyntax {
+  func convert<Node: ExprSyntaxProtocol>(_ type: Node.Type) -> Node? { self.as(type) }
 }
-private struct FunctionCallExprSyntax {}
-private struct SubscriptCallExprSyntax {}
-private struct MemberAccessExprSyntax {}
-private struct ReturnStmtSyntax {}
 
 // MARK: - Accepted
 
 private enum Accepted {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
+  static func nativeChecks(_ input: Any) -> Int {
+    if let item = input as? String { return item.count }
+    if input is Int { return 2 }
+    if input is Bool { return 3 }
+    return 0
+  }
+
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
     return 0
   }
 }
@@ -20,10 +23,35 @@ private enum Accepted {
 // MARK: - Rejected
 
 private enum Rejected {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = expression.as(MemberAccessExprSyntax.self) { return 3 }
+  static func twoChecks(_ input: ExprSyntax) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return item.arguments.count }
+    if let item = input.as(SubscriptCallExprSyntax.self) { return item.arguments.count }
+    return 0
+  }
+
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
+    if let item = input.as(SubscriptCallExprSyntax.self) { return 2 }
+    if let item = input.as(MemberAccessExprSyntax.self) { return 3 }
+    return 0
+  }
+
+  static func withComments(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
+    // Continue checking the same expression.
+    if let item = input.as(SubscriptCallExprSyntax.self) { return 2 }
+    if let item = input.as(MemberAccessExprSyntax.self) { return 3 }
+    return 0
+  }
+
+  enum Failure: Error {
+    case invalid
+  }
+
+  static func throwingChecks(_ input: ExprSyntax) throws -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { throw Failure.invalid }
+    if let item = input.as(SubscriptCallExprSyntax.self) { throw Failure.invalid }
+    if let item = input.as(MemberAccessExprSyntax.self) { throw Failure.invalid }
     return 0
   }
 }
@@ -31,10 +59,9 @@ private enum Rejected {
 // MARK: - DifferentReceiver
 
 private enum DifferentReceiver {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = other.as(MemberAccessExprSyntax.self) { return 3 }
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
+    if let item = second.as(MemberAccessExprSyntax.self) { return 3 }
     return 0
   }
 }
@@ -42,10 +69,9 @@ private enum DifferentReceiver {
 // MARK: - ExtraCondition
 
 private enum ExtraCondition {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = expression.as(MemberAccessExprSyntax.self), ready { return 3 }
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
+    if let item = input.as(MemberAccessExprSyntax.self), condition { return 3 }
     return 0
   }
 }
@@ -53,11 +79,10 @@ private enum ExtraCondition {
 // MARK: - Interruption
 
 private enum Interruption {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
     print("step")
-    if let node = expression.as(MemberAccessExprSyntax.self) { return 3 }
+    if let item = input.as(MemberAccessExprSyntax.self) { return 3 }
     return 0
   }
 }
@@ -65,10 +90,9 @@ private enum Interruption {
 // MARK: - Nonterminal
 
 private enum Nonterminal {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = expression.as(MemberAccessExprSyntax.self) { print("member") }
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
+    if let item = input.as(MemberAccessExprSyntax.self) { print("member") }
     return 0
   }
 }
@@ -76,10 +100,10 @@ private enum Nonterminal {
 // MARK: - OtherMethod
 
 private enum OtherMethod {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.convert(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.convert(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = expression.convert(MemberAccessExprSyntax.self) { return 3 }
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.convert(FunctionCallExprSyntax.self) { return 1 }
+    if let item = input.convert(SubscriptCallExprSyntax.self) { return 2 }
+    if let item = input.convert(MemberAccessExprSyntax.self) { return 3 }
     return 0
   }
 }
@@ -87,10 +111,9 @@ private enum OtherMethod {
 // MARK: - MixedFamilies
 
 private enum MixedFamilies {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = expression.as(ReturnStmtSyntax.self) { return 3 }
+  static func select(_ input: Syntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
+    if let item = input.as(ReturnStmtSyntax.self) { return 3 }
     return 0
   }
 }
@@ -98,37 +121,9 @@ private enum MixedFamilies {
 // MARK: - DuplicateType
 
 private enum DuplicateType {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    return 0
-  }
-}
-
-// MARK: - Comments
-
-private enum Comments {
-  static func select(_ expression: ExprSyntax, _ other: ExprSyntax, _ ready: Bool) -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { return 1 }
-    // Continue checking the same expression.
-    if let node = expression.as(SubscriptCallExprSyntax.self) { return 2 }
-    if let node = expression.as(MemberAccessExprSyntax.self) { return 3 }
-    return 0
-  }
-}
-
-// MARK: - Throws
-
-private enum Throws {
-  enum Failure: Error {
-    case invalid
-  }
-
-  static func select(_ expression: ExprSyntax) throws -> Int {
-    if let node = expression.as(FunctionCallExprSyntax.self) { throw Failure.invalid }
-    if let node = expression.as(SubscriptCallExprSyntax.self) { throw Failure.invalid }
-    if let node = expression.as(MemberAccessExprSyntax.self) { throw Failure.invalid }
+  static func select(_ input: ExprSyntax, _ second: ExprSyntax, _ condition: Bool) -> Int {
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
+    if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
     return 0
   }
 }
