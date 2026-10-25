@@ -2,55 +2,55 @@
 
 enum Accepted {
   struct Item {
-    let numericValueStorage: Int
+    let value: Int
   }
 
   struct Input {
     let item: Item
   }
 
-  static func computedValue(_ input: Input, _ secondaryData: Input, _ normalizationValue: Int) -> Double {
-    let computedValue = Double(input.item.numericValueStorage - secondaryData.item.numericValueStorage)
-      / Double(normalizationValue)
-    return computedValue
+  static func computedValue(_ input: Input, _ second: Input, _ divisor: Int) -> Double {
+    let result = Double(abs(input.item.value) - abs(second.item.value))
+      / Double(max(abs(divisor), abs(input.item.value)))
+    return result
   }
 
-  static func product(_ firstInputParameter: Double, _ secondNumericArgument: Double, _ thirdInputValue: Double, _ fourthInputParameter: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = firstInputParameter
-      + secondNumericArgument * thirdInputValue
-      - fourthInputParameter
-    return resultWithAnExplicitNameForTheComputedValue
+  static func product(_ first: Double, _ second: Double, _ third: Double, _ fourth: Double) -> Double {
+    let result = max(abs(first), abs(second))
+      + min(abs(second), abs(third)) * max(abs(third), abs(fourth))
+      - min(abs(first), abs(fourth))
+    return result
   }
 
   static func longProduct(_ first: Double, _ second: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = max(abs(first), abs(second))
-      * min(abs(first), abs(second))
-      / max(abs(first), abs(second))
-    return resultWithAnExplicitNameForTheComputedValue
+    let result = max(first.magnitude, second.magnitude)
+      * min(first.magnitude, second.magnitude)
+      / max(first.magnitude, second.magnitude)
+    return result
   }
 
   static func grouped(_ first: Double, _ second: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = (max(abs(first), abs(second)) - min(abs(first), abs(second)))
-      / max(abs(first), abs(second))
-    return resultWithAnExplicitNameForTheComputedValue
+    let result = (max(first.magnitude, second.magnitude) - min(first.magnitude, second.magnitude))
+      / max(first.magnitude, second.magnitude)
+    return result
   }
 
   static func longAdditiveSegment(_ first: Double, _ second: Double) -> Double {
-    let combinedValue = max(abs(first), abs(second))
+    let result = max(abs(first), abs(second))
       + abs(max(abs(first), abs(second)))
       * abs(min(abs(first), abs(second)))
       * abs(max(abs(first), abs(second)))
       * abs(min(abs(first), abs(second)))
-    return combinedValue
+    return result
   }
 
   static func longCall(_ first: Double, _ second: Double) -> Double {
-    let combinedValue = Double(abs(max(abs(first), abs(second)))
+    let result = Double(abs(max(abs(first), abs(second)))
       + abs(min(abs(first), abs(second)))
       + abs(max(abs(first), abs(second)))
       + abs(min(abs(first), abs(second)))
     ) / max(abs(first), abs(second))
-    return combinedValue
+    return result
   }
 
   static func short(_ first: Double, _ second: Double) -> Double {
@@ -71,9 +71,9 @@ enum Accepted {
   }
 
   static func unary(_ first: Double, _ second: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = -(max(abs(first), abs(second)) - min(abs(first), abs(second)))
-      / max(abs(first), abs(second))
-    return resultWithAnExplicitNameForTheComputedValue
+    let result = -(max(first.magnitude, second.magnitude) - min(first.magnitude, second.magnitude))
+      / max(first.magnitude, second.magnitude)
+    return result
   }
 
   static func shortConversion(_ first: Int, _ second: Int) -> Double {
@@ -84,10 +84,10 @@ enum Accepted {
 // MARK: - Rejected
 
 enum Rejected {
-  static func computedValue(_ input: Accepted.Input, _ secondaryData: Accepted.Input, _ normalizationValue: Int) -> Double {
-    let computedValue = Double(input.item.numericValueStorage -
-      secondaryData.item.numericValueStorage) / Double(normalizationValue)
-    return computedValue
+  static func computedValue(_ input: Accepted.Input, _ second: Accepted.Input, _ divisor: Int) -> Double {
+    let result = Double(abs(input.item.value) -
+      abs(second.item.value)) / Double(max(abs(divisor), abs(input.item.value)))
+    return result
   }
 
   static func shortExpression(_ first: Double, _ second: Double) -> Double {
@@ -95,28 +95,28 @@ enum Rejected {
       + second
   }
 
-  static func splitProduct(_ firstInputParameter: Double, _ secondNumericArgument: Double, _ thirdInputValue: Double, _ fourthInputParameter: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = firstInputParameter + secondNumericArgument
-      * thirdInputValue - fourthInputParameter
-    return resultWithAnExplicitNameForTheComputedValue
+  static func splitProduct(_ first: Double, _ second: Double, _ third: Double, _ fourth: Double) -> Double {
+    let result = max(abs(first), abs(second)) + min(abs(second), abs(third))
+      * max(abs(third), abs(fourth)) - min(abs(first), abs(fourth))
+    return result
   }
 
   static func wrongIndent(_ first: Double, _ second: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = (max(abs(first), abs(second)) -
-        min(abs(first), abs(second))) / max(abs(first), abs(second))
-    return resultWithAnExplicitNameForTheComputedValue
+    let result = (max(first.magnitude, second.magnitude) -
+        min(first.magnitude, second.magnitude)) / max(first.magnitude, second.magnitude)
+    return result
   }
 
   static func laterAdditiveTerm(_ first: Double, _ second: Double) -> Double {
-    let resultWithAnExplicitNameForTheComputedValue = max(abs(first), abs(second))
-      / min(abs(first), abs(second)) + max(abs(first), abs(second))
-    return resultWithAnExplicitNameForTheComputedValue
+    let result = max(first.magnitude, second.magnitude)
+      / min(first.magnitude, second.magnitude) + max(first.magnitude, second.magnitude)
+    return result
   }
 
   static func splitRemainder(_ first: Int, _ second: Int) -> Int {
-    let resultWithAnExplicitNameForTheComputedValue = max(abs(first), abs(second))
-      % min(abs(first), abs(second)) + max(abs(first), abs(second))
-    return resultWithAnExplicitNameForTheComputedValue
+    let result = max(abs(first), abs(second), 1_000)
+      % min(abs(first), abs(second), 1_000) + max(abs(first), abs(second), 1_000)
+    return result
   }
 
   static func shortConversion(_ first: Int, _ second: Int) -> Double {
