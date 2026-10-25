@@ -28,7 +28,7 @@ mise install
 sh Tuist/Scripts/lint.sh
 ```
 
-The main repository includes this folder's `.mise.toml` in its root config. The main repository selects source folders and build hooks. Root config links keep editor support. Library checkouts keep their own build and CI setup.
+The main repository includes this folder's `.mise.toml` in its root config. Its `Tuist.swift` selects this folder as a local `ModalityBuild` plugin. Its mise config sets `TUIST_SWIFT_STYLE_ROOT` to this folder's absolute path, so cached helpers also use the current scripts, configs and checker. The main repository selects source folders and build hooks. Root config links keep editor support. Standalone checkouts select the fixed Git plugin version in their own `Tuist.swift` and leave `TUIST_SWIFT_STYLE_ROOT` unset.
 
 ## Checks
 
@@ -47,7 +47,8 @@ The checker also accepts `--stdin` and `--rules name1,name2`. JSON output has Sw
 ## Tests
 
 ```sh
-tuist generate --no-open
+mise exec -- tuist install
+mise exec -- tuist generate --no-open
 xcodebuild test -workspace SwiftStyle.xcworkspace -scheme SwiftStyleTests -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
 ```
 
@@ -69,4 +70,4 @@ The tests run `swiftc -typecheck` on every input. Only explicit parser-error cas
 
 `Project.linted` adds the same checks before compilation for each target's `lintPaths`. It runs on every build. `TargetDependency.library` uses a package product by default. A consumer can set `TUIST_LOCAL_PROJECTS_ROOT` to the absolute directory that contains its local projects. Use the `package` argument when a product name differs from its repository name. The Modality root sets this option in its `.mise.toml`; standalone checkouts leave it unset.
 
-SwiftStyle's own executable target does not run this phase because it builds the checker used by the phase.
+The SwiftStyle executable and test targets use `Target.withLint(paths:)` from the selected plugin. The phase builds its checker through `swiftc` and the script cache, so it does not start another Xcode build. Each target checks its own source folder; diagnostic fixtures remain excluded.
