@@ -10,7 +10,6 @@ public struct PlayheadShape: Shape {
 
   public func path(in rect: CGRect) -> Path {
     var path = Path()
-
     let rectHeight: CGFloat = headHeight * 0.35
     let triangleHeight: CGFloat = headHeight - rectHeight
     let headWidth: CGFloat = rect.width

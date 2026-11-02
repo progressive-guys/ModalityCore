@@ -2,11 +2,13 @@ import SwiftUI
 
 /// Layout value key to mark views that should drive the container's width
 private struct WidthDriverKey: LayoutValueKey {
+
   static let defaultValue: Bool = false
 }
 
 /// Extension to allow views to specify they should drive the layout width
 public extension View {
+
   func widthDriver(_ drives: Bool = true) -> some View {
     layoutValue(key: WidthDriverKey.self, value: drives)
   }
@@ -17,9 +19,10 @@ public extension View {
 /// Use `.widthDriver()` modifier on views that should determine the container width.
 /// Falls back to first child if no width drivers are specified.
 public struct WidthDrivenVStack: Layout {
+
+  let spacing: CGFloat
   let minWidth: CGFloat
   let maxWidth: CGFloat
-  let spacing: CGFloat
   let alignment: HorizontalAlignment
 
   public init(
@@ -51,6 +54,7 @@ public struct WidthDrivenVStack: Layout {
 
     for (index, subview) in subviews.enumerated() {
       let size = subview.sizeThatFits(constrainedProposal)
+
       totalHeight += size.height
 
       // Add spacing between views (but not after the last one)
@@ -78,7 +82,6 @@ public struct WidthDrivenVStack: Layout {
     let drivingWidth = drivingViews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
     let constrainedWidth = max(minWidth, min(maxWidth, drivingWidth))
     let constrainedProposal = ProposedViewSize(width: constrainedWidth, height: nil)
-
     var currentY = bounds.minY
 
     for subview in subviews {

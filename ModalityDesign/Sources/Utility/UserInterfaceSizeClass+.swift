@@ -2,6 +2,7 @@ import SwiftUI
 
 @MainActor
 public extension UserInterfaceSizeClass {
+
   static var byDefault: UserInterfaceSizeClass {
     #if os(iOS)
     switch UIDevice.current.userInterfaceIdiom {

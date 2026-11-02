@@ -5,9 +5,10 @@ public struct AnimatableTriplet<
   Second: VectorArithmetic,
   Third: VectorArithmetic
 >: VectorArithmetic {
+
   public var first: First
-  public var second: Second
   public var third: Third
+  public var second: Second
 
   public init(_ first: First, _ second: Second, _ third: Third) {
     self.first = first
@@ -51,6 +52,7 @@ public struct AnimatableTriplet<
 }
 
 extension AnimatableTriplet: Animatable {
+
   public var animatableData: AnimatablePair<First, AnimatablePair<Second, Third>> {
     get {
       AnimatablePair(first, AnimatablePair(second, third))

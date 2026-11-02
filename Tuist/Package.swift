@@ -15,7 +15,9 @@ let useLocalProjects = false
 
 let package = Package(
   name: "ModalityCore",
-  dependencies: useLocalProjects ? [] : [
-    .package(url: "https://github.com/modality-lab/SwiftMusicTheory.git", from: "1.0.0"),
-  ]
+  dependencies: useLocalProjects
+    ? []
+    : [
+      .package(url: "https://github.com/modality-lab/SwiftMusicTheory.git", from: "1.0.0"),
+    ]
 )

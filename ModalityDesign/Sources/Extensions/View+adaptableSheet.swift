@@ -1,12 +1,14 @@
 import SwiftUI
 
 public extension View {
+
   var adaptableSheet: some View {
     modifier(AdaptableSheetModifier())
   }
 }
 
 fileprivate struct AdaptableSheetModifier: ViewModifier {
+
   @State private var size: CGSize?
 
   func body(content: Content) -> some View {
@@ -33,6 +35,7 @@ fileprivate extension View {
 
 @available(iOS 16.0, macOS 13.0, *)
 fileprivate extension PresentationDetent {
+
   static func detents(for height: CGFloat?) -> Self {
     height.map { .height($0) } ?? .fraction(0.3)
   }

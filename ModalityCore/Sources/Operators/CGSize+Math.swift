@@ -1,6 +1,7 @@
 import CoreGraphics
 
 extension CGSize {
+
   public static func - (lhs: CGSize, rhs: CGSize) -> CGSize {
     CGSize(
       width: lhs.width - rhs.width,

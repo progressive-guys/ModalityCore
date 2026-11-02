@@ -1,6 +1,6 @@
 #if os(iOS)
-import SwiftUI
 import UIKit
+import SwiftUI
 
 struct BottomViewScrollHandler: Sendable {
   var onOverscroll: @MainActor @Sendable (CGFloat) -> Void = { _ in }
@@ -20,8 +20,11 @@ extension EnvironmentValues {
 
 /// A scroll view that transfers an overscroll at its top edge to its enclosing `BottomView`.
 public struct BottomViewScrollView<Content: View>: UIViewControllerRepresentable {
-  @Environment(\.bottomViewScrollHandler) private var scrollHandler
+
   private let content: () -> Content
+
+  @Environment(\.bottomViewScrollHandler)
+  private var scrollHandler
 
   public init(@ViewBuilder content: @escaping () -> Content) {
     self.content = content

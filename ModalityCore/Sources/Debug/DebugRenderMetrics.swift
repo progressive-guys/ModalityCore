@@ -15,16 +15,18 @@ import CoreVideo
 
 @MainActor
 public final class DebugRenderMetrics: ObservableObject {
+
   public static let shared = DebugRenderMetrics()
 
   @Published public private(set) var snapshot: DebugRenderMetricsSnapshot = .empty
 
   #if DEBUG
-  private var aggregator = DebugRenderMetricsAggregator()
+  private let publishInterval: TimeInterval
+
   private var activeConsumers = 0
   private var lastPublishTime: TimeInterval = 0
-  private let publishInterval: TimeInterval
   private var sampler: (any DisplayFrameSampling)?
+  private var aggregator = DebugRenderMetricsAggregator()
 
   public init(publishInterval: TimeInterval = 0.25) {
     self.publishInterval = publishInterval
@@ -32,8 +34,8 @@ public final class DebugRenderMetrics: ObservableObject {
 
   public func startSampling() {
     activeConsumers += 1
-    guard activeConsumers == 1 else { return }
 
+    guard activeConsumers == 1 else { return }
     sampler = makeDisplayFrameSampler { [weak self] timestamp, displayHz in
       self?.recordFrame(timestamp: timestamp, displayHz: displayHz)
     }
@@ -45,6 +47,7 @@ public final class DebugRenderMetrics: ObservableObject {
     guard activeConsumers > 0 else { return }
 
     activeConsumers -= 1
+
     guard activeConsumers == 0 else { return }
 
     sampler?.stop()
@@ -53,6 +56,7 @@ public final class DebugRenderMetrics: ObservableObject {
 
   public func resetSamplingState() {
     let displayHz = snapshot.displayHz > 0 ? snapshot.displayHz : 60
+
     aggregator = DebugRenderMetricsAggregator(displayHz: displayHz)
     lastPublishTime = 0
     snapshot = .empty
@@ -65,15 +69,14 @@ public final class DebugRenderMetrics: ObservableObject {
 
   private func publishSnapshot(now: TimeInterval, force: Bool) {
     guard force || now - lastPublishTime >= publishInterval else { return }
-
     snapshot = aggregator.snapshot(now: now)
     lastPublishTime = now
   }
   #else
   public init() {}
 
-  public func startSampling() {}
   public func stopSampling() {}
+  public func startSampling() {}
   public func resetSamplingState() {}
   #endif
 }
@@ -81,11 +84,13 @@ public final class DebugRenderMetrics: ObservableObject {
 #if DEBUG
 @MainActor
 private protocol DisplayFrameSampling: AnyObject {
-  func start()
+
   func stop()
+  func start()
 }
 
 private extension DebugRenderMetrics {
+
   @MainActor
   func makeDisplayFrameSampler(
     onFrame: @escaping @MainActor (TimeInterval, Double) -> Void
@@ -103,7 +108,9 @@ private extension DebugRenderMetrics {
 #if os(iOS) || os(visionOS)
 @MainActor
 private final class CADisplayFrameSampler: NSObject, DisplayFrameSampling {
+
   private let onFrame: @MainActor (TimeInterval, Double) -> Void
+
   private var displayLink: CADisplayLink?
 
   init(onFrame: @escaping @MainActor (TimeInterval, Double) -> Void) {
@@ -125,21 +132,25 @@ private final class CADisplayFrameSampler: NSObject, DisplayFrameSampling {
 
   @objc private func displayLinkDidFire(_ displayLink: CADisplayLink) {
     let durationHz = displayLink.duration > 0 ? 1 / displayLink.duration : 0
+
     #if os(iOS)
     let screenHz = Double(UIScreen.main.maximumFramesPerSecond)
     #else
     let screenHz = durationHz
     #endif
+
     onFrame(displayLink.timestamp, max(durationHz, screenHz))
   }
 }
 #elseif os(macOS)
 @MainActor
 private final class MacDisplayFrameSampler: DisplayFrameSampling {
+
   private let onFrame: @MainActor (TimeInterval, Double) -> Void
+
   private var displayLink: CVDisplayLink?
-  private var callbackTarget: MacDisplayLinkCallbackTarget?
   private var fallbackSampler: TimerDisplayFrameSampler?
+  private var callbackTarget: MacDisplayLinkCallbackTarget?
 
   init(onFrame: @escaping @MainActor (TimeInterval, Double) -> Void) {
     self.onFrame = onFrame
@@ -149,6 +160,7 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
     stop()
 
     var displayLink: CVDisplayLink?
+
     guard
       CVDisplayLinkCreateWithActiveCGDisplays(&displayLink) == kCVReturnSuccess,
       let displayLink
@@ -161,6 +173,7 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       displayHz: Self.currentDisplayHz(),
       onFrame: onFrame
     )
+
     let context = Unmanaged.passUnretained(callbackTarget).toOpaque()
 
     let callback: CVDisplayLinkOutputCallback = { _, _, _, _, _, context in
@@ -169,7 +182,9 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       let target = Unmanaged<MacDisplayLinkCallbackTarget>
         .fromOpaque(context)
         .takeUnretainedValue()
+
       target.displayLinkDidFire()
+
       return kCVReturnSuccess
     }
 
@@ -201,6 +216,7 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       displayHz: Self.currentDisplayHz(),
       onFrame: onFrame
     )
+
     fallbackSampler.start()
     self.fallbackSampler = fallbackSampler
   }
@@ -212,9 +228,11 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
 }
 
 private final class MacDisplayLinkCallbackTarget: @unchecked Sendable {
+
   private let lock = NSLock()
   private let displayHz: Double
   private let onFrame: @MainActor (TimeInterval, Double) -> Void
+
   private var isFrameDeliveryPending = false
 
   init(displayHz: Double, onFrame: @escaping @MainActor (TimeInterval, Double) -> Void) {
@@ -237,6 +255,7 @@ private final class MacDisplayLinkCallbackTarget: @unchecked Sendable {
     guard !isFrameDeliveryPending else { return false }
 
     isFrameDeliveryPending = true
+
     return true
   }
 
@@ -257,8 +276,10 @@ private final class MacDisplayLinkCallbackTarget: @unchecked Sendable {
 
 @MainActor
 private final class TimerDisplayFrameSampler: DisplayFrameSampling {
+
   private let displayHz: Double
   private let onFrame: @MainActor (TimeInterval, Double) -> Void
+
   private var timer: Timer?
 
   init(displayHz: Double, onFrame: @escaping @MainActor (TimeInterval, Double) -> Void) {

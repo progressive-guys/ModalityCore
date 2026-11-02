@@ -2,10 +2,11 @@ import SwiftUI
 
 public struct SettingsGearButton<Label: View, SettingsView: View>: View {
 
-  @ViewBuilder let label: () -> Label
-  @ViewBuilder let settingsView: () -> SettingsView
-  @State var isSettingsPresented: Bool = false
-  @Environment(\.dismiss) var dismiss
+  @ViewBuilder private let label: () -> Label
+  @ViewBuilder private let settingsView: () -> SettingsView
+
+  @Environment(\.dismiss) private var dismiss
+  @State private var isSettingsPresented: Bool = false
 
   public init(
     @ViewBuilder label: @escaping () -> Label = {

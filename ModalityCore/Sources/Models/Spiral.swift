@@ -1,13 +1,14 @@
-import SwiftUI
 import os
+import SwiftUI
 import SwiftMusicTheory
 
 public struct Spiral<Element: Sendable>: Sendable {
 
+  public let elements: [Element]
+
   // MARK: - Public
 
   public var spiralTurnLength: Int
-  public let elements: [Element]
 
   public init(elements: [Element], spiralTurnLength: Int) {
     self.elements = elements
@@ -16,7 +17,6 @@ public struct Spiral<Element: Sendable>: Sendable {
 
   public func projection(from fromIndex: Int) -> [Element] {
     var result = [Element]()
-
     let turnIndex = fromIndex / spiralTurnLength
     let elementIndex = fromIndex % spiralTurnLength
 
@@ -24,7 +24,6 @@ public struct Spiral<Element: Sendable>: Sendable {
       let currentTurnIndex = projectedIndex + spiralTurnLength * turnIndex
       let nextTurnIndex = currentTurnIndex + spiralTurnLength
       let fromNextTurn = projectedIndex < elementIndex && nextTurnIndex < elements.count
-
       result.append(elements[fromNextTurn ? nextTurnIndex : currentTurnIndex])
     }
 
@@ -33,6 +32,7 @@ public struct Spiral<Element: Sendable>: Sendable {
 }
 
 public extension Spiral<Note> {
+
   static var withTripleAlterations: Spiral<Note> {
     Spiral<Note>(
       elements: {

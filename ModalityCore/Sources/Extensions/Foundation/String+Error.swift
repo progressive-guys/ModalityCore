@@ -1,6 +1,7 @@
 import Foundation
 
 public struct StringError: LocalizedError {
+
   public let errorDescription: String
 
   init(_ error: String) {
@@ -9,6 +10,7 @@ public struct StringError: LocalizedError {
 }
 
 public extension String {
+
   var error: StringError {
     StringError(self)
   }

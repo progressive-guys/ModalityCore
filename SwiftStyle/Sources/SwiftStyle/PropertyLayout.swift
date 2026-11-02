@@ -2,19 +2,23 @@ import SwiftSyntax
 
 /// Describes one property declaration without changing its initializer or resolving external types.
 struct PropertyLayout {
-  let declaration: VariableDeclSyntax
-  let visibility: Int
+
   let kind: Int
   let type: String?
+  let visibility: Int
   let annotations: [String]
+  let declaration: VariableDeclSyntax
 
   init(_ declaration: VariableDeclSyntax) {
     self.declaration = declaration
     visibility = Self.visibility(of: declaration)
+
     let names = declaration.attributes.compactMap { element in
       element.as(AttributeSyntax.self)?.attributeName.trimmedDescription
     }
+
     annotations = names.sorted()
+
     if declaration.modifiers.contains(where: { $0.name.text == "static" || $0.name.text == "class" }) {
       kind = 0
     } else if !annotations.isEmpty {
@@ -22,8 +26,10 @@ struct PropertyLayout {
     } else {
       kind = declaration.bindingSpecifier.text == "let" ? 1 : 2
     }
+
     var types: [String?] = []
     var followingType: String?
+
     for binding in declaration.bindings.reversed() {
       if let annotation = binding.typeAnnotation {
         followingType = Self.typeName(annotation.type)
@@ -35,6 +41,7 @@ struct PropertyLayout {
         types.append(followingType)
       }
     }
+
     type = types.first.flatMap { first in
       first.flatMap { name in types.allSatisfy { $0 == name } ? name : nil }
     }
@@ -46,7 +53,24 @@ struct PropertyLayout {
     return [Array(prefix.prefix(1)), prefix, prefix + [typeKey], prefix + [typeKey] + annotations]
   }
 
+  /// Observers keep a stored value. Getter and setter accessors describe a computed property.
+  var isStored: Bool {
+    declaration.bindings.allSatisfy { binding in
+      guard let block = binding.accessorBlock else { return true }
+
+      switch block.accessors {
+      case .getter: return false
+      case .accessors(let list):
+        return !list.contains { ["get", "set", "_read", "_modify"].contains($0.accessorSpecifier.text) }
+      @unknown default: return false
+      }
+    }
+  }
+
   var elementCount: Int { declaration.bindings.count }
+
+  /// Uses the longest declaration line, without its leading indentation.
+  var lineLength: Int { SourceLayout.lineLength(declaration) }
 
   func hasLongAccessor(in layout: SourceLayout) -> Bool {
     declaration.bindings.contains { binding in
@@ -60,14 +84,21 @@ struct PropertyLayout {
 
       @unknown default: false
       }
+
       return computed && layout.endLine(declaration) - layout.line(declaration) + 1 > 3
     }
   }
 
   private static func visibility(of declaration: VariableDeclSyntax) -> Int {
-    if let explicit = visibility(in: declaration.modifiers) { return explicit }
+    visibility(in: declaration.modifiers, parent: declaration.parent)
+  }
 
-    var ancestor = declaration.parent
+  /// Uses read access and inherits the access of protocols and extensions.
+  static func visibility(in modifiers: DeclModifierListSyntax, parent: Syntax?) -> Int {
+    if let explicit = visibility(in: modifiers) { return explicit }
+
+    var ancestor = parent
+
     while let node = ancestor {
       if let declaration = node.as(DeclSyntax.self) {
         switch declaration.as(DeclSyntaxEnum.self) {
@@ -77,8 +108,10 @@ struct PropertyLayout {
         default: break
         }
       }
+
       ancestor = node.parent
     }
+
     return 2
   }
 
@@ -107,6 +140,7 @@ struct PropertyLayout {
 
   private static func constructorType(_ expression: ExprSyntax) -> String? {
     let name: String
+
     switch expression.as(ExprSyntaxEnum.self) {
     case .declReferenceExpr(let reference): name = reference.baseName.text
     case .memberAccessExpr(let member): name = member.declName.baseName.text
@@ -118,6 +152,7 @@ struct PropertyLayout {
 
     default: return nil
     }
+
     guard name.first?.isUppercase == true else { return nil }
 
     return expression.tokens(viewMode: .sourceAccurate).map(\.text).joined()

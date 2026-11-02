@@ -1,7 +1,8 @@
-import AudioToolbox
 import os
+import AudioToolbox
 
 public extension AudioUnit {
+
   var sampleRate: Double {
     get throws {
       var sampleRate: Double = 44100

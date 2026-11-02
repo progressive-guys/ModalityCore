@@ -5,11 +5,12 @@ import UIKit
 
 public struct SegmentedControl<Option: Hashable & Identifiable>: View {
 
-  @Binding private var selection: Option
   private let options: [Option]
-  private let label: KeyPath<Option, String>
   private let selectionColor: Color
   private let backgroundColor: Color
+  private let label: KeyPath<Option, String>
+
+  @Binding private var selection: Option
 
   public init(
     selection: Binding<Option>,
@@ -42,6 +43,7 @@ public struct SegmentedControl<Option: Hashable & Identifiable>: View {
             [.font: UIFont.systemFont(ofSize: SegmentButton.segmentLabelFontSize, weight: .semibold)],
             for: .normal
           )
+
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(selectionColor)
         UISegmentedControl.appearance().backgroundColor = UIColor(backgroundColor)
       }
@@ -53,7 +55,7 @@ public struct SegmentedControl<Option: Hashable & Identifiable>: View {
     #endif
   }
 
-  var legacy: some View {
+  private var legacy: some View {
     LegacySegmentedControl(
       selection: $selection,
       options: options,
@@ -66,17 +68,32 @@ public struct SegmentedControl<Option: Hashable & Identifiable>: View {
 
 private struct LegacySegmentedControl<Option: Hashable & Identifiable>: View {
 
-  @Binding var selection: Option
-  let options: [Option]
-  let label: KeyPath<Option, String>
-  let selectionColor: Color
-  let backgroundColor: Color
-  @State private var optionIsPressed: [Option.ID: Bool] = [:]
-  @Namespace private var namespaceID
+  private let options: [Option]
+  private let selectionColor: Color
+  private let backgroundColor: Color
+  private let label: KeyPath<Option, String>
+  private let animation: Animation = .bouncy
+  private let interSegmentSpacing: CGFloat = 2
   private let buttonBackgroundID = "buttonBackgroundID"
   private let insets = EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
-  private let interSegmentSpacing: CGFloat = 2
-  private let animation: Animation = .bouncy
+
+  @Namespace private var namespaceID
+  @Binding private var selection: Option
+  @State private var optionIsPressed: [Option.ID: Bool] = [:]
+
+  init(
+    options: [Option],
+    label: KeyPath<Option, String>,
+    selectionColor: Color,
+    backgroundColor: Color,
+    selection: Binding<Option>
+  ) {
+    self.options = options
+    self.label = label
+    self.selectionColor = selectionColor
+    self.backgroundColor = backgroundColor
+    self._selection = selection
+  }
 
   var body: some View {
     HStack(spacing: interSegmentSpacing) {
@@ -109,14 +126,36 @@ private struct LegacySegmentedControl<Option: Hashable & Identifiable>: View {
 fileprivate struct SegmentButton: View {
 
   static let segmentLabelFontSize: CGFloat = 10
-  let label: String
-  let selectionColor: Color
-  let isSelected: Bool
-  let animation: Animation
-  @Binding var isPressed: Bool
-  let backgroundID: String
-  let namespaceID: Namespace.ID
-  let action: () -> Void
+
+  private let label: String
+  private let isSelected: Bool
+  private let action: () -> Void
+  private let backgroundID: String
+  private let animation: Animation
+  private let selectionColor: Color
+  private let namespaceID: Namespace.ID
+
+  @Binding private var isPressed: Bool
+
+  init(
+    label: String,
+    backgroundID: String,
+    selectionColor: Color,
+    isSelected: Bool,
+    animation: Animation,
+    namespaceID: Namespace.ID,
+    action: @escaping () -> Void,
+    isPressed: Binding<Bool>
+  ) {
+    self.label = label
+    self.backgroundID = backgroundID
+    self.selectionColor = selectionColor
+    self.isSelected = isSelected
+    self.animation = animation
+    self.namespaceID = namespaceID
+    self.action = action
+    self._isPressed = isPressed
+  }
 
   var body: some View {
     Button(action: action) {

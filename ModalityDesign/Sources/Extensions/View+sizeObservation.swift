@@ -1,5 +1,5 @@
-import SwiftUI
 import os
+import SwiftUI
 
 fileprivate struct BindSizeModifier: ViewModifier {
 
@@ -12,6 +12,7 @@ fileprivate struct BindSizeModifier: ViewModifier {
           DispatchQueue.main.async {
             size = proxy.size
           }
+
           return Color.clear
         }
       )
@@ -29,6 +30,7 @@ fileprivate struct ObserveSizeModifier: ViewModifier {
           DispatchQueue.main.async {
             callback(proxy.size)
           }
+
           return Color.clear
         }
       )
@@ -36,6 +38,7 @@ fileprivate struct ObserveSizeModifier: ViewModifier {
 }
 
 public extension View {
+
   func bindSize(to size: Binding<CGSize?>) -> some View {
     modifier(BindSizeModifier(size: size))
   }
@@ -46,6 +49,7 @@ public extension View {
 
   func printSize(label: String? = nil) -> some View {
     let label = label ?? Mirror(reflecting: self).description
+
     return observeSize { size in
       Logger.default.log("Size: \(label): \(size.debugDescription)")
     }

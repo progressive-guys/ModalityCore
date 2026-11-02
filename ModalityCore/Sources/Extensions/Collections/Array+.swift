@@ -1,6 +1,7 @@
 import Foundation
 
 extension Array: @retroactive RawRepresentable where Element: Codable {
+
   public init?(rawValue: String) {
     guard
       let data = rawValue.data(using: .utf8),
@@ -21,6 +22,7 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
 }
 
 extension Array {
+
   public func max<Value: Comparable>(_ keyPath: KeyPath<Element, Value>) -> Value? {
     self.max(by: { $0[keyPath: keyPath] < $1[keyPath: keyPath] })?[keyPath: keyPath]
   }
@@ -32,16 +34,16 @@ extension Array {
 
 // MARK: - Statistical Functions
 extension Array where Element: BinaryFloatingPoint {
-  public var average: Element { average(\.self) }
-  public var median: Element { median(\.self) }
+
   public var sum: Element { sum(\.self) }
+  public var median: Element { median(\.self) }
+  public var average: Element { average(\.self) }
 }
 
 extension Array {
 
   public func average<Value: BinaryFloatingPoint>(_ keyPath: KeyPath<Element, Value>) -> Value {
     guard !isEmpty else { return 0 }
-
     return sum(keyPath) / Value(count)
   }
 
@@ -50,6 +52,7 @@ extension Array {
 
     let sorted = lazy.map { $0[keyPath: keyPath] }.sorted()
     let mid = count / 2
+
     return count.isMultiple(of: 2) ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
   }
 
@@ -59,6 +62,7 @@ extension Array {
 }
 
 extension Array {
+
   public func chunked(into size: Int) -> [[Element]] {
     return stride(from: 0, to: count, by: size).map {
       Array(self[$0..<Swift.min($0 + size, count)])

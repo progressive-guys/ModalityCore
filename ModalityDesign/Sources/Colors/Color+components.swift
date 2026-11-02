@@ -1,5 +1,5 @@
-import SwiftUI
 import os
+import SwiftUI
 
 #if canImport(UIKit)
 import UIKit
@@ -8,6 +8,7 @@ import AppKit
 #endif
 
 extension Color {
+
   public var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
     #if canImport(UIKit)
     typealias NativeColor = UIColor

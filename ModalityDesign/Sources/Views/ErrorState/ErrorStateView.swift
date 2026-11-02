@@ -2,9 +2,9 @@ import SwiftUI
 
 public struct ErrorPopupView: View {
 
-  public let title: String?
-  public let description: String?
-  public let onTryAgain: () -> Void
+  private let title: String?
+  private let description: String?
+  private let onTryAgain: () -> Void
 
   public init(
     title: String? = nil,

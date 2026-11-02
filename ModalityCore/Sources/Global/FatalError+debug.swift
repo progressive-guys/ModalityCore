@@ -12,6 +12,7 @@ public func debugFatalError<DefaultValue>(
 }
 
 public enum DebugChecks {
+
   public static func debugAssert(
     _ condition: @autoclosure () -> Bool,
     _ message: @autoclosure () -> String = String(),

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SectionModifier<Title: View>: ViewModifier {
+
   let title: Title
   let showCard: Bool
 
@@ -19,6 +20,7 @@ struct SectionModifier<Title: View>: ViewModifier {
 }
 
 public extension View {
+
   func section<Title: View>(@ViewBuilder title: () -> Title, showCard: Bool = true) -> some View {
     modifier(SectionModifier(title: title(), showCard: showCard))
   }

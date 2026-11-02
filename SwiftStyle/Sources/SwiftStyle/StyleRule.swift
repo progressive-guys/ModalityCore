@@ -33,25 +33,43 @@ enum StyleRule: String, CaseIterable {
   /// Count attached comments as part of each case. Put separation before leading comments.
   case switchCaseSpacing = "switch_case_spacing"
 
+  /// Indent each continued case pattern two spaces from the case keyword.
+  case switchCasePatternIndent = "switch_case_pattern_indent"
+
   /// Keep adjacent single-line methods and protocol requirements of the same kind together.
   /// Use one blank line if either member spans multiple lines, including comments and attributes.
-  /// Properties, methods, initializers, subscripts and associated types form separate groups.
-  /// Put one blank line after the opening brace of a nonempty type or extension. MARK comments start new groups.
+  /// Properties, methods, initializers, deinitializers, subscripts and associated types form separate groups.
+  /// Separate nested types from adjacent declarations. An enum with one case has no opening blank line.
+  /// Other nonempty types and extensions start with one blank line. MARK comments start new groups.
+  /// Getter and function effect groups use one blank line between them.
   case memberSpacing = "member_spacing"
 
-  /// Group properties by read visibility, static/let/var/attribute kind, type and attribute name.
-  /// Separate groups of more than two properties and computed properties longer than three lines.
+  /// Order aliases, nested types, stored properties, initializers, deinitializers, subscripts, getters and functions.
+  /// Group getters and functions: plain, throwing, async, async throwing. Keep order within each group.
+  /// Conditional blocks with one section and effect group move as complete units.
+  /// Check each conditional branch on its own.
+  case memberOrder = "member_order"
+
+  /// Group stored properties by read visibility, static/let/var/attribute kind, type and attribute name.
+  /// Separate groups of more than three stored properties and computed-property effect groups.
+  /// Keep computed-property order. Keep single-line declarations together within each effect group.
+  /// Keep property attributes inline through column 120; separate longer declarations with blank lines.
   case propertyGrouping = "property_grouping"
 
+  /// Instance properties in structs that explicitly conform to View are private, except body.
+  /// Preserve explicit initializers or generate a known memberwise signature, including Binding inputs.
+  case privateViewProperties = "private_view_properties"
+
   /// Separate local declarations, checks and final exits with one blank line between groups.
-  /// Keep compact checks together. Permit zero or one blank line next to a multiline check.
+  /// Keep statements together in bodies with at most three code lines. Leading comments start a group.
+  /// Keep compact checks together. Use one blank line next to a multiline check.
   case statementGrouping = "statement_grouping"
 
-  /// Use a switch for each if condition that projects or tests a SwiftSyntax node type.
-  /// Include single checks, wrapper calls and extra conditions. Preserve evaluation order.
+  /// Use a switch for two or more consecutive SwiftSyntax type checks of the same object.
+  /// Keep single checks, wrapper calls and checks of different objects.
   case preferSyntaxKindSwitch = "prefer_syntax_kind_switch"
 
-  /// Use a switch for each if condition with a native as? or is check, including negated checks.
+  /// Use a switch for two or more consecutive native as? or is checks of the same object.
   /// Keep calls, property reads and extra conditions in their original evaluation order.
   case preferTypeSwitch = "prefer_type_switch"
 
@@ -73,7 +91,7 @@ enum StyleRule: String, CaseIterable {
   case selfMemberNewline = "self_member_newline"
 
   /// Require a blank line after a single-line else block before the next statement. The enclosing closing brace
-  /// needs no blank line.
+  /// needs no blank line. Consecutive if and guard checks use statement grouping.
   case compactElseBlankLine = "compact_else_blank_line"
 
   /// Start the assigned expression on the same line as =.
@@ -120,6 +138,11 @@ enum StyleRule: String, CaseIterable {
   /// Use a single-line string literal for interpolated text with one physical content line. Skip raw literals and
   /// literals with newline, carriage-return or Unicode escapes.
   case singleLineInterpolatedString = "single_line_interpolated_string"
+
+  /// Align contents and closing quotes with standalone opening quotes.
+  /// Use two extra spaces when opening quotes follow other code on the same line.
+  /// Keep literal values, escapes and interpolation expressions unchanged.
+  case multilineStringIndent = "multiline_string_indent"
 
   /// Keep ?? with its fallback, and keep the fallback member chain together. Wrap before ?? when necessary.
   /// SwiftFormat does not select this break automatically.
@@ -207,12 +230,15 @@ extension StyleRule {
     case .ifArgumentBraceNewline: "Keep the opening brace with the condition when only call arguments wrap."
     case .mixedIfConditions: "Put if conditions on one line or each condition on its own line."
     case .collapsibleNestedIf: "Combine these nested if conditions in their current evaluation order."
+    case .switchCasePatternIndent: "Indent continued case patterns by two spaces."
     case .switchCaseSpacing: "Keep compact switch cases together; separate multiline cases with one blank line."
+    case .memberOrder: "Order member sections, then group getters and functions: plain, throwing, async, async throwing."
+    case .privateViewProperties: "Make View instance properties private, except body; pass inputs through an initializer."
     case .memberSpacing: "Separate type openings, member kinds and multiline members with one blank line."
-    case .propertyGrouping: "Group properties by visibility, kind, type and attribute; use the required blank lines."
-    case .statementGrouping: "Separate statement groups; allow at most one blank line next to multiline checks."
-    case .preferTypeSwitch: "Use a switch for this as? or is condition."
-    case .preferSyntaxKindSwitch: "Use a syntax-kind switch for this type check."
+    case .propertyGrouping: "Group stored properties by visibility, kind, type and attribute; sort each block by line length and separate groups larger than three."
+    case .statementGrouping: "Separate statement groups and multiline checks with one blank line."
+    case .preferTypeSwitch: "Use a switch for consecutive as? or is checks of the same object."
+    case .preferSyntaxKindSwitch: "Use a syntax-kind switch for consecutive type checks of the same object."
 
     case .binaryOperandMemberWrap:
       """
@@ -257,6 +283,7 @@ extension StyleRule {
 
     case .chainedCallArgumentsWrap: "Start a chained call on a new line before wrapping its arguments."
     case .chainedClosureNewline: "Start a chained call with a multiline closure on a new line."
+    case .multilineStringIndent: "Align multiline string contents with standalone opening quotes; otherwise indent by two spaces."
     case .singleLineInterpolatedString: "Use a single-line literal when interpolated text has one content line."
     case .nilCoalescingMemberWrap: "Keep ?? and the fallback together; wrap before ??."
     case .noGlobalFunctions: "Declare the function in its owning type or extension; debugFatalError may be global."

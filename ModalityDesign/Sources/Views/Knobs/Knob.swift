@@ -3,18 +3,19 @@ import Combine
 
 public struct Knob: View {
 
-  @Binding public var value: Double
-  public let range: ClosedRange<Double>
-  public let defaultValue: Double
-  public let label: String
-  public let diameter: CGFloat
-  public let trackWidth: CGFloat
-  public let sensitivity: Double
-  public let fineMultiplier: Double
-  public let strokeColor: Color
-  @GestureState private var drag = CGSize.zero
+  private let label: String
+  private let diameter: CGFloat
+  private let strokeColor: Color
+  private let trackWidth: CGFloat
+  private let sensitivity: Double
+  private let defaultValue: Double
+  private let fineMultiplier: Double
+  private let range: ClosedRange<Double>
+
+  @Binding private var value: Double
   @State private var anchor: Double = 0
   @State private var isDragging: Bool = false
+  @GestureState private var drag = CGSize.zero
 
   public init(
     value: Binding<Double>,
@@ -36,10 +37,6 @@ public struct Knob: View {
     self.sensitivity = sensitivity
     self.fineMultiplier = fineMultiplier
     self.strokeColor = strokeColor
-  }
-
-  private var animation: Animation? {
-    isDragging ? nil : .spring(duration: 0.5)
   }
 
   public var body: some View {
@@ -66,6 +63,15 @@ public struct Knob: View {
     .onAppear { anchor = value }
   }
 
+  private var animation: Animation? {
+    isDragging ? nil : .spring(duration: 0.5)
+  }
+
+  private var resetGesture: some Gesture {
+    TapGesture(count: 2)
+      .onEnded { value = defaultValue }
+  }
+
   private var dragGesture: some Gesture {
     DragGesture(minimumDistance: 0)
       .updating($drag) { current, state, _ in state = current.translation }
@@ -76,9 +82,8 @@ public struct Knob: View {
       }
   }
 
-  private var resetGesture: some Gesture {
-    TapGesture(count: 2)
-      .onEnded { value = defaultValue }
+  private var progress: Double {
+    (value - range.lowerBound) / (range.upperBound - range.lowerBound)
   }
 
   private func updateValue(with event: DragGesture.Value) {
@@ -91,33 +96,33 @@ public struct Knob: View {
     #endif
 
     let delta = px * sensitivity * fine
+
     value = (anchor + delta).clamped(to: range)
 
     if !isDragging {
       isDragging = true
     }
   }
-
-  private var progress: Double {
-    (value - range.lowerBound) / (range.upperBound - range.lowerBound)
-  }
 }
 
 private struct Indicator: Shape {
+
   let trackWidth: CGFloat
+
   func path(in rect: CGRect) -> Path {
     let radius = rect.width * 0.5
     let indicatorRadius = radius - trackWidth / 3
     let center = CGPoint(x: rect.midX, y: rect.midY)
-
     var path = Path()
     path.move(to: center)
     path.addLine(to: CGPoint(x: center.x, y: center.y - indicatorRadius))
+
     return path
   }
 }
 
 private extension Comparable {
+
   func clamped(to limits: ClosedRange<Self>) -> Self {
     min(max(self, limits.lowerBound), limits.upperBound)
   }

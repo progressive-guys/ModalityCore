@@ -19,7 +19,9 @@ public struct WedgeShape: Shape {
       endAngle: geometry.end,
       clockwise: false
     )
+
     path.addLine(to: geometry[.bottomTrailing])
+
     path.addArc(
       center: geometry.center,
       radius: geometry.outerRadius,
@@ -27,6 +29,7 @@ public struct WedgeShape: Shape {
       endAngle: geometry.start,
       clockwise: true
     )
+
     path.closeSubpath()
 
     return path
@@ -35,14 +38,16 @@ public struct WedgeShape: Shape {
 
 public struct WedgeGeometry: Sendable {
 
-  public let start: Angle
   public let end: Angle
+  public let start: Angle
+
+  public let yShift: CGFloat
   public let innerRadius: CGFloat
   public let outerRadius: CGFloat
   public let centerRadius: CGFloat
+
   public let size: CGSize
   public let center: CGPoint
-  public let yShift: CGFloat
 
   public init(
     start: Angle,
@@ -61,6 +66,7 @@ public struct WedgeGeometry: Sendable {
 
     self.size = size
     self.yShift = minDemension * shiftFactor
+
     self.center = CGPoint(
       x: size.width / 2,
       y: size.height / 2 + yShift

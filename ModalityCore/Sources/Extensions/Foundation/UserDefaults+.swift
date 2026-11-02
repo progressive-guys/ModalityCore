@@ -1,7 +1,8 @@
-import Foundation
 import os
+import Foundation
 
 public extension UserDefaults {
+
   func set<C: Encodable>(codable: C, forKey key: String) {
     do {
       let encoded = try JSONEncoder().encode(codable)
@@ -13,10 +14,8 @@ public extension UserDefaults {
 
   func decode<T: Decodable>(_ type: T.Type = T.self, forKey key: String) -> T? {
     if let savedData = object(forKey: key) {
-
       do {
         guard let data = savedData as? Data else { return nil }
-
         let decoded = try JSONDecoder().decode(type, from: data)
         return decoded
       } catch {
@@ -42,5 +41,6 @@ public extension UserDefaults {
 }
 
 public extension Logger {
+
   static let userDefaults = Logger(category: "UserDefaults")
 }

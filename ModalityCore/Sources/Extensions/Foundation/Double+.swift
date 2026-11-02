@@ -14,11 +14,11 @@ extension Double {
     formatted(6)
   }
 
-  public func formatted(_ decimalPlaces: Int = 6) -> String {
-    String(format: "%.\(decimalPlaces)f", self)
-  }
-
   public var signValue: Double {
     self == 0 ? 0 : (self > 0 ? 1 : -1)
+  }
+
+  public func formatted(_ decimalPlaces: Int = 6) -> String {
+    String(format: "%.\(decimalPlaces)f", self)
   }
 }

@@ -1,21 +1,14 @@
-import ModalityCore
 import SwiftUI
+import ModalityCore
 
 #if DEBUG
 public struct DebugRenderingPerformanceFPS_HUD: View {
-  public static let isVisibleStorageKey = "DebugRenderingPerformanceFPS_HUD.isVisible"
+
   public static let defaultVisibility = false
-  @ObservedObject private var metrics: DebugRenderMetrics
-
-  @State private var fpsHistory: [Double] = []
-
-  @State private var lastFPSHistoryUpdate: Date?
-
-  @State private var warmupStartFrameCount: Int?
+  public static let isVisibleStorageKey = "DebugRenderingPerformanceFPS_HUD.isVisible"
 
   private let warmupFrameCount = 120
   private let maximumFPSHistoryCount = 40
-
   private let fpsHistoryMinimumInterval: TimeInterval = 0.25
 
   @MainActor
@@ -40,6 +33,7 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
         Text("FPS")
           .font(.system(size: 8, weight: .semibold))
           .foregroundStyle(.white.opacity(0.46))
+
         Text(wholeNumber(snapshot.fps))
           .font(.system(size: 24, weight: .semibold, design: .rounded))
           .monospacedDigit()
@@ -61,6 +55,7 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
             compactMetric("ms", value: millisecondsNumber(snapshot.latestFrameDuration))
             compactMetric("p95", value: millisecondsNumber(snapshot.p95FrameDuration))
             compactMetric("max", value: millisecondsNumber(snapshot.worstFrameDuration))
+
             compactMetric(
               "hitch",
               value: "\(snapshot.hitchCount)",
@@ -105,6 +100,7 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
       Text(title.uppercased())
         .font(.system(size: 7, weight: .semibold))
         .foregroundStyle(.white.opacity(0.42))
+
       Text(value)
         .font(.system(size: 9, weight: .semibold, design: .monospaced))
         .monospacedDigit()
@@ -120,6 +116,7 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
       Text(title.uppercased())
         .font(.system(size: 7, weight: .semibold))
         .foregroundStyle(.white.opacity(0.42))
+
       Text(value)
         .font(.system(size: 9, weight: .semibold, design: .monospaced))
         .monospacedDigit()
@@ -182,6 +179,7 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
           endPoint: CGPoint(x: 0, y: size.height)
         )
       )
+
       context.stroke(
         line,
         with: .color(.purple.opacity(0.94)),
@@ -202,7 +200,6 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
 
   private func averageFPS(fallback: Double) -> Double {
     guard !fpsHistory.isEmpty else { return fallback }
-
     return fpsHistory.reduce(0, +) / Double(fpsHistory.count)
   }
 
@@ -227,7 +224,6 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
 
   private func warmupFramesElapsed(_ snapshot: DebugRenderMetricsSnapshot) -> Int {
     guard let warmupStartFrameCount else { return 0 }
-
     return max(0, snapshot.totalFrameCount - warmupStartFrameCount)
   }
 
@@ -254,6 +250,7 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
 }
 
 private struct DebugRenderingPerformanceFPS_HUDOverlayModifier: ViewModifier {
+
   let enabled: Bool
 
   @AppStorage(DebugRenderingPerformanceFPS_HUD.isVisibleStorageKey)
@@ -300,6 +297,7 @@ private struct DebugRenderingPerformanceFPS_HUDOverlayModifier: ViewModifier {
 #endif
 
 public extension View {
+
   @MainActor
   @ViewBuilder
   func debugRenderingPerformanceFPS_HUD(enabled: Bool = true) -> some View {

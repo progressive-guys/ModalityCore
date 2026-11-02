@@ -4,11 +4,27 @@ public struct Shimmer: View {
 
   private let startingPoint: Alignment
 
+  @State private var phase: CGFloat = 0
+
   public init(startingPoint: Alignment) {
     self.startingPoint = startingPoint
   }
 
-  @State private var phase: CGFloat = 0
+  public var body: some View {
+    GeometryReader { geometry in
+      LinearGradient(
+        gradient: Gradient(colors: [.clear, .white.opacity(phase.lerp(from: 0, to: 0.5)), .clear]),
+        startPoint: gradientPoints.start,
+        endPoint: gradientPoints.end
+      )
+      .blendMode(.overlay)
+    }
+    .onAppear {
+      withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+        phase = 2
+      }
+    }
+  }
 
   private var gradientPoints: (start: UnitPoint, end: UnitPoint) {
     let (startX, endX) = gradientX(for: startingPoint.horizontal)
@@ -29,22 +45,6 @@ public struct Shimmer: View {
     case .top: return (phase - 1, phase)
     case .bottom: return (2 - phase, 1 - phase)
     default: return (0.5, 0.5)
-    }
-  }
-
-  public var body: some View {
-    GeometryReader { geometry in
-      LinearGradient(
-        gradient: Gradient(colors: [.clear, .white.opacity(phase.lerp(from: 0, to: 0.5)), .clear]),
-        startPoint: gradientPoints.start,
-        endPoint: gradientPoints.end
-      )
-      .blendMode(.overlay)
-    }
-    .onAppear {
-      withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-        phase = 2
-      }
     }
   }
 }

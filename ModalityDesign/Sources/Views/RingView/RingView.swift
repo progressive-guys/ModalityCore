@@ -2,8 +2,9 @@ import SwiftUI
 
 public struct RingView<Content: Equatable & Hashable>: View {
 
-  var ring: Ring<Content>
-  let onWedgeSelection: ((Ring<Content>.Wedge) -> Void)?
+  private let onWedgeSelection: ((Ring<Content>.Wedge) -> Void)?
+
+  private var ring: Ring<Content>
 
   public init(
     ring: Ring<Content>,
@@ -29,6 +30,7 @@ public struct RingView<Content: Equatable & Hashable>: View {
 }
 
 extension RingView: @preconcurrency Animatable {
+
   public var animatableData: Ring<Content>.AnimatableData {
     get { ring.animatableData }
     set { ring.animatableData = newValue }

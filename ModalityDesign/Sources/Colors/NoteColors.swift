@@ -1,6 +1,6 @@
-import SwiftMusicTheory
-import ModalityCore
 import SwiftUI
+import ModalityCore
+import SwiftMusicTheory
 
 public struct NoteColors: Sendable {
 

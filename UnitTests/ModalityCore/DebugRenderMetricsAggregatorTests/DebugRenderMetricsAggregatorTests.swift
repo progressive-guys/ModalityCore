@@ -1,8 +1,9 @@
-import Foundation
 import Testing
+import Foundation
 import ModalityCore
 
 struct DebugRenderMetricsAggregatorTests {
+
   @Test
   func stableSixtyHertzFrames() {
     var aggregator = DebugRenderMetricsAggregator(displayHz: 60)
@@ -60,7 +61,6 @@ struct DebugRenderMetricsAggregatorTests {
   @Test
   func delayedFrameIncrementsHitchEstimate() {
     var aggregator = DebugRenderMetricsAggregator(displayHz: 60)
-
     aggregator.recordFrame(timestamp: 0, displayHz: 60)
     aggregator.recordFrame(timestamp: 1 / 60, displayHz: 60)
     aggregator.recordFrame(timestamp: 3 / 60, displayHz: 60)
@@ -77,7 +77,6 @@ struct DebugRenderMetricsAggregatorTests {
   @Test
   func rollingWindowEvictsOldFrames() {
     var aggregator = DebugRenderMetricsAggregator(frameWindow: 1)
-
     aggregator.recordFrame(timestamp: 0, displayHz: 60)
     aggregator.recordFrame(timestamp: 0.1, displayHz: 60)
 

@@ -3,6 +3,7 @@ import SwiftUI
 public struct TagsView: View {
 
   public enum SelectionStyle {
+
     case notSelectable
     case selectable(Color)
 
@@ -22,6 +23,8 @@ public struct TagsView: View {
   private let selectionStyle: SelectionStyle
   private let alignment: HorizontalAlignment
 
+  @State private var selectedTags: Set<String> = []
+
   public init(
     tags: [String],
     tagColor: Color = .clear,
@@ -34,7 +37,13 @@ public struct TagsView: View {
     self.alignment = alignment
   }
 
-  @State var selectedTags: Set<String> = []
+  public var body: some View {
+    TagsLayout(alignment: alignment) {
+      ForEach(tags, id: \.self) { tag in
+        tagView(for: tag)
+      }
+    }
+  }
 
   private func toggleSelection(for tag: String) {
     if selectedTags.contains(tag) {
@@ -44,18 +53,11 @@ public struct TagsView: View {
     }
   }
 
-  public var body: some View {
-    TagsLayout(alignment: alignment) {
-      ForEach(tags, id: \.self) { tag in
-        tagView(for: tag)
-      }
-    }
-  }
-
   private func tagView(for tag: String) -> some View {
     HStack(alignment: .firstTextBaseline, spacing: TagsLayout.textSpacing) {
       Text("#")
         .font(.system(size: TagsLayout.hashTagFontSize, weight: .bold, design: .serif))
+
       Text(tag)
         .font(.system(size: TagsLayout.fontSize, weight: .thin, design: .monospaced))
     }
@@ -85,6 +87,7 @@ public struct TagsView: View {
 }
 
 public struct TagsLayout: Layout {
+
   public let alignment: HorizontalAlignment
 
   public init(alignment: HorizontalAlignment = .leading) {
@@ -93,11 +96,12 @@ public struct TagsLayout: Layout {
 
   public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
     let rows = calculateRows(proposal: proposal, subviews: subviews)
+
     let totalHeight = rows.reduce(0) { partialResult, row in
       partialResult + row.maxHeight + (partialResult > 0 ? Self.verticalTagSpacing : 0)
     }
-    let totalWidth = rows.map(\.totalWidth).max() ?? 0
 
+    let totalWidth = rows.map(\.totalWidth).max() ?? 0
     let finalWidth = min(totalWidth, proposal.width ?? .infinity)
 
     return CGSize(
@@ -117,6 +121,7 @@ public struct TagsLayout: Layout {
 
     for row in rows {
       let rowWidth = row.totalWidth
+
       let startX: CGFloat = switch alignment {
       case .leading:
         bounds.minX
@@ -165,6 +170,7 @@ public struct TagsLayout: Layout {
         if !currentRow.isEmpty {
           rows.append(TagRow(items: currentRow, totalWidth: currentRowWidth, maxHeight: currentRowMaxHeight))
         }
+
         currentRow = [TagRowItem(subview: subview, size: size)]
         currentRowWidth = size.width
         currentRowMaxHeight = size.height
@@ -180,24 +186,38 @@ public struct TagsLayout: Layout {
 }
 
 private struct TagRowItem {
-  let subview: LayoutSubview
+
   let size: CGSize
+  let subview: LayoutSubview
+
+  init(subview: LayoutSubview, size: CGSize) {
+    self.subview = subview
+    self.size = size
+  }
 }
 
 private struct TagRow {
-  let items: [TagRowItem]
-  let totalWidth: CGFloat
+
   let maxHeight: CGFloat
+  let totalWidth: CGFloat
+  let items: [TagRowItem]
+
+  init(items: [TagRowItem], totalWidth: CGFloat, maxHeight: CGFloat) {
+    self.items = items
+    self.totalWidth = totalWidth
+    self.maxHeight = maxHeight
+  }
 }
 
 extension TagsLayout {
-  static let hashTagFontSize: CGFloat = 10
+
   static let fontSize: CGFloat = 9
   static let textSpacing: CGFloat = 0
-  static let horizontalTextPaddings: CGFloat = 0
+  static let hashTagFontSize: CGFloat = 10
+  static let verticalTagSpacing: CGFloat = 2
   static let verticalTextPaddings: CGFloat = 1
   static let horizontalTagPaddings: CGFloat = 6
-  static let verticalTagSpacing: CGFloat = 2
+  static let horizontalTextPaddings: CGFloat = 0
 }
 
 #Preview {

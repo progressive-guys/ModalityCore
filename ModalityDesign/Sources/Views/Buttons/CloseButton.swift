@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct CloseButton: View {
 
-  @Environment(\.dismiss) var dismiss
+  @Environment(\.dismiss) private var dismiss
 
   public init() { }
 

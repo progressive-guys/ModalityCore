@@ -11,10 +11,10 @@ extension Ring {
         case circularLabel
       }
 
-      let type: ContentType
+      public let containing: Containing
       let font: Font
       let text: String
-      public let containing: Containing
+      let type: ContentType
 
       public init(type: ContentType, containing: Containing, font: Font, text: String) {
         self.type = type
@@ -24,15 +24,14 @@ extension Ring {
       }
     }
 
+    public let zIndex: Double
+    public let isFocused: Bool
+    public let content: Content
+
     public var id: String
     public private(set) var color: Color
     public private(set) var start: Angle
     public private(set) var width: Angle
-    public let zIndex: Double
-    public var end: Angle { start + width }
-    public var center: Angle { start + width / 2 }
-    public let isFocused: Bool
-    public let content: Content
 
     public init(
       id: String,
@@ -51,6 +50,9 @@ extension Ring {
       self.content = content
       self.isFocused = isFocused
     }
+
+    public var end: Angle { start + width }
+    public var center: Angle { start + width / 2 }
   }
 }
 

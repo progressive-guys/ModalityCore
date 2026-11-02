@@ -2,30 +2,47 @@ import SwiftSyntax
 
 extension StyleVisitor {
 
-  /// Groups properties by read visibility, static/let/var/attribute kind, type and attribute name.
+  /// Groups stored properties by read visibility, static/let/var/attribute kind, type and attribute name.
   /// Checks order across methods. Counts group size within consecutive property runs.
   /// Types and attribute kinds follow their first occurrence. Checks each conditional branch independently.
-  /// Separates different types and attribute kinds, plus groups with more than two declared properties.
+  /// Separates groups with more than three declared properties.
+  /// Separates stored let and var declarations regardless of group size.
+  /// Sorts stored properties by line length. Computed properties keep order within each effect group.
   /// Also separates computed properties longer than three lines from any adjacent member.
   func checkPropertyGrouping(_ members: MemberBlockItemListSyntax) {
     var run: [PropertyLayout] = []
     var properties: [SyntaxIdentifier: PropertyLayout] = [:]
     var counts: [SyntaxIdentifier: [[String]: Int]] = [:]
+
     for member in members {
-      if let declaration = member.decl.as(VariableDeclSyntax.self) {
+      switch (Syntax(member.decl).as(SyntaxEnum.self)) {
+      case .variableDecl(let declaration):
         let property = PropertyLayout(declaration)
-        run.append(property)
+
+        checkPropertyAttributes(declaration)
+
+        if property.isStored {
+          run.append(property)
+        } else {
+          countPropertyRun(run, counts: &counts)
+          run = []
+        }
+
         properties[declaration.id] = property
-      } else {
+
+      default:
         countPropertyRun(run, counts: &counts)
         run = []
       }
     }
+
     countPropertyRun(run, counts: &counts)
-    checkPropertyOrder(members.compactMap { properties[$0.decl.id] })
+    checkPropertyOrder(members)
+
     for (previous, current) in zip(members, members.dropFirst()) {
       let left = properties[previous.decl.id]
       let right = properties[current.decl.id]
+
       guard left != nil || right != nil,
             let spacing = layout.groupSpacing(between: previous, and: current),
             let token = current.decl.firstToken(viewMode: .sourceAccurate)
@@ -33,69 +50,107 @@ extension StyleVisitor {
 
       let longAccessor = left?.hasLongAccessor(in: layout) == true || right?.hasLongAccessor(in: layout) == true
       let largeGroup = separatesLargeGroup(left, right, counts: counts)
-      let differentType = left?.type != nil && right?.type != nil && left?.type != right?.type
-      let differentAnnotations = left != nil && right != nil && left?.annotations != right?.annotations
-      if longAccessor || largeGroup || differentType || differentAnnotations {
+      let sectionBoundary = left != nil && right != nil && left?.isStored != right?.isStored
+
+      let bindingBoundary = left?.isStored == true && right?.isStored == true
+        && left?.declaration.bindingSpecifier.text != right?.declaration.bindingSpecifier.text
+
+      let effectBoundary = left?.isStored == false && right?.isStored == false
+        && MemberOrderFormatter.effects(of: previous.decl) != MemberOrderFormatter.effects(of: current.decl)
+
+      if longAccessor || largeGroup || sectionBoundary || bindingBoundary || effectBoundary {
         if spacing.blankLines.count != 1 {
           let reason = if longAccessor {
             "Separate a computed property longer than three lines with one blank line."
-          } else if differentAnnotations {
-            "Separate properties with different attribute kinds with one blank line."
-          } else if differentType {
-            "Separate properties of different types with one blank line."
+
+          } else if bindingBoundary {
+            "Separate stored let and var declarations with one blank line."
+          } else if effectBoundary {
+            "Separate getter effect groups with one blank line."
+          } else if sectionBoundary {
+            "Separate stored and computed properties with one blank line."
           } else {
-            "Separate a property group of more than two elements with one blank line."
+            "Separate a property group of more than three elements with one blank line."
           }
+
+          fixSpacing(spacing.blankLines, required: 1, rule: .propertyGrouping)
           report(.propertyGrouping, token, reason: reason)
         }
-      } else if left != nil, right != nil,
-                spacing.blankLines.count != spacing.required
-      {
-        let reason = spacing.required == 0
-          ? "Keep single-line property groups of at most two elements together."
-          : "Separate multiline properties with one blank line."
-        report(.propertyGrouping, token, reason: reason)
+      } else if left != nil, right != nil, spacing.blankLines.count != spacing.required {
+        fixSpacing(spacing.blankLines, required: spacing.required, rule: .propertyGrouping)
+
+        report(
+          .propertyGrouping,
+          token,
+          reason: "Keep declaration groups compact and separate multiline properties with one blank line."
+        )
       }
     }
   }
 
-  private func checkPropertyOrder(_ properties: [PropertyLayout]) {
-    var visibility = 0
-    var kinds: [Int: Int] = [:]
-    var previous: [[String]: String] = [:]
-    var seen: [[String]: Set<String>] = [:]
-    for property in properties {
-      var reason: String?
-      if property.visibility < visibility {
-        reason = "Use this visibility order: open, public, internal, private, fileprivate."
-      } else if property.kind < kinds[property.visibility, default: 0] {
-        reason = "Use this property order: static, let, var, then attributed properties."
-      }
-      visibility = max(visibility, property.visibility)
-      kinds[property.visibility] = max(kinds[property.visibility, default: 0], property.kind)
-      if let type = property.type {
-        let prefix = [String(property.visibility), String(property.kind)]
-        for (group, value) in [(prefix, type), (prefix + [type], property.annotations.joined(separator: ","))] {
-          if previous[group] != value, seen[group, default: []].contains(value) {
-            reason = reason ?? (group.count == 2
-              ? "Keep properties of type \(type) together."
-              : "Keep properties with the same attribute kinds together."
-            )
-          }
+  /// Keeps property attributes inline through column 120. Preserves comments and multiline arguments.
+  private func checkPropertyAttributes(_ declaration: VariableDeclSyntax) {
+    let attributes = declaration.attributes.compactMap { $0.as(AttributeSyntax.self) }
 
-          previous[group] = value
-          seen[group, default: []].insert(value)
-        }
+    guard !attributes.isEmpty, attributes.count == declaration.attributes.count,
+          attributes.allSatisfy({ layout.line($0) == layout.endLine($0) }),
+          let last = attributes.last?.lastToken(viewMode: .sourceAccurate),
+          let body = last.nextToken(viewMode: .sourceAccurate)
+    else { return }
+
+    let bytes = Array(source.utf8)
+
+    let bodyText = String(decoding: bytes[
+      body.positionAfterSkippingLeadingTrivia.utf8Offset..<declaration.endPositionBeforeTrailingTrivia.utf8Offset
+    ], as: UTF8.self)
+
+    let firstLine = bodyText.split(whereSeparator: { $0.isNewline }).first.map(String.init) ?? ""
+    let attributeText = attributes.map(\.trimmedDescription).joined(separator: " ")
+    let wraps = layout.indent(declaration) + attributeText.count + 1 + firstLine.count > 120
+    let ends = attributes.compactMap { $0.lastToken(viewMode: .sourceAccurate) }
+    let starts = Array(attributes.dropFirst()).compactMap { $0.firstToken(viewMode: .sourceAccurate) } + [body]
+
+    // A comment between attributes or before the declaration keeps its original position.
+    guard zip(ends, starts).allSatisfy({ left, right in
+      let gap = left.endPositionBeforeTrailingTrivia.utf8Offset..<right.positionAfterSkippingLeadingTrivia.utf8Offset
+      return String(decoding: bytes[gap], as: UTF8.self).allSatisfy(\.isWhitespace)
+    })
+    else { return }
+
+    for (left, right) in zip(ends, starts) {
+      let replacement = wraps && right.id == body.id ? lineBreak(indent: layout.indent(declaration)) : " "
+      let range = left.endPositionBeforeTrailingTrivia.utf8Offset..<right.positionAfterSkippingLeadingTrivia.utf8Offset
+
+      guard String(decoding: bytes[range], as: UTF8.self) != replacement else { continue }
+      if permitsFix(.propertyGrouping) { gap(after: left, before: right, with: replacement) }
+
+      report(.propertyGrouping, right, reason: "Keep property attributes inline unless the line exceeds 120 columns.")
+    }
+  }
+
+  private func checkPropertyOrder(_ members: MemberBlockItemListSyntax) {
+    let grouping = PropertyGrouping(members, layout: layout)
+    let ranks = Dictionary(uniqueKeysWithValues: grouping.sorted.enumerated().map { ($0.element.member.id, $0.offset) })
+    var previous = 0
+
+    for slot in grouping.slots {
+      let rank = ranks[slot.member.id, default: 0]
+
+      if rank < previous {
+        report(
+          .propertyGrouping,
+          slot.property.declaration.bindingSpecifier,
+          reason: "Group stored properties by visibility, kind, type and attribute; sort each block by length."
+        )
       }
-      if let reason { report(.propertyGrouping, property.declaration.bindingSpecifier, reason: reason) }
+
+      previous = max(previous, rank)
     }
   }
 
   private func countPropertyRun(_ properties: [PropertyLayout], counts: inout [SyntaxIdentifier: [[String]: Int]]) {
-    var sizes: [[String]: Int] = [:]
-    for property in properties {
-      for group in Set(property.groups) { sizes[group, default: 0] += property.elementCount }
-    }
+    let sizes = PropertyGrouping.sizes(properties)
+
     for property in properties {
       counts[property.declaration.id] = sizes
     }
@@ -106,11 +161,12 @@ extension StyleVisitor {
     _ right: PropertyLayout?,
     counts: [SyntaxIdentifier: [[String]: Int]]
   ) -> Bool {
-    let leftGroups = Set(left?.groups ?? [])
-    let rightGroups = Set(right?.groups ?? [])
+    let leftGroups = Set(left?.isStored == true ? left?.groups ?? [] : [])
+    let rightGroups = Set(right?.isStored == true ? right?.groups ?? [] : [])
     let leftCounts = left.flatMap { counts[$0.declaration.id] } ?? [:]
     let rightCounts = right.flatMap { counts[$0.declaration.id] } ?? [:]
-    return leftGroups.subtracting(rightGroups).contains { leftCounts[$0, default: 0] > 2 }
-      || rightGroups.subtracting(leftGroups).contains { rightCounts[$0, default: 0] > 2 }
+
+    return leftGroups.subtracting(rightGroups).contains { leftCounts[$0, default: 0] > 3 }
+      || rightGroups.subtracting(leftGroups).contains { rightCounts[$0, default: 0] > 3 }
   }
 }

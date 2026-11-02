@@ -5,6 +5,7 @@ import ProjectDescription
 #endif
 
 public extension Settings {
+
   /// Set the shared language, platform and diagnostic options.
   static func modalitySettings(
     base: ProjectDescription.SettingsDictionary = [:],

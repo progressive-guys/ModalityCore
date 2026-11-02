@@ -2,6 +2,7 @@ import SwiftUI
 
 @propertyWrapper
 public enum CodableColor: Codable, Equatable, Sendable {
+
   case primary
   case white
   case rgba(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
@@ -13,6 +14,7 @@ public enum CodableColor: Codable, Equatable, Sendable {
 
     default:
       let components = wrappedValue.components
+
       self = .rgba(
         red: components.red,
         green: components.green,

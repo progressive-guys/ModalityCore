@@ -7,6 +7,7 @@ import UIKit
 #endif
 
 extension String {
+
   public func requiredSize(for font: UXFont) -> CGSize {
     (self as NSString).size(withAttributes: [.font: font])
   }

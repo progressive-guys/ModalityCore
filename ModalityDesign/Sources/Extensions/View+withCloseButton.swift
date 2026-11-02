@@ -1,6 +1,7 @@
 import SwiftUI
 
 public extension View {
+
   var withCloseButton: some View {
     modifier(WithCloseButtonSheetModifier())
   }
@@ -12,6 +13,7 @@ fileprivate struct WithCloseButtonSheetModifier: ViewModifier {
     VStack(spacing: 0) {
       HStack {
         Spacer()
+
         CloseButton()
           .fixedSize()
           .padding(.top, 16)

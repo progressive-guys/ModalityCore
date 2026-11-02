@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct VerticalAndCornerOutline: Shape {
+
   public var radius: CGFloat
   public var corners: RectCorner
   public var hasLeadingEdge: Bool
@@ -15,12 +16,10 @@ public struct VerticalAndCornerOutline: Shape {
 
   public func path(in rect: CGRect) -> Path {
     let r = min(radius, min(rect.width, rect.height) / 2)
-
     let tl = corners.contains(.topLeft) ? r : 0
     let tr = corners.contains(.topRight) ? r : 0
     let bl = corners.contains(.bottomLeft) ? r : 0
     let br = corners.contains(.bottomRight) ? r : 0
-
     var path = Path()
 
     if hasLeadingEdge {

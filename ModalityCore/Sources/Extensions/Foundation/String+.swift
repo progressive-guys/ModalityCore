@@ -11,12 +11,12 @@ public extension String {
 
 public extension String {
 
-  func isMatch(regex regexPattern: String) -> Bool {
-    range(of: regexPattern, options: .regularExpression) != nil
-  }
-
   var lastPathComponent: String {
     (self as NSString).lastPathComponent
+  }
+
+  func isMatch(regex regexPattern: String) -> Bool {
+    range(of: regexPattern, options: .regularExpression) != nil
   }
 }
 
@@ -28,6 +28,7 @@ public extension String.StringInterpolation {
 }
 
 public extension String.StringInterpolation {
+
   mutating func appendInterpolation(json JSONData: Data) {
     guard
       let JSONObject = try? JSONSerialization.jsonObject(with: JSONData, options: []),
@@ -36,6 +37,7 @@ public extension String.StringInterpolation {
       appendInterpolation(String(data: JSONData, encoding: .utf8))
       return
     }
+
     appendInterpolation("\(String(decoding: jsonData, as: UTF8.self))")
   }
 }

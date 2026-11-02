@@ -1,6 +1,7 @@
 import Foundation
 
 public extension FileManager {
+
   func findFiles(in directory: URL, type: String) -> [URL] {
     guard
       let enumerator = enumerator(

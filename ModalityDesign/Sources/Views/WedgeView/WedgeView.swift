@@ -3,8 +3,9 @@ import ModalityCore
 
 public struct WedgeView<Content: Equatable & Hashable>: View {
 
-  var wedge: Ring<Content>.Wedge
-  let ring: Ring<Content>
+  private let ring: Ring<Content>
+
+  private var wedge: Ring<Content>.Wedge
 
   public init(
     wedge: Ring<Content>.Wedge,
@@ -32,6 +33,7 @@ public struct WedgeView<Content: Equatable & Hashable>: View {
         .overlay {
           Group {
             let angle = wedge.center + .degrees(90)
+
             switch wedge.content.type {
             case .label:
               iOS16AnimationFixedLabel(
@@ -65,6 +67,7 @@ public struct WedgeView<Content: Equatable & Hashable>: View {
 }
 
 extension WedgeView: @preconcurrency Animatable {
+
   public var animatableData: Ring<Content>.Wedge.AnimatableData {
     get { wedge.animatableData }
     set { wedge.animatableData = newValue }
@@ -73,9 +76,15 @@ extension WedgeView: @preconcurrency Animatable {
 
 fileprivate struct iOS16AnimationFixedLabel: View {
 
-  let text: String
-  let rotation: Angle
-  let radius: Double
+  private let text: String
+  private let radius: Double
+  private let rotation: Angle
+
+  init(text: String, rotation: Angle, radius: Double) {
+    self.text = text
+    self.rotation = rotation
+    self.radius = radius
+  }
 
   var body: some View {
     VStack {

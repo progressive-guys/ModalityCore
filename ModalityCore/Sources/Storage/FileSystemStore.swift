@@ -2,9 +2,16 @@ import Foundation
 
 /// Synchronous file operations. Call from a worker task when used by a UI owner.
 public struct FileSystemStore<Value: Codable & Sendable>: Sendable {
+
   public struct Entry: Sendable {
-    public let value: Value
+
     public let url: URL
+    public let value: Value
+
+    init(value: Value, url: URL) {
+      self.value = value
+      self.url = url
+    }
   }
 
   private let decode: @Sendable (Data) throws -> Value

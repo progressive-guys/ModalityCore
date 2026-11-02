@@ -1,6 +1,7 @@
 import SwiftUI
 
 public enum EitherShape<First: Shape, Second: Shape>: Shape {
+
   case first(First)
   case second(Second)
 

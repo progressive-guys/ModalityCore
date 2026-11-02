@@ -11,6 +11,7 @@ extension BinaryFloatingPoint {
   static func tolerance(_ a: Self, _ b: Self, ulps: Self = 16) -> Self {
     // relative tolerance: ulps * ULP at the larger magnitude
     let rel = ulps * max(a.magnitude, b.magnitude) * Self.ulpOfOne
+
     // absolute floor: ulps * ULP at 1.0 (works well near zero)
     let absFloor = ulps * Self.ulpOfOne
     return max(rel, absFloor)

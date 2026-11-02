@@ -6,7 +6,14 @@
 # Only the listed SwiftFormat rules change code. All other rules are disabled.
 # Existing UIStressKit switch patterns fail indent. Enable it after those sources are corrected.
 # --enable indent
---rules blankLineAfterSwitchCase,conditionalAssignment,elseOnSameLine,wrapArguments,wrapIfExpressionBodies,trailingSpace
+--rules blankLineAfterSwitchCase,conditionalAssignment,elseOnSameLine,wrapArguments,wrapIfExpressionBodies,trailingSpace,semicolons,sortImports
+# SwiftStyle property_grouping wraps property attributes only above 120 columns.
+# sortImports: sort imported module paths by length. Keep equal lengths in source order.
+# Keep imports inside their conditional branches and existing file sections.
+--import-grouping length
+--hoist-imports preserve
+# semicolons: put statements on separate lines, including assignments followed by return.
+--semicolons never
 # blankLineAfterSwitchCase: add separation after multiline switch cases.
 # SwiftStyle checks both compact and multiline case boundaries.
 --blank-line-after-switch-case multiline-only
@@ -30,10 +37,10 @@
 --wrap-return-type never
 # wrapIfExpressionBodies: use multiline bodies in assigned if expressions.
 # indent aligns nested blocks. trailingSpace removes spaces at line ends.
-# SwiftLint checks line length. SwiftFormat formats existing list breaks.
+# SwiftFormat wraps lists that exceed 120 columns and formats existing list breaks.
 # SwiftStyle checks leading binary operators, arithmetic boundaries and other closing delimiters.
 # Keep wrap disabled: its line breaks do not enforce the SwiftStyle operator policy.
---max-width none
+--max-width 120
 --wrap-ternary before-operators
 # Skip fixtures, dependencies and build output during formatting.
 # Active Codex checkouts can have a parent directory named worktrees.

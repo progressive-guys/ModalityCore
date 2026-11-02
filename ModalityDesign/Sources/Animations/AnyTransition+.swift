@@ -1,6 +1,7 @@
 import SwiftUI
 
 public extension AnyTransition {
+
   @MainActor static let scaleAndFade = AnyTransition.modifier(
     active: ScaleAndFade(isEnabled: true),
     identity: ScaleAndFade(isEnabled: false)
@@ -8,6 +9,7 @@ public extension AnyTransition {
 }
 
 struct ScaleAndFade: ViewModifier {
+
   var isEnabled: Bool
 
   func body(content: Content) -> some View {

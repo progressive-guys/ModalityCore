@@ -1,5 +1,5 @@
-import SwiftUI
 import os
+import SwiftUI
 #if canImport(UIKit)
 import UIKit
 #elseif canImport(AppKit)
@@ -10,21 +10,20 @@ import AppKit
 @MainActor
 public protocol Feature: Identifiable {
 
-  var id: ObjectIdentifier { get }
-
   // Configuration data passed at creation: ID, initial state, display options
   associatedtype Input
-  var input: Input { get }
 
   // Callbacks the module triggers: Navigation actions, data emissions
   associatedtype Output
-  var output: Output { get }
 
   // Reactive (Combine Publishers, Observable objects, RxSwift Streams)
   associatedtype State
-  var state: State { get }
-
   associatedtype Body: View
+
+  var id: ObjectIdentifier { get }
+  var input: Input { get }
+  var output: Output { get }
+  var state: State { get }
   var view: Body { get }
 
   #if canImport(UIKit)
@@ -37,11 +36,12 @@ public protocol Feature: Identifiable {
 extension Feature {
 
   public var input: Void { () }
-  public var output: Void { () }
   public var state: Void { () }
+  public var output: Void { () }
 }
 
 extension Feature {
+
   #if canImport(UIKit)
   public var vc: UIViewController {
     UIHostingController(rootView: view)
@@ -55,13 +55,17 @@ extension Feature {
 }
 
 public extension Feature where ID == ObjectIdentifier {
+
   nonisolated var id: ObjectIdentifier { ObjectIdentifier(Self.self) }
 }
 
 @MainActor
 public struct MockFeature: Feature {
+
   public typealias Input = String
+
   public typealias Output = Void
+
   public typealias state = Void
 
   public let input: Input

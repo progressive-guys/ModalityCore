@@ -1,11 +1,13 @@
 import SwiftUI
 
 public struct StateToggleButton: View {
-  let help: String
-  let systemImage: String
-  let systemImageFilled: String
-  let accentColor: Color
-  @Binding var isOn: Bool
+
+  private let help: String
+  private let accentColor: Color
+  private let systemImage: String
+  private let systemImageFilled: String
+
+  @Binding private var isOn: Bool
 
   public init(
     help: String,

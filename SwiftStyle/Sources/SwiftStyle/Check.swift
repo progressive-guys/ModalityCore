@@ -1,25 +1,37 @@
 import Foundation
-import SwiftOperators
 import SwiftParser
-import SwiftParserDiagnostics
 import SwiftSyntax
+import SwiftOperators
+import SwiftParserDiagnostics
 
 struct LintDiagnostic: Encodable {
-  let file: String
-  let line: Int
-  let character: Int
-  let ruleID: String
-  let reason: String
-  let severity = "Error"
 
   private enum CodingKeys: String, CodingKey {
+
     case file, line, character
     case ruleID = "rule_id"
     case reason, severity
   }
+
+  let file: String
+  let ruleID: String
+  let reason: String
+  let severity = "Error"
+
+  let line: Int
+  let character: Int
+
+  init(file: String, line: Int, character: Int, ruleID: String, reason: String) {
+    self.file = file
+    self.line = line
+    self.character = character
+    self.ruleID = ruleID
+    self.reason = reason
+  }
 }
 
 extension LintDiagnostic {
+
   static let rule = "complex_control_flow_condition"
   static let message = "Упростите условие: вынесите вызовы и вычисления в именованные переменные."
 
@@ -31,9 +43,11 @@ extension LintDiagnostic {
 /// Checks if, guard and executable where clauses in for, case and catch, including bindings and patterns.
 /// Reports one error per construct at its keyword. Skips while, repeat and generic constraints.
 final class ConditionVisitor: SyntaxVisitor {
+
+  private(set) var diagnostics: [LintDiagnostic] = []
+
   private let file: String
   private let converter: SourceLocationConverter
-  private(set) var diagnostics: [LintDiagnostic] = []
 
   init(file: String, tree: SourceFileSyntax) {
     self.file = file
@@ -72,6 +86,7 @@ final class ConditionVisitor: SyntaxVisitor {
       @unknown default: false
       }
     }
+
     if hasComplexCondition {
       report(keyword)
     }
@@ -79,6 +94,7 @@ final class ConditionVisitor: SyntaxVisitor {
 
   private func report(_ token: TokenSyntax) {
     let location = converter.location(for: token.positionAfterSkippingLeadingTrivia)
+
     diagnostics.append(LintDiagnostic(
       file: file,
       line: location.line,
@@ -91,49 +107,80 @@ final class ConditionVisitor: SyntaxVisitor {
 
 @main
 enum SwiftStyle {
+
   static func main() {
     do {
       var arguments = Array(CommandLine.arguments.dropFirst())
       let json = arguments.contains("--json")
+
       arguments.removeAll { $0 == "--json" }
+
+      let fix = arguments.contains("--fix")
+
+      arguments.removeAll { $0 == "--fix" }
+
       var selectedRules: Set<String>?
+
       if let index = arguments.firstIndex(of: "--rules") {
         guard index + 1 < arguments.count else { throw CheckError.invalidArguments }
 
         let names = Set(arguments[index + 1].split(separator: ",").map(String.init))
         let known = Set(StyleRule.allCases.map(\.rawValue) + [LintDiagnostic.rule])
+
         guard !names.isEmpty, names.isSubset(of: known) else { throw CheckError.invalidArguments }
 
         selectedRules = names
         arguments.removeSubrange(index...index + 1)
       }
+
       var diagnostics: [LintDiagnostic] = []
+
       if arguments == ["--stdin"] {
         let data = FileHandle.standardInput.readDataToEndOfFile()
+
         guard let source = String(data: data, encoding: .utf8) else { throw CheckError.invalidUTF8 }
 
-        diagnostics = check(source, file: "<stdin>")
+        if fix {
+          guard !json else { throw CheckError.invalidArguments }
+
+          let formatted = SourceFormatter.format(source, file: "<stdin>", rules: selectedRules)
+          FileHandle.standardOutput.write(Data(formatted.utf8))
+          diagnostics = check(formatted, file: "<stdin>")
+        } else {
+          diagnostics = check(source, file: "<stdin>")
+        }
       } else {
         guard arguments.allSatisfy({ !$0.hasPrefix("--") }) else { throw CheckError.invalidArguments }
 
         let inputs = arguments.isEmpty ? ["."] : arguments
+
         for file in try files(in: inputs) {
           let source = try String(contentsOf: file, encoding: .utf8)
-          diagnostics += check(source, file: file.path)
+          let formatted = fix ? SourceFormatter.format(source, file: file.path, rules: selectedRules) : source
+          if formatted != source { try formatted.write(to: file, atomically: true, encoding: .utf8) }
+
+          diagnostics += check(formatted, file: file.path)
         }
       }
+
       if let selectedRules {
         diagnostics = diagnostics.filter { selectedRules.contains($0.ruleID) || $0.ruleID == "swift_parser" }
       }
+
       if json {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         FileHandle.standardOutput.write(try encoder.encode(diagnostics))
       } else {
         for diagnostic in diagnostics {
-          print(diagnostic.output)
+          if fix, arguments == ["--stdin"] {
+            FileHandle.standardError.write(Data((diagnostic.output + "\n").utf8))
+          } else {
+            print(diagnostic.output)
+          }
         }
       }
+
       exit(diagnostics.isEmpty ? 0 : 2)
     } catch {
       FileHandle.standardError.write(Data("SwiftStyle: \(error)\n".utf8))
@@ -147,9 +194,11 @@ enum SwiftStyle {
     let parsed = Parser.parse(source: source)
     let parserDiagnostics = ParseDiagnosticsGenerator.diagnostics(for: parsed)
     let converter = SourceLocationConverter(fileName: file, tree: parsed)
+
     if !parserDiagnostics.isEmpty {
       return parserDiagnostics.map { diagnostic in
         let location = converter.location(for: diagnostic.position)
+
         return LintDiagnostic(
           file: file,
           line: location.line,
@@ -159,61 +208,20 @@ enum SwiftStyle {
         )
       }
     }
+
     var operators = OperatorTable.standardOperators
     operators.addSourceFile(parsed, errorHandler: { _ in })
+
     let folded = operators.foldAll(parsed, errorHandler: { _ in })
     let visitor = ConditionVisitor(file: file, tree: parsed)
     visitor.walk(folded)
+
     let style = StyleVisitor(file: file, source: source, tree: parsed)
     style.walk(folded)
+
     return (visitor.diagnostics + style.diagnostics).sorted {
       ($0.line, $0.character, $0.ruleID) < ($1.line, $1.character, $1.ruleID)
     }
-  }
-
-  private static func files(in inputs: [String]) throws -> [URL] {
-    let manager = FileManager.default
-    var result = Set<URL>()
-    for input in inputs {
-      let url = URL(fileURLWithPath: input).standardizedFileURL
-      var directory: ObjCBool = false
-      guard manager.fileExists(atPath: url.path, isDirectory: &directory) else { throw CheckError.missingInput(input) }
-
-      if !directory.boolValue {
-        if url.pathExtension == "swift", !excluded(url) {
-          result.insert(url)
-        }
-
-        continue
-      }
-      var readError: (any Error)?
-      guard
-        let enumerator = manager.enumerator(
-          at: url,
-          includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
-          errorHandler: { _, error in readError = error; return false }
-        )
-      else { throw CheckError.missingInput(input) }
-
-      for case let file as URL in enumerator {
-        if excluded(file) {
-          enumerator.skipDescendants()
-          continue
-        }
-
-        let values = try file.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
-        if values.isSymbolicLink == true {
-          enumerator.skipDescendants()
-          continue
-        }
-
-        if file.pathExtension == "swift", values.isRegularFile == true {
-          result.insert(file.standardizedFileURL)
-        }
-      }
-      if let readError { throw readError }
-    }
-    return result.sorted { $0.path < $1.path }
   }
 
   private static func excluded(_ url: URL) -> Bool {
@@ -228,26 +236,83 @@ enum SwiftStyle {
       "Evidence",
       "perf",
     ])
+
     let path = url.pathComponents.joined(separator: "/")
+
     if path.contains("/SwiftStyle/Tests/Fixtures") { return true }
 
     return url.pathComponents.contains { component in
       directories.contains(component) || component.hasSuffix(".xcodeproj") || component.hasSuffix(".xcworkspace")
     }
   }
+
+  private static func files(in inputs: [String]) throws -> [URL] {
+    let manager = FileManager.default
+    var result = Set<URL>()
+
+    for input in inputs {
+      let url = URL(fileURLWithPath: input).standardizedFileURL
+      var directory: ObjCBool = false
+
+      guard manager.fileExists(atPath: url.path, isDirectory: &directory) else { throw CheckError.missingInput(input) }
+
+      if !directory.boolValue {
+        if url.pathExtension == "swift", !excluded(url) {
+          result.insert(url)
+        }
+
+        continue
+      }
+
+      var readError: (any Error)?
+
+      guard
+        let enumerator = manager.enumerator(
+          at: url,
+          includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
+          errorHandler: { _, error in readError = error
+          return false }
+        )
+      else { throw CheckError.missingInput(input) }
+
+      for case let file as URL in enumerator {
+        if excluded(file) {
+          enumerator.skipDescendants()
+          continue
+        }
+
+        let values = try file.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+
+        if values.isSymbolicLink == true {
+          enumerator.skipDescendants()
+          continue
+        }
+
+        if file.pathExtension == "swift", values.isRegularFile == true {
+          result.insert(file.standardizedFileURL)
+        }
+      }
+
+      if let readError { throw readError }
+    }
+
+    return result.sorted { $0.path < $1.path }
+  }
 }
 
 enum CheckError: Error {
+
   case invalidUTF8
   case invalidArguments
   case missingInput(String)
 }
 
 extension CheckError: CustomStringConvertible {
+
   var description: String {
     switch self {
     case .invalidUTF8: "Input must use UTF-8."
-    case .invalidArguments: "Use --json, --stdin, --rules name1,name2, or source paths."
+    case .invalidArguments: "Use --fix, --json, --stdin, --rules name1,name2, or source paths. --fix --stdin outputs source; omit --json."
     case .missingInput(let path): "Cannot read input: \(path)"
     }
   }

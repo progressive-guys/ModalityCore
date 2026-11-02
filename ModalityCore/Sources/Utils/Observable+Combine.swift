@@ -30,7 +30,6 @@ public extension Observable where Self: AnyObject & Sendable {
 
       Task { @MainActor in
         onChange(self[keyPath: keyPath])
-
         self.withContinuousObservation(keyPath, onChange: onChange)
       }
     }

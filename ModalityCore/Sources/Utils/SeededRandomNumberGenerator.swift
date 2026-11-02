@@ -1,4 +1,5 @@
 public struct SeededRandomNumberGenerator: RandomNumberGenerator {
+
   private var state: UInt64
 
   public init(seed: UInt64) {

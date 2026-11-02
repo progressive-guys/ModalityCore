@@ -2,10 +2,12 @@ import SwiftUI
 
 public struct CircularLabel: View {
 
-  let text: String
-  let radius: Double
-  let startAngle: Angle
-  let isUpsideDown: Bool
+  private let text: String
+  private let radius: Double
+  private let startAngle: Angle
+  private let isUpsideDown: Bool
+
+  @State private var textWidths: [Int: Double] = [:]
 
   public init(text: String, radius: Double, startAngle: Angle) {
     self.radius = radius
@@ -13,6 +15,7 @@ public struct CircularLabel: View {
 
     let degrees = {
       let degrees = Int(startAngle.degrees.rounded()) % 360
+
       return if degrees < -180 {
         degrees + 360
       } else if degrees >= 180 {
@@ -25,8 +28,6 @@ public struct CircularLabel: View {
     self.isUpsideDown = abs(degrees) > 90
     self.text = isUpsideDown ? String(text.reversed()) : text
   }
-
-  @State var textWidths: [Int: Double] = [:]
 
   public var body: some View {
     ZStack {
@@ -72,7 +73,9 @@ public struct CircularLabel: View {
 
 @MainActor
 struct WidthPreferenceKey: @preconcurrency PreferenceKey {
+
   static var defaultValue: Double = 0
+
   static func reduce(value: inout Double, nextValue: () -> Double) {
     value = nextValue()
   }

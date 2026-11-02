@@ -3,11 +3,13 @@ import SwiftUI
 
 /// A progress-driven bottom sheet for presenting controls above app content.
 public struct BottomView<Content: View>: View {
-  @Binding private var progress: CGFloat
+
   private let maxHeight: CGFloat
   private let content: () -> Content
-  @State private var dragStartProgress: CGFloat?
+
+  @Binding private var progress: CGFloat
   @State private var scrollViewDragging = false
+  @State private var dragStartProgress: CGFloat?
 
   public init(
     progress: Binding<CGFloat>,
@@ -17,10 +19,6 @@ public struct BottomView<Content: View>: View {
     _progress = progress
     self.maxHeight = maxHeight
     self.content = content
-  }
-
-  private var sheetOffset: CGFloat {
-    maxHeight * (1 - progress)
   }
 
   public var body: some View {
@@ -47,6 +45,10 @@ public struct BottomView<Content: View>: View {
     }
   }
 
+  private var sheetOffset: CGFloat {
+    maxHeight * (1 - progress)
+  }
+
   private var handle: some View {
     RoundedRectangle(cornerRadius: 2)
       .fill(.secondary.opacity(0.5))
@@ -55,27 +57,15 @@ public struct BottomView<Content: View>: View {
       .frame(maxWidth: .infinity)
   }
 
-  private func handleOverscroll(translation: CGFloat) {
-    if !scrollViewDragging {
-      scrollViewDragging = true
-      dragStartProgress = progress
-    }
-    let startProgress = dragStartProgress ?? progress
-    progress = min(1, max(0, startProgress - translation / maxHeight))
-  }
-
-  private func handleOverscrollEnded(translation: CGFloat, velocity: CGFloat) {
-    scrollViewDragging = false
-    snap(translation: translation, velocity: velocity)
-  }
-
   private var dragGesture: some Gesture {
     DragGesture()
       .onChanged { value in
         let startProgress = dragStartProgress ?? progress
+
         if dragStartProgress == nil {
           dragStartProgress = progress
         }
+
         progress = min(1, max(0, startProgress - value.translation.height / maxHeight))
       }
       .onEnded { value in
@@ -86,8 +76,25 @@ public struct BottomView<Content: View>: View {
       }
   }
 
+  private func handleOverscroll(translation: CGFloat) {
+    if !scrollViewDragging {
+      scrollViewDragging = true
+      dragStartProgress = progress
+    }
+
+    let startProgress = dragStartProgress ?? progress
+
+    progress = min(1, max(0, startProgress - translation / maxHeight))
+  }
+
+  private func handleOverscrollEnded(translation: CGFloat, velocity: CGFloat) {
+    scrollViewDragging = false
+    snap(translation: translation, velocity: velocity)
+  }
+
   private func snap(translation: CGFloat, velocity: CGFloat) {
     let threshold = maxHeight * 0.1
+
     withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
       if translation > threshold || velocity > 100 {
         progress = 0
@@ -97,11 +104,13 @@ public struct BottomView<Content: View>: View {
         progress = progress > 0.5 ? 1 : 0
       }
     }
+
     dragStartProgress = nil
   }
 }
 
 public extension View {
+
   /// Shrinks and lifts content in sync with a `BottomView` opening.
   func bottomViewTransform(progress: CGFloat, height: CGFloat, sheetShare: CGFloat) -> some View {
     let maxOffset = height * (sheetShare / 2)

@@ -29,9 +29,11 @@ public extension View {
 }
 
 public struct ErrorFlagBorderModifier: ViewModifier {
-  @Binding private var isError: Bool
-  @Binding private var text: String
+
   private let cornerRadius: CGFloat
+
+  @Binding private var text: String
+  @Binding private var isError: Bool
 
   public init(isError: Binding<Bool>, text: Binding<String>, cornerRadius: CGFloat) {
     self._isError = isError

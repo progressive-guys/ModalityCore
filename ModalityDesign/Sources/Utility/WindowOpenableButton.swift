@@ -1,7 +1,8 @@
-import SwiftUI
 import os
+import SwiftUI
 
 public struct WindowID: Sendable, RawRepresentable, Hashable {
+
   public let rawValue: String
 
   public init(rawValue: String) {
@@ -11,19 +12,20 @@ public struct WindowID: Sendable, RawRepresentable, Hashable {
 
 public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
 
-  @ViewBuilder let label: () -> Label
-  @ViewBuilder var windowContent: () -> WindowContent
-  let windowTitle: String?
-  let windowId: WindowID?
-  @State var isWindowOpened = false
+  private let windowId: WindowID?
+  private let windowTitle: String?
+  @ViewBuilder private let label: () -> Label
+  @ViewBuilder private let windowContent: () -> WindowContent
 
   #if os(macOS)
-  @State var window: NSWindow?
+  @State private var window: NSWindow?
   @State private var windowClosingDelegate: WindowClosingDelegate?
   #elseif os(visionOS)
   @Environment(\.openWindow) private var openWindow
   @Environment(\.dismissWindow) private var dismissWindow
   #endif
+
+  @State private var isWindowOpened = false
 
   public init(
     windowTitle: String? = nil,
@@ -37,8 +39,7 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
     self.windowContent = windowContent
   }
 
-  @ViewBuilder
-  public var body: some View {
+  @ViewBuilder public var body: some View {
     Button(
       action: {
         #if os(macOS)
@@ -49,6 +50,7 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
           window = windowContent()
             .openInWindow(title: windowTitle, sender: self, windowClosingDelegate: windowClosingDelegate)
         }
+
         isWindowOpened.toggle()
         #elseif os(visionOS)
         if let windowId {
@@ -57,6 +59,7 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
           } else {
             openWindow(id: windowId.rawValue)
           }
+
           isWindowOpened.toggle()
         }
         #else
@@ -86,6 +89,7 @@ fileprivate extension View {
     window.styleMask = [.miniaturizable, .closable, .titled, .fullSizeContentView, .resizable]
     window.titlebarAppearsTransparent = true
     window.titleVisibility = .hidden
+
     return window
   }
 }

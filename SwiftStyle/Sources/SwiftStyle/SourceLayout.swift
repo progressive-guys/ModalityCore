@@ -2,8 +2,9 @@ import Foundation
 import SwiftSyntax
 
 struct SourceLayout {
-  let converter: SourceLocationConverter
+
   let lines: [String]
+  let converter: SourceLocationConverter
 
   init(source: String, file: String, tree: SourceFileSyntax) {
     converter = SourceLocationConverter(fileName: file, tree: tree)
@@ -28,10 +29,12 @@ struct SourceLayout {
   ) -> (blankLines: Range<Int>, required: Int)? {
     let previousEnd = commentedEndLine(previous)
     let currentStart = commentedStartLine(current, ignoringSectionMarkers: ignoringSectionMarkers)
+
     guard previousEnd < currentStart else { return nil }
 
     let previousStart = commentedStartLine(previous, ignoringSectionMarkers: ignoringSectionMarkers)
     let compact = previousStart == previousEnd && currentStart == commentedEndLine(current)
+
     return ((previousEnd + 1)..<currentStart, compact ? 0 : 1)
   }
 
@@ -48,12 +51,34 @@ struct SourceLayout {
   ) -> (blankLines: Range<Int>, required: Int)? {
     let previousEnd = commentedEndLine(previous)
     let currentStart = commentedStartLine(current)
+
     guard previousEnd < currentStart else { return nil }
 
     let previousStart = commentedStartLine(previous, ignoringGroupHeaders: true)
     let currentBodyStart = commentedStartLine(current, ignoringGroupHeaders: true)
     let compact = previousStart == previousEnd && currentBodyStart == commentedEndLine(current)
+
     return ((previousEnd + 1)..<currentStart, hasGroupHeader(current) || !compact ? 1 : 0)
+  }
+
+  /// Excludes ordinary group headers when measuring a property block.
+  func isSingleLineGroupElement(_ node: some SyntaxProtocol) -> Bool {
+    commentedStartLine(node, ignoringGroupHeaders: true) == commentedEndLine(node)
+  }
+
+  /// Measures the longest declaration line without leading indentation.
+  static func lineLength(_ node: some SyntaxProtocol) -> Int {
+    let lines: [Substring] = node.trimmedDescription.split(whereSeparator: { $0.isNewline })
+    return lines.map { $0.drop(while: { $0 == " " || $0 == "\t" }).count }.max() ?? 0
+  }
+
+  /// Keeps an ordinary group header before the first sorted member.
+  func groupHeaderTrivia(
+    first: MemberBlockItemSyntax?,
+    sortedFirst: MemberBlockItemSyntax?
+  ) -> [SyntaxIdentifier: Trivia] {
+    guard let first, let sortedFirst, first.id != sortedFirst.id, hasGroupHeader(first) else { return [:] }
+    return [first.id: sortedFirst.leadingTrivia, sortedFirst.id: first.leadingTrivia]
   }
 
   func hasGroupHeader(_ node: some SyntaxProtocol) -> Bool {
@@ -67,6 +92,7 @@ struct SourceLayout {
   ) -> Int {
     var position = node.position
     var firstComment: Int?
+
     for piece in node.leadingTrivia {
       switch piece {
       case .lineComment, .docLineComment, .blockComment, .docBlockComment:
@@ -78,14 +104,15 @@ struct SourceLayout {
 
       default: break
       }
+
       position = position.advanced(by: piece.sourceLength.utf8Length)
     }
+
     return firstComment ?? line(node)
   }
 
   private func isSectionMarker(_ piece: TriviaPiece) -> Bool {
     guard case .lineComment(let text) = piece else { return false }
-
     return text.hasPrefix("// MARK:")
   }
 
@@ -99,16 +126,20 @@ struct SourceLayout {
   private func commentedEndLine(_ node: some SyntaxProtocol) -> Int {
     var position = node.endPositionBeforeTrailingTrivia
     var result = endLine(node)
+
     for piece in node.trailingTrivia {
       let length = piece.sourceLength.utf8Length
+
       switch piece {
       case .lineComment, .docLineComment, .blockComment, .docBlockComment:
         result = converter.location(for: position.advanced(by: length - 1)).line
 
       default: break
       }
+
       position = position.advanced(by: length)
     }
+
     return result
   }
 
@@ -118,7 +149,6 @@ struct SourceLayout {
 
   func text(at line: Int) -> String {
     guard lines.indices.contains(line - 1) else { return "" }
-
     return lines[line - 1]
   }
 
@@ -145,16 +175,52 @@ struct SourceLayout {
   /// Keeps calls, subscripts and closures as whole header segments.
   /// Line breaks inside these segments do not split a control-flow condition.
   func headerSegments(_ node: Syntax) -> [Syntax] {
-    if node.is(FunctionCallExprSyntax.self)
-      || node.is(SubscriptCallExprSyntax.self)
-      || node.is(ClosureExprSyntax.self)
-      || node.is(TupleExprSyntax.self)
-      || node.is(StringLiteralExprSyntax.self)
-      || node.is(RegexLiteralExprSyntax.self)
-      || node.is(TokenSyntax.self)
+    if ({ () -> Bool in
+      switch (Syntax(node).as(SyntaxEnum.self)) {
+      case .functionCallExpr: return true
+      default: return false
+      }
+    }())
+      || ({ () -> Bool in
+        switch (Syntax(node).as(SyntaxEnum.self)) {
+        case .subscriptCallExpr: return true
+        default: return false
+        }
+      }())
+      || ({ () -> Bool in
+        switch (Syntax(node).as(SyntaxEnum.self)) {
+        case .closureExpr: return true
+        default: return false
+        }
+      }())
+      || ({ () -> Bool in
+        switch (Syntax(node).as(SyntaxEnum.self)) {
+        case .tupleExpr: return true
+        default: return false
+        }
+      }())
+      || ({ () -> Bool in
+        switch (Syntax(node).as(SyntaxEnum.self)) {
+        case .stringLiteralExpr: return true
+        default: return false
+        }
+      }())
+      || ({ () -> Bool in
+        switch (Syntax(node).as(SyntaxEnum.self)) {
+        case .regexLiteralExpr: return true
+        default: return false
+        }
+      }())
+      || ({ () -> Bool in
+        switch (Syntax(node).as(SyntaxEnum.self)) {
+        case .token: return true
+        default: return false
+        }
+      }())
     {
       return [node]
     }
+
     return node.children(viewMode: .sourceAccurate).flatMap { headerSegments($0) }
   }
 
@@ -162,6 +228,7 @@ struct SourceLayout {
     let segments = headerSegments(Syntax(node))
     let nextSegments = segments.dropFirst()
     let hasBoundaryBreak = zip(segments, nextSegments).contains { endLine($0) != line($1) }
+
     if hasBoundaryBreak { return true }
 
     return receiverBreaks(Syntax(node))

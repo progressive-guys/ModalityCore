@@ -7,9 +7,11 @@ public struct ToolbarButtonStyle: ButtonStyle {
   public func makeBody(configuration: Configuration) -> some View {
     HStack(spacing: 0) {
       Spacer().frame(minWidth: 8, maxWidth: 16)
+
       configuration
         .label
         .border(Color.red)
+
       Spacer().frame(minWidth: 8, maxWidth: 16)
     }
     .padding(.vertical, 16)

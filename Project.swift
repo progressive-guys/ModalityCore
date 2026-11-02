@@ -1,5 +1,5 @@
-import ProjectDescription
 import ModalityBuild
+import ProjectDescription
 
 let project = Project.linted(
   name: "ModalityCore",
@@ -32,7 +32,10 @@ let project = Project.linted(
       bundleId: "com.modality.ModalityCoreUnitTests",
       infoPlist: .default,
       sources: ["UnitTests/ModalityCore/**"],
-      resources: ["UnitTests/ModalityCore/TreeTests/Resources/**", .folderReference(path: "UnitTests/ModalityCore/FileSystemStoreTests/Resources")],
+      resources: [
+        "UnitTests/ModalityCore/TreeTests/Resources/**",
+        .folderReference(path: "UnitTests/ModalityCore/FileSystemStoreTests/Resources")
+      ],
       dependencies: [.target(name: "ModalityCore")],
       settings: .modalitySettings(base: ["MACOSX_DEPLOYMENT_TARGET": "14.0"])
     ),
