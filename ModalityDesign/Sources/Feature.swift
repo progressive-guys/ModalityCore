@@ -34,7 +34,6 @@ public protocol Feature: Identifiable {
 }
 
 extension Feature {
-
   public var input: Void { () }
   public var state: Void { () }
   public var output: Void { () }
@@ -55,7 +54,6 @@ extension Feature {
 }
 
 public extension Feature where ID == ObjectIdentifier {
-
   nonisolated var id: ObjectIdentifier { ObjectIdentifier(Self.self) }
 }
 

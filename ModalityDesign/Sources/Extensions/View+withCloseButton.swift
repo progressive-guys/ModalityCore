@@ -1,7 +1,6 @@
 import SwiftUI
 
 public extension View {
-
   var withCloseButton: some View {
     modifier(WithCloseButtonSheetModifier())
   }

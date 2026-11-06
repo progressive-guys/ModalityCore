@@ -11,6 +11,11 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
   private let maximumFPSHistoryCount = 40
   private let fpsHistoryMinimumInterval: TimeInterval = 0.25
 
+  @State private var fpsHistory: [Double] = []
+  @State private var lastFPSHistoryUpdate: Date?
+  @State private var warmupStartFrameCount: Int?
+  @ObservedObject private var metrics: DebugRenderMetrics
+
   @MainActor
   public init() {
     self.metrics = .shared
@@ -27,7 +32,6 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
     let averageFPSValue = isWarmedUp ? wholeNumber(averageFPS) : "..."
     let minimumFPSValue = isWarmedUp ? wholeNumber(minimumFPS(fallback: snapshot.fps)) : "..."
     let backgroundShape = RoundedCornersRectangle(radius: 7, corners: [.bottomLeft])
-
     HStack(alignment: .center, spacing: 10) {
       VStack(alignment: .leading, spacing: 0) {
         Text("FPS")
@@ -132,14 +136,15 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
     let midpoint = (minimumFPS + maximumFPS) / 2
     let lowerBound = max(0, midpoint - visibleSpan / 2)
     let upperBound = max(lowerBound + 1, midpoint + visibleSpan / 2)
-
     return Canvas { context, size in
       let verticalInset: CGFloat = 3
       let drawableHeight = max(size.height - verticalInset * 2, 1)
+
       let clamped = graphSamples.map { sample in
         min(max((sample - lowerBound) / (upperBound - lowerBound), 0), 1)
       }
       let denominator = CGFloat(max(clamped.count - 1, 1))
+
       let points = clamped.enumerated().map { index, value in
         CGPoint(
           x: CGFloat(index) / denominator * size.width,
@@ -148,8 +153,9 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
       }
 
       let averagePosition = min(max((averageFPS - lowerBound) / (upperBound - lowerBound), 0), 1)
+
       let averageY = verticalInset + (1 - CGFloat(averagePosition)) * drawableHeight
-      var averageLine = Path()
+      var averageLine = Path() // Review: перенос перед этой строчкой
       averageLine.move(to: CGPoint(x: 0, y: averageY))
       averageLine.addLine(to: CGPoint(x: size.width, y: averageY))
       context.stroke(
@@ -161,16 +167,16 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
       guard let firstPoint = points.first else { return }
 
       var line = Path()
+
       line.move(to: firstPoint)
+
       for point in points.dropFirst() {
         line.addLine(to: point)
       }
-
       var fill = line
       fill.addLine(to: CGPoint(x: size.width, y: size.height))
       fill.addLine(to: CGPoint(x: 0, y: size.height))
       fill.closeSubpath()
-
       context.fill(
         fill,
         with: .linearGradient(
@@ -179,7 +185,6 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
           endPoint: CGPoint(x: 0, y: size.height)
         )
       )
-
       context.stroke(
         line,
         with: .color(.purple.opacity(0.94)),
@@ -240,9 +245,10 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
     {
       return
     }
-
     lastFPSHistoryUpdate = now
+
     fpsHistory.append(fps)
+
     if fpsHistory.count > maximumFPSHistoryCount {
       fpsHistory.removeFirst(fpsHistory.count - maximumFPSHistoryCount)
     }
@@ -266,7 +272,6 @@ private struct DebugRenderingPerformanceFPS_HUDOverlayModifier: ViewModifier {
 
   func body(content: Content) -> some View {
     let shouldShowHUD = enabled && isVisible
-
     content
       .overlay(alignment: .topTrailing) {
         if shouldShowHUD {

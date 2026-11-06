@@ -32,7 +32,6 @@ public struct ToolbarButtonStyle: ButtonStyle {
 
     HStack {
       ForEach(0..<15) { _ in
-
         Button(action: { }) {
           Image(systemName: "forward.fill")
         }

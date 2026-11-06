@@ -12,6 +12,7 @@ private struct BottomViewScrollHandlerKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
+
   var bottomViewScrollHandler: BottomViewScrollHandler {
     get { self[BottomViewScrollHandlerKey.self] }
     set { self[BottomViewScrollHandlerKey.self] = newValue }
@@ -23,8 +24,7 @@ public struct BottomViewScrollView<Content: View>: UIViewControllerRepresentable
 
   private let content: () -> Content
 
-  @Environment(\.bottomViewScrollHandler)
-  private var scrollHandler
+  @Environment(\.bottomViewScrollHandler) private var scrollHandler
 
   public init(@ViewBuilder content: @escaping () -> Content) {
     self.content = content
@@ -44,12 +44,15 @@ public struct BottomViewScrollView<Content: View>: UIViewControllerRepresentable
 }
 
 public final class BottomViewScrollViewController<Content: View>: UIViewController {
-  private let scrollView = UIScrollView()
-  private var hostingController: UIHostingController<Content>
+
   var scrollHandler: BottomViewScrollHandler
+
+  private let scrollView = UIScrollView()
+
   private var isOverscrolling = false
   private var dragStartY: CGFloat = 0
   private var overscrollTranslation: CGFloat = 0
+  private var hostingController: UIHostingController<Content>
 
   init(rootView: Content, scrollHandler: BottomViewScrollHandler) {
     hostingController = UIHostingController(rootView: rootView)
@@ -63,13 +66,11 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
 
   public override func viewDidLoad() {
     super.viewDidLoad()
-
     scrollView.alwaysBounceVertical = true
     scrollView.showsVerticalScrollIndicator = true
     scrollView.showsHorizontalScrollIndicator = false
     scrollView.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(scrollView)
-
     addChild(hostingController)
     hostingController.view.translatesAutoresizingMaskIntoConstraints = false
     hostingController.view.backgroundColor = .clear
@@ -111,7 +112,6 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
       let topOffset = -scrollView.adjustedContentInset.top
       let distanceToTop = max(0, dragStartY - topOffset)
       overscrollTranslation = max(0, translation.y - distanceToTop)
-
       guard isOverscrolling || overscrollTranslation > 0 else { return }
 
       isOverscrolling = true
@@ -122,6 +122,7 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
       if isOverscrolling {
         scrollHandler.onOverscrollEnded(overscrollTranslation, velocity.y)
       }
+
       isOverscrolling = false
 
     default:

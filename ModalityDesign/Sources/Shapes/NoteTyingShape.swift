@@ -13,9 +13,7 @@ public struct NoteTyingShape: Shape {
       let startY = isFlipped ? rect.maxY : rect.minY
       let endY = startY
       let controlY = isFlipped ? rect.minY : rect.maxY
-
       path.move(to: CGPoint(x: rect.minX, y: startY))
-
       path.addQuadCurve(
         to: CGPoint(
           x: rect.maxX,

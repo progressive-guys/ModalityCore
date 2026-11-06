@@ -2,13 +2,11 @@ import SwiftUI
 
 /// Layout value key to mark views that should drive the container's width
 private struct WidthDriverKey: LayoutValueKey {
-
   static let defaultValue: Bool = false
 }
 
 /// Extension to allow views to specify they should drive the layout width
 public extension View {
-
   func widthDriver(_ drives: Bool = true) -> some View {
     layoutValue(key: WidthDriverKey.self, value: drives)
   }
@@ -42,6 +40,7 @@ public struct WidthDrivenVStack: Layout {
 
     // Find width drivers or fall back to first view
     let widthDrivers = subviews.filter { $0[WidthDriverKey.self] }
+
     let drivingViews = widthDrivers.isEmpty ? [firstSubview] : widthDrivers
 
     // Calculate the maximum width needed by all driving views
@@ -51,10 +50,8 @@ public struct WidthDrivenVStack: Layout {
     // Calculate total height
     var totalHeight: CGFloat = 0
     let constrainedProposal = ProposedViewSize(width: constrainedWidth, height: nil)
-
     for (index, subview) in subviews.enumerated() {
       let size = subview.sizeThatFits(constrainedProposal)
-
       totalHeight += size.height
 
       // Add spacing between views (but not after the last one)
@@ -76,6 +73,7 @@ public struct WidthDrivenVStack: Layout {
 
     // Find width drivers or fall back to first view
     let widthDrivers = subviews.filter { $0[WidthDriverKey.self] }
+
     let drivingViews = widthDrivers.isEmpty ? [firstSubview] : widthDrivers
 
     // Calculate the maximum width needed by all driving views
@@ -83,10 +81,8 @@ public struct WidthDrivenVStack: Layout {
     let constrainedWidth = max(minWidth, min(maxWidth, drivingWidth))
     let constrainedProposal = ProposedViewSize(width: constrainedWidth, height: nil)
     var currentY = bounds.minY
-
     for subview in subviews {
       let size = subview.sizeThatFits(constrainedProposal)
-
       let xPosition: CGFloat = switch alignment {
       case .leading:
         bounds.minX
@@ -100,12 +96,10 @@ public struct WidthDrivenVStack: Layout {
       default:
         bounds.minX
       }
-
       subview.place(
         at: CGPoint(x: xPosition, y: currentY),
         proposal: constrainedProposal
       )
-
       currentY += size.height + spacing
     }
   }

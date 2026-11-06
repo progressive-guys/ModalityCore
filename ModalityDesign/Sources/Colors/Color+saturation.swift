@@ -4,7 +4,6 @@ extension Color {
 
   public func saturation(_ amount: Double) -> Color {
     let saturation = max(0, min(1, amount))
-
     if saturation == 1 {
       return self
     }
@@ -32,13 +31,13 @@ extension Color {
     } else {
       h = (r - g) / delta + 4
     }
-
     h /= 6
-
     let hh = h * 6
     let i = floor(hh)
     let f = hh - i
+
     let p = v * (1 - saturation)
+
     let q = v * (1 - f * saturation)
     let t = v * (1 - (1 - f) * saturation)
     var newR: CGFloat = 0

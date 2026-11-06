@@ -1,7 +1,6 @@
 import SwiftUI
 
 public extension View {
-
   func alert(presenting error: Binding<Error?>) -> some View {
     modifier(AlertModifier(error: error))
   }

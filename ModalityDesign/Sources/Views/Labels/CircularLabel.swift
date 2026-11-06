@@ -15,7 +15,6 @@ public struct CircularLabel: View {
 
     let degrees = {
       let degrees = Int(startAngle.degrees.rounded()) % 360
-
       return if degrees < -180 {
         degrees + 360
       } else if degrees >= 180 {
@@ -24,7 +23,6 @@ public struct CircularLabel: View {
         degrees
       }
     }()
-
     self.isUpsideDown = abs(degrees) > 90
     self.text = isUpsideDown ? String(text.reversed()) : text
   }

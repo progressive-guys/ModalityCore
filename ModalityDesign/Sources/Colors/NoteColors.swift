@@ -15,7 +15,6 @@ public struct NoteColors: Sendable {
           with: .red,
           by: CGFloat(noteIndex) / CGFloat(spiral.elements.count)
         )
-
         return (note, color)
       }
   }

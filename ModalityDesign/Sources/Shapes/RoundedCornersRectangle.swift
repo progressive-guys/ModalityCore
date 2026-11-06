@@ -1,28 +1,28 @@
 import SwiftUI
 
 public struct RectCorner: OptionSet, Sendable {
+
+  public static let topLeft = RectCorner(rawValue: 1 << 0)
+  public static let top: RectCorner = [.topRight, .topLeft]
+  public static let topRight    = RectCorner(rawValue: 1 << 1)
+  public static let bottomLeft  = RectCorner(rawValue: 1 << 2)
+  public static let bottomRight = RectCorner(rawValue: 1 << 3)
+  public static let left: RectCorner = [.topLeft, .bottomLeft]
+  public static let right: RectCorner = [.topRight, .bottomRight]
+  public static let bottom: RectCorner = [.bottomRight, .bottomRight]
+  public static let allCorners: RectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
+
   public let rawValue: Int
 
   public init(rawValue: Int) {
     self.rawValue = rawValue
   }
-
-  public static let topLeft     = RectCorner(rawValue: 1 << 0)
-  public static let topRight    = RectCorner(rawValue: 1 << 1)
-  public static let bottomLeft  = RectCorner(rawValue: 1 << 2)
-  public static let bottomRight = RectCorner(rawValue: 1 << 3)
-  public static let allCorners: RectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
-  public static let left: RectCorner = [.topLeft, .bottomLeft]
-  public static let right: RectCorner = [.topRight, .bottomRight]
-  public static let top: RectCorner = [.topRight, .topLeft]
-  public static let bottom: RectCorner = [.bottomRight, .bottomRight]
 }
 
 /// A shape that rounds only the specified corners of a rectangle.
 public struct RoundedCornersRectangle: Shape {
 
   public var radius: CGFloat
-
   public var corners: RectCorner
 
   public init(
@@ -35,14 +35,11 @@ public struct RoundedCornersRectangle: Shape {
 
   public func path(in rect: CGRect) -> Path {
     let r = min(radius, min(rect.width, rect.height) / 2)
-
     let tl = corners.contains(.topLeft) ? r : 0
     let tr = corners.contains(.topRight) ? r : 0
     let bl = corners.contains(.bottomLeft) ? r : 0
     let br = corners.contains(.bottomRight) ? r : 0
-
     var path = Path()
-
     path.move(to: CGPoint(x: rect.minX + tl, y: rect.minY))
 
     // Top edge & top-right corner
@@ -92,7 +89,6 @@ public struct RoundedCornersRectangle: Shape {
         clockwise: false
       )
     }
-
     path.closeSubpath()
     return path
   }
@@ -103,14 +99,16 @@ public struct RoundedCornersRectangle: Shape {
 
 #Preview {
   LazyVGrid(columns: [.init(.fixed(150)), .init(.fixed(150))]) {
-
     Group {
       RoundedCornersRectangle(radius: 16, corners: [.bottomRight])
         .fill(Color.brown)
+
       RoundedCornersRectangle(radius: 16, corners: [.bottomLeft])
         .fill(Color.yellow)
+
       RoundedCornersRectangle(radius: 16, corners: [.topRight])
         .fill(Color.red)
+
       RoundedCornersRectangle(radius: 16, corners: [.topLeft])
         .fill(Color.blue)
 

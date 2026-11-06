@@ -1,11 +1,13 @@
-import Foundation
 import SwiftUI
+import Foundation
 import ModalityCore
 
 extension Ring {
+
   public struct Wedge: Identifiable, Hashable {
 
     public struct Content: Hashable {
+
       public enum ContentType: Hashable {
         case label
         case circularLabel

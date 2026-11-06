@@ -96,14 +96,11 @@ public struct TagsLayout: Layout {
 
   public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
     let rows = calculateRows(proposal: proposal, subviews: subviews)
-
     let totalHeight = rows.reduce(0) { partialResult, row in
       partialResult + row.maxHeight + (partialResult > 0 ? Self.verticalTagSpacing : 0)
     }
-
     let totalWidth = rows.map(\.totalWidth).max() ?? 0
     let finalWidth = min(totalWidth, proposal.width ?? .infinity)
-
     return CGSize(
       width: finalWidth,
       height: totalHeight
@@ -118,10 +115,8 @@ public struct TagsLayout: Layout {
   ) {
     let rows = calculateRows(proposal: proposal, subviews: subviews)
     var currentY = bounds.minY
-
     for row in rows {
       let rowWidth = row.totalWidth
-
       let startX: CGFloat = switch alignment {
       case .leading:
         bounds.minX
@@ -135,9 +130,7 @@ public struct TagsLayout: Layout {
       default:
         bounds.minX
       }
-
       var currentX = startX
-
       for item in row.items {
         let size = item.subview.sizeThatFits(.unspecified)
         item.subview.place(
@@ -157,11 +150,9 @@ public struct TagsLayout: Layout {
     var currentRow: [TagRowItem] = []
     var currentRowWidth: CGFloat = 0
     var currentRowMaxHeight: CGFloat = 0
-
     for subview in subviews {
       let size = subview.sizeThatFits(.unspecified)
       let itemWidth = size.width + (currentRow.isEmpty ? 0 : Self.horizontalTagPaddings)
-
       if currentRowWidth + itemWidth <= availableWidth || currentRow.isEmpty {
         currentRow.append(TagRowItem(subview: subview, size: size))
         currentRowWidth += itemWidth
@@ -176,11 +167,9 @@ public struct TagsLayout: Layout {
         currentRowMaxHeight = size.height
       }
     }
-
     if !currentRow.isEmpty {
       rows.append(TagRow(items: currentRow, totalWidth: currentRowWidth, maxHeight: currentRowMaxHeight))
     }
-
     return rows
   }
 }

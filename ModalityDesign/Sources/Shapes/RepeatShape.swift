@@ -3,7 +3,6 @@ import SwiftUI
 public struct RepeatShape: Shape {
 
   public enum Direction: Sendable {
-
     case open
     case closed
   }
@@ -25,7 +24,6 @@ public struct RepeatShape: Shape {
     let thickX: CGFloat
     let thinX: CGFloat
     let dotsX: CGFloat
-
     if direction == .open {
       thickX = rect.minX
       thinX = thickX + thickWidth + gap
@@ -37,7 +35,9 @@ public struct RepeatShape: Shape {
     }
 
     var path = Path()
+
     path.addRect(CGRect(x: thickX, y: rect.minY, width: thickWidth, height: h))
+
     path.addRect(CGRect(x: thinX, y: rect.minY, width: thinWidth, height: h))
 
     path.addEllipse(in: CGRect(
@@ -46,14 +46,12 @@ public struct RepeatShape: Shape {
       width: dotDiameter,
       height: dotDiameter
     ))
-
     path.addEllipse(in: CGRect(
       x: dotsX - dotRadius,
       y: rect.minY + h * 2 / 3 - dotRadius,
       width: dotDiameter,
       height: dotDiameter
     ))
-
     return path
   }
 

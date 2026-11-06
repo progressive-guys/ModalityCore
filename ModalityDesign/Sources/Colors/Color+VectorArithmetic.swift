@@ -9,7 +9,6 @@ extension Color: @retroactive VectorArithmetic {
 
   public var magnitudeSquared: Double {
     let components = self.components
-
     return Double(
       components.red * components.red
         + components.green * components.green
@@ -25,7 +24,6 @@ extension Color: @retroactive VectorArithmetic {
     let green = max(lhsComponents.green - rhsComponents.green, 0.0)
     let blue = max(lhsComponents.blue - rhsComponents.blue, 0.0)
     let alpha = max(lhsComponents.alpha - rhsComponents.alpha, 0.0)
-
     return Color(red: Double(red), green: Double(green), blue: Double(blue), opacity: Double(alpha))
   }
 
@@ -36,7 +34,6 @@ extension Color: @retroactive VectorArithmetic {
     let green = min(lhsComponents.green + rhsComponents.green, 1.0)
     let blue = min(lhsComponents.blue + rhsComponents.blue, 1.0)
     let alpha = min(lhsComponents.alpha + rhsComponents.alpha, 1.0)
-
     return Color(red: Double(red), green: Double(green), blue: Double(blue), opacity: Double(alpha))
   }
 
@@ -46,7 +43,6 @@ extension Color: @retroactive VectorArithmetic {
     let green = Double(components.green) * rhs
     let blue = Double(components.blue) * rhs
     let alpha = Double(components.alpha) * rhs
-
     self = Color(red: red, green: green, blue: blue, opacity: alpha)
   }
 
@@ -57,7 +53,6 @@ extension Color: @retroactive VectorArithmetic {
     let green = amount.lerp(from: Double(lhsComponents.green), to: Double(rhsComponents.green))
     let blue = amount.lerp(from: Double(lhsComponents.blue), to: Double(rhsComponents.blue))
     let alpha = amount.lerp(from: Double(lhsComponents.alpha), to: Double(rhsComponents.alpha))
-
     return Color(red: red, green: green, blue: blue, opacity: alpha)
   }
 }

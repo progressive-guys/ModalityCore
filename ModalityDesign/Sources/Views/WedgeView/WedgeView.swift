@@ -56,7 +56,6 @@ public struct WedgeView<Content: Equatable & Hashable>: View {
 
   private func wedgeShape(from geometry: WedgeGeometry) -> some Shape {
     let shape = WedgeShape(geometry: geometry)
-
     if #available(macOS 14.0, iOS 17.0, visionOS 1.0, *) {
       return shape
         .subtracting(shape.stroke(style: StrokeStyle(lineWidth: 4, lineCap: .butt, lineJoin: .round)))

@@ -105,7 +105,6 @@ public struct RangeRestrictedSlider: View {
         Path { path in
           let spacing: CGFloat = 8
           var x: CGFloat = -trackHeight
-
           while x < disabledSectionWidth * trackWidth + trackHeight {
             path.move(to: CGPoint(x: x, y: 0))
             path.addLine(to: CGPoint(x: x + trackHeight, y: trackHeight))
@@ -126,7 +125,6 @@ public struct RangeRestrictedSlider: View {
         let normalizedPosition = max(0, min(1, Double(drag.location.x / trackWidth)))
         let newValue = normalizedPosition.lerp(from: range.lowerBound, to: range.upperBound)
         let clampedValue = max(disabledUpTo, min(range.upperBound, newValue))
-
         value = clampedValue
 
         if !isDragging {

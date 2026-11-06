@@ -3,7 +3,6 @@ import SwiftUI
 @resultBuilder
 @MainActor
 public enum ShapeBuilder {
-
   public static func buildBlock<S: Shape>(_ builder: S) -> some Shape {
     builder
   }

@@ -39,7 +39,8 @@ public struct WindowOpenableButton<Label: View, WindowContent: View>: View {
     self.windowContent = windowContent
   }
 
-  @ViewBuilder public var body: some View {
+  @ViewBuilder
+  public var body: some View {
     Button(
       action: {
         #if os(macOS)
@@ -89,7 +90,6 @@ fileprivate extension View {
     window.styleMask = [.miniaturizable, .closable, .titled, .fullSizeContentView, .resizable]
     window.titlebarAppearsTransparent = true
     window.titleVisibility = .hidden
-
     return window
   }
 }

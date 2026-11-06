@@ -49,7 +49,6 @@ public extension View {
 
   func printSize(label: String? = nil) -> some View {
     let label = label ?? Mirror(reflecting: self).description
-
     return observeSize { size in
       Logger.default.log("Size: \(label): \(size.debugDescription)")
     }

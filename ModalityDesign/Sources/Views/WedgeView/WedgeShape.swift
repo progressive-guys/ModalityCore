@@ -11,7 +11,6 @@ public struct WedgeShape: Shape {
 
   public func path(in rect: CGRect) -> Path {
     var path = Path()
-
     path.addArc(
       center: geometry.center,
       radius: geometry.innerRadius,
@@ -31,7 +30,6 @@ public struct WedgeShape: Shape {
     )
 
     path.closeSubpath()
-
     return path
   }
 }
@@ -61,10 +59,9 @@ public struct WedgeGeometry: Sendable {
   ) {
     self.start = start
     self.end = end
+    self.size = size
 
     let minDemension = min(size.height, size.width * aspectRatio) * scaleFactor
-
-    self.size = size
     self.yShift = minDemension * shiftFactor
 
     self.center = CGPoint(
@@ -80,7 +77,6 @@ public struct WedgeGeometry: Sendable {
   public subscript(unitPoint: UnitPoint) -> CGPoint {
     let radius = unitPoint.y.lerp(from: innerRadius, to: outerRadius)
     let angle = Double(unitPoint.x).lerp(from: start.radians, to: end.radians)
-
     return CGPoint(
       x: center.x + CGFloat(cos(angle)) * radius,
       y: center.y + CGFloat(sin(angle)) * radius

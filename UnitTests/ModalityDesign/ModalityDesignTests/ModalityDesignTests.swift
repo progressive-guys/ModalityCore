@@ -1,7 +1,7 @@
 import Testing
 import SwiftUI
-import ModalityDesign
 import ModalityCore
+import ModalityDesign
 
 // MARK: - AnimatableTriplet Tests
 
@@ -10,6 +10,7 @@ struct AnimatableTripletTests {
   @Test
   func zero() {
     let zero = AnimatableTriplet<Double, Double, Double>.zero
+
     #expect(zero.first == 0)
     #expect(zero.second == 0)
     #expect(zero.third == 0)
@@ -20,6 +21,7 @@ struct AnimatableTripletTests {
     let a = AnimatableTriplet(1.0, 2.0, 3.0)
     let b = AnimatableTriplet(4.0, 5.0, 6.0)
     let result = a + b
+
     #expect(result.first == 5.0)
     #expect(result.second == 7.0)
     #expect(result.third == 9.0)
@@ -30,6 +32,7 @@ struct AnimatableTripletTests {
     let a = AnimatableTriplet(10.0, 20.0, 30.0)
     let b = AnimatableTriplet(3.0, 5.0, 7.0)
     let result = a - b
+
     #expect(result.first == 7.0)
     #expect(result.second == 15.0)
     #expect(result.third == 23.0)
@@ -53,6 +56,7 @@ struct AnimatableTripletTests {
   @Test
   func addAssign() {
     var a = AnimatableTriplet(1.0, 2.0, 3.0)
+
     a += AnimatableTriplet(10.0, 20.0, 30.0)
     #expect(a.first == 11.0)
     #expect(a.second == 22.0)
@@ -62,6 +66,7 @@ struct AnimatableTripletTests {
   @Test
   func subtractAssign() {
     var a = AnimatableTriplet(10.0, 20.0, 30.0)
+
     a -= AnimatableTriplet(1.0, 2.0, 3.0)
     #expect(a.first == 9.0)
     #expect(a.second == 18.0)
@@ -81,6 +86,7 @@ struct RingTests {
       innerRadius: 0.2,
       height: 0.1
     )
+
     #expect(ring.outerRadius ~~== 0.3)
     #expect(ring.innerRadius == 0.2)
     #expect(ring.height == 0.1)
@@ -95,6 +101,7 @@ struct RingTests {
       width: .degrees(30),
       content: .init(type: .label, containing: "A", font: .body, text: "A")
     )
+
     #expect(abs(wedge.end.degrees - 30) ~~== 0.0)
     #expect(abs(wedge.center.degrees - 15) ~~== 0.0)
   }
@@ -108,6 +115,7 @@ struct RingTests {
       width: .degrees(30),
       content: .init(type: .label, containing: "A", font: .body, text: "A")
     )
+
     let b = Ring<String>.Wedge(
       id: "w1",
       color: .red,
@@ -115,6 +123,7 @@ struct RingTests {
       width: .degrees(30),
       content: .init(type: .label, containing: "A", font: .body, text: "A")
     )
+
     #expect(a == b)
   }
 }
@@ -132,8 +141,9 @@ struct VioletPaletteTests {
   func rampStartsDark() throws {
     let first = try #require(VioletPalette.violetRamp.first)
     let last = try #require(VioletPalette.violetRamp.last)
-    #expect(first.components.red + first.components.green + first.components.blue <
-      last.components.red + last.components.green + last.components.blue)
+
+    #expect(first.components.red + first.components.green + first.components.blue
+      < last.components.red + last.components.green + last.components.blue)
   }
 }
 
@@ -145,6 +155,7 @@ struct ColorHexTests {
   func whiteFromHex() {
     let white = Color(0xFFFFFF)
     let components = white.components
+
     #expect(abs(components.red - 1.0) ~~== 0.0)
     #expect(abs(components.green - 1.0) ~~== 0.0)
     #expect(abs(components.blue - 1.0) ~~== 0.0)
@@ -154,6 +165,7 @@ struct ColorHexTests {
   func blackFromHex() {
     let black = Color(0x000000)
     let components = black.components
+
     #expect(abs(components.red) ~~< 0.01)
     #expect(abs(components.green) ~~< 0.01)
     #expect(abs(components.blue) ~~< 0.01)
@@ -163,6 +175,7 @@ struct ColorHexTests {
   func redFromHex() {
     let red = Color(0xFF0000)
     let components = red.components
+
     #expect(abs(components.red - 1.0) ~~== 0.0)
     #expect(abs(components.green) ~~== 0.0)
     #expect(abs(components.blue) ~~== 0.0)
@@ -178,6 +191,7 @@ struct ColorVectorArithmeticTests {
     let white = Color(red: 1, green: 1, blue: 1)
     let result = white + white
     let c = result.components
+
     #expect(c.red <= 1.0)
     #expect(c.green <= 1.0)
     #expect(c.blue <= 1.0)
@@ -189,6 +203,7 @@ struct ColorVectorArithmeticTests {
     let white = Color(red: 1, green: 1, blue: 1)
     let result = black - white
     let c = result.components
+
     #expect(c.red >= 0.0)
     #expect(c.green >= 0.0)
     #expect(c.blue >= 0.0)
@@ -198,6 +213,7 @@ struct ColorVectorArithmeticTests {
   func zeroIsBlack() {
     let zero = Color.zero
     let c = zero.components
+
     #expect(abs(c.red) ~~== 0.0)
     #expect(abs(c.green) ~~== 0.0)
     #expect(abs(c.blue) ~~== 0.0)

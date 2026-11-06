@@ -83,7 +83,6 @@ public struct BottomView<Content: View>: View {
     }
 
     let startProgress = dragStartProgress ?? progress
-
     progress = min(1, max(0, startProgress - translation / maxHeight))
   }
 
@@ -94,7 +93,6 @@ public struct BottomView<Content: View>: View {
 
   private func snap(translation: CGFloat, velocity: CGFloat) {
     let threshold = maxHeight * 0.1
-
     withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
       if translation > threshold || velocity > 100 {
         progress = 0
@@ -117,7 +115,6 @@ public extension View {
     let scale = 1.0 - (sheetShare * progress)
     let cornerRadius = 24 * progress
     let offset = -maxOffset * progress
-
     return clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
       .scaleEffect(scale)
       .offset(y: offset)

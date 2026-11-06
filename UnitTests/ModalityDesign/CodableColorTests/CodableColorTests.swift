@@ -1,9 +1,10 @@
-import Foundation
 import SwiftUI
 import Testing
+import Foundation
 import ModalityDesign
 
 struct CodableColorTests {
+
   private struct Profile: Codable {
     @CodableColor var color: Color = .primary
   }
@@ -11,9 +12,7 @@ struct CodableColorTests {
   @Test(arguments: [Color.primary, .white])
   func semanticColorsKeepTheirIdentity(_ color: Color) throws {
     let profile = Profile(color: color)
-
     let restored = try JSONDecoder().decode(Profile.self, from: JSONEncoder().encode(profile))
-
     #expect(restored.color == color)
   }
 
@@ -35,9 +34,7 @@ struct CodableColorTests {
   @Test
   func previousColorFormatIsAccepted() throws {
     let data = Data(#"{"color":{"rgba":{"red":0.25,"green":0.5,"blue":0.75,"alpha":1}}}"#.utf8)
-
     let restored = try JSONDecoder().decode(Profile.self, from: data)
-
     #expect(restored.color == Color(.sRGB, red: 0.25, green: 0.5, blue: 0.75))
   }
 }

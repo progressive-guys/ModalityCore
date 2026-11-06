@@ -1,7 +1,6 @@
 import SwiftUI
 
 private struct IsLoadingKey: EnvironmentKey {
-
   static let defaultValue = false }
 
 public extension EnvironmentValues {

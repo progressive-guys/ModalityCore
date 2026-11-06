@@ -14,7 +14,6 @@ public enum CodableColor: Codable, Equatable, Sendable {
 
     default:
       let components = wrappedValue.components
-
       self = .rgba(
         red: components.red,
         green: components.green,

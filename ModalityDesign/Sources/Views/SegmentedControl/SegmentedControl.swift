@@ -82,11 +82,11 @@ private struct LegacySegmentedControl<Option: Hashable & Identifiable>: View {
   @State private var optionIsPressed: [Option.ID: Bool] = [:]
 
   init(
+    selection: Binding<Option>,
     options: [Option],
     label: KeyPath<Option, String>,
     selectionColor: Color,
-    backgroundColor: Color,
-    selection: Binding<Option>
+    backgroundColor: Color
   ) {
     self.options = options
     self.label = label
@@ -139,13 +139,13 @@ fileprivate struct SegmentButton: View {
 
   init(
     label: String,
-    backgroundID: String,
     selectionColor: Color,
     isSelected: Bool,
     animation: Animation,
+    isPressed: Binding<Bool>,
+    backgroundID: String,
     namespaceID: Namespace.ID,
-    action: @escaping () -> Void,
-    isPressed: Binding<Bool>
+    action: @escaping () -> Void
   ) {
     self.label = label
     self.backgroundID = backgroundID

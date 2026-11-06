@@ -96,7 +96,6 @@ public struct Knob: View {
     #endif
 
     let delta = px * sensitivity * fine
-
     value = (anchor + delta).clamped(to: range)
 
     if !isDragging {
@@ -116,13 +115,11 @@ private struct Indicator: Shape {
     var path = Path()
     path.move(to: center)
     path.addLine(to: CGPoint(x: center.x, y: center.y - indicatorRadius))
-
     return path
   }
 }
 
 private extension Comparable {
-
   func clamped(to limits: ClosedRange<Self>) -> Self {
     min(max(self, limits.lowerBound), limits.upperBound)
   }

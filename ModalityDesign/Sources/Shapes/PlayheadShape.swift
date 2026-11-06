@@ -21,6 +21,7 @@ public struct PlayheadShape: Shape {
     let rectTop = rect.minY
     let rectBottom = rect.minY + rectHeight
     let triangleTop = rectBottom
+
     let trianglBottom = triangleTop + triangleHeight
     let lineBottom = rect.maxY
 
@@ -46,6 +47,7 @@ public struct PlayheadShape: Shape {
 
     // Draw triangular head pointing down
     path.move(to: CGPoint(x: centerX, y: trianglBottom))
+
     path.addLine(to: CGPoint(x: centerX - headWidth / 2, y: triangleTop))
     path.addLine(to: CGPoint(x: centerX + headWidth / 2, y: triangleTop))
     path.closeSubpath()
@@ -55,11 +57,13 @@ public struct PlayheadShape: Shape {
     let lineRight = centerX + lineWidth / 2
 
     path.move(to: CGPoint(x: lineLeft, y: trianglBottom - 2))
+
     path.addLine(to: CGPoint(x: lineRight, y: trianglBottom - 2))
+
     path.addLine(to: CGPoint(x: lineRight, y: lineBottom))
+
     path.addLine(to: CGPoint(x: lineLeft, y: lineBottom))
     path.closeSubpath()
-
     return path
   }
 
@@ -68,7 +72,6 @@ public struct PlayheadShape: Shape {
 }
 
 #Preview {
-
   ZStack {
     PlayheadShape()
       .fill(Color.primaryPurple)
