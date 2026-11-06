@@ -42,7 +42,11 @@ The script uses the configs shipped with this tool version. Set `SWIFT_STYLE_CON
 
 The build configuration comments out SwiftFormat `indent`, SwiftLint `line_length`, and SwiftStyle `arithmetic_precedence_wrap`, `binary_operator_wrap`, `multiline_expression_closing_delimiter` and `switch_case_spacing`. Existing library sources fail these checks. The comments beside the selections state why they are disabled.
 
-The checker also accepts `--stdin` and `--rules name1,name2`. JSON output has SwiftLint diagnostic fields. Syntax errors use `swift_parser`. Rule comments are in [[Sources/SwiftStyle/StyleRule]], [[Sources/SwiftStyle/ExpressionPolicy]] and the shared configs.
+SwiftFormat `sortImports` with `--import-grouping length` orders imported module paths from short to long. Equal lengths keep their source order. Attributes and comments stay with their imports; conditional branches are sorted separately. Import hoisting is disabled.
+
+The checker also accepts `--stdin` and `--rules name1,name2`. `--fix` writes changed files atomically. With `--fix --stdin`, standard output contains source and standard error contains remaining diagnostics; omit `--json`. A remaining diagnostic returns status 2. Layout fixes preserve tokens, comments and LF or CRLF endings. Each pass checks the syntax again. Nested `if` fixes keep condition order and binding scope. String fixes keep decoded literal values and interpolation expressions.
+
+`complex_control_flow_condition` can move the first Boolean condition of a standalone `if` or `guard` into a local `let` with type `Swift.Bool`. It keeps the complete expression, its evaluation order and short-circuit operations. The generated name avoids names in the source file. Later conditions, bindings, `where` clauses, labels, macros and `else if` branches keep their diagnostics for review. An `if` with an `else` needs another statement in its enclosing block, to preserve implicit results. `no_global_functions` keeps reporting errors for owner review.
 
 Property order fixes use visibility, kind, type and attribute groups. They move initializers and attached comments with each property and keep other member slots in place. Conditional branches are sorted independently. Stored-property initialization order can change. For a plain struct with known stored-property types, a generated initializer keeps the original memberwise parameter order and defaults.
 
@@ -54,11 +58,11 @@ Stored-property groups use one blank line on each side when they contain more th
 
 `member_order` uses this section order: `typealias`, nested type declarations (including `associatedtype`), stored properties, `init`, `deinit`, `subscript`, computed properties, then functions. Properties with observers are stored. Complete declarations move with their comments. Other member slots and file-scope extension locations stay in place. A conditional block whose members all belong to one section and one effect group moves as a complete unit, with its conditions and branches intact. Mixed blocks keep their boundary; each branch is checked on its own. Within computed-property and function sections, declarations use this effect order: plain, `throws`/`rethrows`, `async`, then `async throws`/`async rethrows`. Properties use getter effects. Effect groups use one blank line between them. Each group keeps source order, including protocol requirements. Single-line members stay together; multiline members use one blank line. A leading group comment starts a separate group.
 
-`private_view_properties` requires private instance properties in structs that explicitly conform to `View` or `SwiftUI.View`, except `body`. It keeps explicit initializers and can generate a known memberwise signature, including `Binding` inputs. Private optional `State` values keep their implicit nil initialization. Unknown wrappers, conditional stored declarations and additional protocol conformances keep diagnostics when a safe initializer or access change cannot be determined.
-
 `member_spacing` keeps nested types one blank line from adjacent declarations. Type and extension bodies with at most three code lines have no blank line after the opening brace. Longer bodies start with one blank line. `statement_grouping` removes opening blank lines from executable bodies of any length: functions, initializers, deinitializers, closures, accessors and control-flow bodies. A closure body starts after `in` when it has a signature. The count for type bodies includes nested code and excludes the outer braces, blank lines and comments.
 
 `multiline_string_indent` aligns contents and closing quotes with opening quotes that start a line, including raw literals. When opening quotes follow code on the same line, contents and closing quotes use two extra spaces from that line. It preserves raw text, escapes and string values. Multiline interpolation expressions keep their diagnostic. SwiftFormat `semicolons` with `--semicolons never` separates inline statements. `statement_grouping` keeps consecutive local uses together across multiline expressions, conditions, branches, loops and closure captures. Derived bindings and successful guard bindings extend the group. References respect lexical scope and shadowing. Consecutive single-line declarations start one preparation group. Independent declarations, leading comments and conditional compilation boundaries start another group. A call that combines values from separate preparation groups starts a shared use group. Statement order stays unchanged.
+
+`private_view_properties` requires private instance properties in structs that explicitly conform to `View` or `SwiftUI.View`, except `body`. It keeps explicit initializers and can generate a known memberwise signature, including `Binding` inputs. Private optional `State` values keep their implicit nil initialization. Unknown wrappers, conditional stored declarations and additional protocol conformances keep diagnostics when a safe initializer or access change cannot be determined.
 
 Groups use local declarations from the current body. Parameters and outer properties are inputs to that body. An independent operation ends the immediate declaration-use chain. Other pairs of ordinary actions, including calls on different receivers, allow zero or one blank line. Reuse of an older local value follows this spacing. A call that combines preparation groups still requires a separator. Other statements keep kind-based spacing. Bodies with at most three code lines keep statements together. This takes priority over dependency groups, statement kinds and manual separators. A leading group comment keeps its separator. The count includes nested code and excludes outer braces, blank lines and comments. Each nested body has its own count. `compact_else_blank_line` follows these group boundaries after a guard.
 
@@ -72,8 +76,6 @@ An assignment followed by an `if` or `guard` stays beside the check when its con
 
 A local declaration stays beside the next `if` or `guard` when its conditions read the declared value, including checks that use values from earlier preparation groups. Two multiline operations can keep one blank line. A leading group comment keeps its separator.
 
-`complex_control_flow_condition` can move the first Boolean condition of a standalone `if` or `guard` into a local `let` with type `Swift.Bool`. It keeps the complete expression, its evaluation order and short-circuit operations. The generated name avoids names in the source file. Later conditions, bindings, `where` clauses, labels, macros and `else if` branches keep their diagnostics for review. An `if` with an `else` needs another statement in its enclosing block, to preserve implicit results. `no_global_functions` keeps reporting errors for owner review.
-
 ## Tests
 
 ```sh
@@ -82,17 +84,27 @@ mise exec -- tuist generate --no-open
 xcodebuild test -workspace SwiftStyle.xcworkspace -scheme SwiftStyleTests -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
 ```
 
-The `SwiftStyleTests` scheme checks SwiftStyle diagnostics with LF and CRLF line endings:
+The checker project loads its local `ModalityBuild` plugin. Its lint script path is relative to its own manifest, so cached helpers also use this checkout.
 
-```text
-Tests/Fixtures/Diagnostics/
-  <case>.swift
-  <case>.json (optional)
-```
+The scheme runs three parameterized tests with all SwiftStyle rules:
 
-Diagnostic tests use the built SwiftStyle executable. Each input has one top-level `enum Accepted` and one `enum Rejected`, with named methods or member types as cases, plus nested helper types. SwiftSyntax checks this structure. File-scope functions and extensions stay at file scope when the rule needs them. The `// MARK: - Accepted` and `// MARK: - Rejected` markers assign diagnostic lines to groups; a marker can repeat for an extension. The Swift file name without its extension sets the rule. Defaults are zero diagnostics for `Accepted`, one for `Rejected`, and successful compilation. An optional JSON file with the same name sets exceptions: `counts` changes group counts, `caseCounts` checks named methods or types such as `Rejected.MissingStaticGroupGap`, and `compilerSucceeds` marks parser-error inputs. A null count requires at least one diagnostic. Tests check every group, including groups that must have no diagnostics. SwiftStyle reports errors and has no fixes.
+| Suite | Check | Fixture content |
+|---|---|---|
+| `AcceptingTests` | Source compiles without diagnostics and stays unchanged after fixes | Swift source |
+| `FixingTests` | Fixed source matches the independent Output; Input and Output compile; Output has no diagnostics and stays unchanged after fixes | Input and Output sections |
+| `DecliningTests` | Expected rule IDs are reported; fixes preserve the source and diagnostics | Swift source |
 
-The tests run `swiftc -typecheck` on every input. Only explicit parser-error cases must fail compilation. Fixture files are copied as resources. Comments in `.swiftformat` and `.swiftlint.yml` explain the native tool settings.
+The suite names describe the checker's response to the input. Declining reports a violation that remains after a fix attempt.
+
+Each scenario is one named file under `Tests/Fixtures/<Suite>/`. Accepting fixtures use `<Rule>/<Behavior>.swift`: one scenario and its required declarations. Declarations stay together when the test checks their interaction. The relative path identifies the case in test results. Fixing and declining fixtures contain their scenario and its required declarations; the suite defines the expected behavior of the complete input. The same tests cover LF and CRLF. Diagnostic expectations are declared in the suite; counts and source positions are checked only when required by a scenario. Parser-error inputs may be invalid Swift.
+
+Fixing fixtures start with `// MARK: - Input`. A blank line followed by `// MARK: - Output` starts the expected output. The fixture loader removes the markers and the separating blank line. It preserves source whitespace, including the final newline. Each fixing file has exactly one output separator. Fixtures use LF; the tests also derive CRLF variants.
+
+Tuist uses the shared `ResourceSynthesizers/Files.stencil` to generate `Derived/Sources/TuistFiles+SwiftStyleTests.swift`. The template finds suites by matching each test file name to its folder name. Generated `Files.<Suite>.files` properties return `[BundledResource<SwiftFixture>]`; the common resource type lists files recursively in path order from `SwiftStyleFixtures.bundle`. The test target depends on ModalityCore through its local Swift package. `SwiftFixture` reads UTF-8 source; fixing fixture loading validates Input/Output sections and preserves source whitespace. Add a fixture file to add a case; declining cases also declare their expected rule IDs in the suite.
+
+`FixingTests` checks each expected Output directly: it must compile, have no diagnostics and stay unchanged. `AcceptingTests` covers additional valid forms and rule exceptions. Import fixtures check that attributes, conditional branches and file sections stay unchanged; string fixtures include semicolons inside literals. Both suites run the SwiftStyle executable with all its rules.
+
+The `Tests/SwiftStyleTests` buildable folder provides test sources and inputs for resource generation. The `SwiftStyleFixtures` target copies Swift fixtures with one native Copy Files phase per directory. The manifest finds these directories from the fixture files. This preserves paths and shows fixtures in expandable Xcode groups. The test target embeds the resource bundle with a native Copy Files phase. The process helper drains standard output and standard error concurrently. Fixture sources are excluded from normal style checks. These tests run the SwiftStyle executable; SwiftFormat and SwiftLint remain part of the separate lint command.
 
 ## Tuist plugin
 

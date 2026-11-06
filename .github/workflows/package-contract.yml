@@ -52,6 +52,9 @@ jobs:
       - name: Install Tuist
         working-directory: SwiftStyle
         run: mise install tuist
+      - name: Install project dependencies
+        working-directory: SwiftStyle
+        run: tuist install
       - name: Generate SwiftStyle tests
         working-directory: SwiftStyle
         run: tuist generate --no-open

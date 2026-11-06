@@ -1,5 +1,0 @@
-enum Accepted {}
-enum Rejected {}
-#if DEBUG
-enum MoreRejected {}
-#endif

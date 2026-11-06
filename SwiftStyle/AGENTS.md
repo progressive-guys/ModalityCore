@@ -8,6 +8,12 @@ Read [[README]] and comments in the affected configs or checker source files bef
 - Preserve evaluation order. Fixes must have a defined syntax change and fixture tests. Rules that need an owner decision keep reporting diagnostics.
 - Use two-space Swift indentation. Keep existing blocks in place.
 - Explain SwiftFormat and SwiftLint settings with comments in their configs.
-- Diagnostic cases use `Tests/Fixtures/Diagnostics/<case>.swift`. Defaults are `Accepted: 0`, `Rejected: 1`, and successful compilation. Use an independent `<case>.json` beside the Swift file for exceptions. Each input must compile, except parser-error cases.
-- Put each diagnostic file's examples in one `enum Accepted` and one `enum Rejected`. Use named methods or member types as cases. Use a member type directly when a method wrapper adds no test behavior. Keep helper types inside these enums. File-scope functions and extensions remain at file scope when the rule needs them.
-- Run the `SwiftStyleTests` scheme and `sh Scripts/lint.sh Sources Tests/SwiftStyleTests Project.swift` after changes.
+- Keep one named Swift fixture per scenario in `Tests/Fixtures/<Suite>/`. Group accepting fixtures in rule folders; name each file for the behavior it checks.
+- Use three parameterized suites: AcceptingTests, FixingTests and DecliningTests. Run SwiftStyle with all rules.
+- Fixing fixtures start with `// MARK: - Input`. One blank line and `// MARK: - Output` separate the independent expected output. Compare the fixed input with the expected output and typecheck both. Check that Output has no diagnostics and stays unchanged after fixes.
+- Declining fixtures contain source and expect the rule IDs declared in the suite. Fixes preserve the input and its diagnostics. Parser-error inputs may be invalid Swift.
+- Accepting fixtures contain source that compiles without diagnostics and stays unchanged after fixes.
+- Tuist generates typed Files.<Suite>.files properties from the shared Files template. The SwiftStyleFixtures resource target copies fixtures with their relative paths; the test target embeds its bundle. BundledResource<SwiftFixture> lists and reads bundled files with their relative paths; formatting loading removes section markers and preserves source whitespace. Fixture files use LF; tests also check CRLF.
+- Keep each unchanged fixture to one scenario and its required declarations. Keep declarations together when their interaction is the test case. LF and CRLF use the same independent expected output.
+- Place correct, unchanged examples in AcceptingTests. Fixing and declining fixtures contain their scenario and the declarations it needs. The suite defines the expected behavior of the complete input.
+- Run the `SwiftStyleTests` scheme and `sh Scripts/lint.sh Sources Tests/SwiftStyleTests Project.swift ProjectDescriptionHelpers Tuist/Package.swift` after changes.

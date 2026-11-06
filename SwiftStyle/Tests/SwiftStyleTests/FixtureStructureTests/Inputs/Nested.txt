@@ -1,4 +1,0 @@
-enum Examples {
-  enum Accepted {}
-  enum Rejected {}
-}
