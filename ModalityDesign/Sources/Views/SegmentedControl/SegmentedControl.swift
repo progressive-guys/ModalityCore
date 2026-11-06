@@ -204,7 +204,7 @@ private struct SegmentPressStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .contentShape(Rectangle())
-      .onChange(of: configuration.isPressed) { newValue in
+      .onValueChange(of: configuration.isPressed) { newValue in
         isPressed = newValue
       }
   }

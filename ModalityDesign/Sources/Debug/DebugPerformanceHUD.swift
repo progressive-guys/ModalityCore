@@ -90,7 +90,7 @@ public struct DebugRenderingPerformanceFPS_HUD: View {
     .onAppear {
       restartWarmup(from: snapshot)
     }
-    .onChange(of: snapshot) { newSnapshot in
+    .onValueChange(of: snapshot) { newSnapshot in
       appendSnapshot(newSnapshot)
     }
   }
@@ -285,7 +285,7 @@ private struct DebugRenderingPerformanceFPS_HUDOverlayModifier: ViewModifier {
           metrics.stopSampling()
         }
       }
-      .onChange(of: shouldShowHUD) { isEnabled in
+      .onValueChange(of: shouldShowHUD) { isEnabled in
         if isEnabled {
           metrics.startSampling()
         } else {

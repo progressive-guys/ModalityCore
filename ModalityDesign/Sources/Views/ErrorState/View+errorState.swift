@@ -47,7 +47,7 @@ public struct ErrorFlagBorderModifier: ViewModifier {
         RoundedRectangle(cornerRadius: cornerRadius)
           .stroke(isError ? VioletPalette.errorViolet : VioletPalette.border, lineWidth: 1)
       )
-      .onChange(of: text) { _ in
+      .onValueChange(of: text) { _ in
         if isError {
           isError = false
         }

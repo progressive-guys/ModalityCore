@@ -33,6 +33,7 @@ SwiftUI design components and utilities:
 
 - **Views**: `RangeRestrictedSlider`, `Knob`, `WedgeView`, `RingView`, `CircularLabel`, `TagsView`, `WindowOpenableButton`
 - **Layouts**: `TagsLayout` (wrapping flow layout), `WidthDrivenVStack`
+- The `onValueChange(of:perform:)` modifier reports value changes after the initial view update on supported OS versions.
 - **Shapes**: `WedgeShape`, `RoundedCornersRectangle`, `PlayheadShape`
 - **Shaders**: Metal shaders (invert, parameterized noise)
 - **Animations**: Custom transitions, `AnimatableTriplet`
