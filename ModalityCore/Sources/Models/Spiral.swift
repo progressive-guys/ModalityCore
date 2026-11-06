@@ -19,14 +19,12 @@ public struct Spiral<Element: Sendable>: Sendable {
     var result = [Element]()
     let turnIndex = fromIndex / spiralTurnLength
     let elementIndex = fromIndex % spiralTurnLength
-
     for projectedIndex in 0..<spiralTurnLength {
       let currentTurnIndex = projectedIndex + spiralTurnLength * turnIndex
       let nextTurnIndex = currentTurnIndex + spiralTurnLength
       let fromNextTurn = projectedIndex < elementIndex && nextTurnIndex < elements.count
       result.append(elements[fromNextTurn ? nextTurnIndex : currentTurnIndex])
     }
-
     return result
   }
 }

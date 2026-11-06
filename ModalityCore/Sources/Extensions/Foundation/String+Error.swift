@@ -10,7 +10,6 @@ public struct StringError: LocalizedError {
 }
 
 public extension String {
-
   var error: StringError {
     StringError(self)
   }

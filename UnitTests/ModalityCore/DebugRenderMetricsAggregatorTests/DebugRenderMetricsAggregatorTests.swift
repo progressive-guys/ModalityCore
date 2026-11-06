@@ -7,11 +7,9 @@ struct DebugRenderMetricsAggregatorTests {
   @Test
   func stableSixtyHertzFrames() {
     var aggregator = DebugRenderMetricsAggregator(displayHz: 60)
-
     for index in 0...60 {
       aggregator.recordFrame(timestamp: Double(index) / 60, displayHz: 60)
     }
-
     let snapshot = aggregator.snapshot(now: 1)
 
     #expect(snapshot.displayHz == 60)
@@ -27,11 +25,9 @@ struct DebugRenderMetricsAggregatorTests {
   @Test
   func stableOneHundredTwentyHertzFrames() {
     var aggregator = DebugRenderMetricsAggregator(displayHz: 120)
-
     for index in 0...120 {
       aggregator.recordFrame(timestamp: Double(index) / 120, displayHz: 120)
     }
-
     let snapshot = aggregator.snapshot(now: 1)
 
     #expect(snapshot.displayHz == 120)
@@ -44,11 +40,9 @@ struct DebugRenderMetricsAggregatorTests {
   @Test
   func stableSixtyFpsOnOneHundredTwentyHertzDisplayDoesNotCountHitches() {
     var aggregator = DebugRenderMetricsAggregator(displayHz: 120)
-
     for index in 0...60 {
       aggregator.recordFrame(timestamp: Double(index) / 60, displayHz: 120)
     }
-
     let snapshot = aggregator.snapshot(now: 1)
 
     #expect(snapshot.displayHz == 120)
@@ -65,7 +59,6 @@ struct DebugRenderMetricsAggregatorTests {
     aggregator.recordFrame(timestamp: 1 / 60, displayHz: 60)
     aggregator.recordFrame(timestamp: 3 / 60, displayHz: 60)
     aggregator.recordFrame(timestamp: 4 / 60, displayHz: 60)
-
     let snapshot = aggregator.snapshot(now: 4 / 60)
 
     #expect(snapshot.hitchCount == 1)
@@ -79,7 +72,6 @@ struct DebugRenderMetricsAggregatorTests {
     var aggregator = DebugRenderMetricsAggregator(frameWindow: 1)
     aggregator.recordFrame(timestamp: 0, displayHz: 60)
     aggregator.recordFrame(timestamp: 0.1, displayHz: 60)
-
     let snapshot = aggregator.snapshot(now: 2)
 
     #expect(snapshot.frameSampleCount == 0)

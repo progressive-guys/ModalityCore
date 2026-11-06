@@ -41,11 +41,14 @@ public struct FileSystemStore<Value: Codable & Sendable>: Sendable {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
     let data = try encoder.encode(value)
+
     try FileManager.default.createDirectory(
       at: url.deletingLastPathComponent(),
       withIntermediateDirectories: true
     )
+
     try data.write(to: url, options: .atomic)
+
     return Entry(value: value, url: url)
   }
 
@@ -60,13 +63,15 @@ public struct FileSystemStore<Value: Codable & Sendable>: Sendable {
       includingPropertiesForKeys: Array(keys),
       options: [.skipsHiddenFiles]
     )
+
     var trees: [Tree<Entry>] = []
+
     for url in urls {
       do {
         let attributes = try url.resourceValues(forKeys: keys)
+
         // Follow real directories only, so links cannot introduce cycles or leave the catalog.
         guard attributes.isSymbolicLink != true else { continue }
-
         if attributes.isDirectory == true {
           let children = try readTrees(at: url, errors: &errors)
           trees.append(Tree(folder: url.lastPathComponent, children: children))

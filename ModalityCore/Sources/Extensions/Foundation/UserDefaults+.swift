@@ -30,7 +30,6 @@ public extension UserDefaults {
   /// Fills missing or null top-level JSON fields from the supplied value.
   func decode<T: Codable>(forKey key: String, defaultValue: T) -> T {
     guard let savedData = data(forKey: key) else { return defaultValue }
-
     do {
       return try JSONDecoder().decode(from: savedData, defaultValue: defaultValue)
     } catch {
@@ -41,6 +40,5 @@ public extension UserDefaults {
 }
 
 public extension Logger {
-
   static let userDefaults = Logger(category: "UserDefaults")
 }

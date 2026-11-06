@@ -1,7 +1,6 @@
 public struct Tree<Value> {
 
   public enum Node {
-
     case folder(title: String, children: [Tree<Value>])
     case leaf(Value)
   }
@@ -65,7 +64,6 @@ extension Tree: Hashable where Value: Hashable {}
 extension Tree.Node: Hashable where Value: Hashable {}
 
 extension Tree: Identifiable where Value: Identifiable {
-
   public var id: String { node.id }
 }
 

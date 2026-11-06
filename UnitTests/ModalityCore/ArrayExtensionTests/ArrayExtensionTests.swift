@@ -43,6 +43,7 @@ struct ArrayStatisticsTests {
   func chunked() {
     let values = [1, 2, 3, 4, 5]
     let chunks = values.chunked(into: 2)
+
     #expect(chunks.count == 3)
     #expect(chunks[0] == [1, 2])
     #expect(chunks[1] == [3, 4])
@@ -53,6 +54,7 @@ struct ArrayStatisticsTests {
   func chunkedExact() {
     let values = [1, 2, 3, 4]
     let chunks = values.chunked(into: 2)
+
     #expect(chunks.count == 2)
     #expect(chunks[0] == [1, 2])
     #expect(chunks[1] == [3, 4])
@@ -61,7 +63,15 @@ struct ArrayStatisticsTests {
 
 struct ArrayKeyPathTests {
 
-  struct Item { let value: Double; let name: String }
+  struct Item {
+
+    let name: String
+    let value: Double
+
+    init(value: Double, name: String) {
+      self.value = value
+      self.name = name
+    }}
 
   @Test
   func maxByKeyPath() {
@@ -107,6 +117,7 @@ struct ArrayRawRepresentableTests {
     let original = [1, 2, 3]
     let raw = original.rawValue
     let decoded = [Int](rawValue: raw)
+
     #expect(decoded == original)
   }
 
@@ -114,8 +125,11 @@ struct ArrayRawRepresentableTests {
   func emptyArray() {
     let original: [Int] = []
     let raw = original.rawValue
+
     #expect(raw == "[]")
+
     let decoded = [Int](rawValue: raw)
+
     #expect(decoded == [])
   }
 

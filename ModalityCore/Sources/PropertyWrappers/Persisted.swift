@@ -8,7 +8,6 @@ public struct Persisted<Value> {
   private let key: String
   private let defaultValue: Value
 
-  // Review: я бы еще коллбэки в отдельную группу выносил
   private let read: (String) -> Value?
   private let write: (Value, String) -> Void
   private let debounceInterval: TimeInterval?
@@ -73,11 +72,9 @@ public struct Persisted<Value> {
 
       let key = self.key
       let write = self.write
-
       let workItem = DispatchWorkItem {
         write(newValue, key)
       }
-
       debounceWorkItem = workItem
       DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + interval, execute: workItem)
     } else {
@@ -124,10 +121,8 @@ extension Persisted where Value: Codable {
         let data = UserDefaults.standard.data(forKey: key),
         let decoded = try? JSONDecoder().decode(Value.self, from: data)
       else { return defaultValue }
-
       return decoded
     }()
-
     self.value = initial
     self.subject = CurrentValueSubject(initial)
   }
@@ -153,7 +148,6 @@ extension Persisted where Value: RawRepresentable, Value.RawValue == String {
       guard let raw = UserDefaults.standard.string(forKey: key) else { return defaultValue }
       return Value(rawValue: raw) ?? defaultValue
     }()
-
     self.value = initial
     self.subject = CurrentValueSubject(initial)
   }

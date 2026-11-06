@@ -34,11 +34,12 @@ public final class DebugRenderMetrics: ObservableObject {
 
   public func startSampling() {
     activeConsumers += 1
-
     guard activeConsumers == 1 else { return }
+
     sampler = makeDisplayFrameSampler { [weak self] timestamp, displayHz in
       self?.recordFrame(timestamp: timestamp, displayHz: displayHz)
     }
+
     sampler?.start()
     publishSnapshot(now: ProcessInfo.processInfo.systemUptime, force: true)
   }
@@ -47,7 +48,6 @@ public final class DebugRenderMetrics: ObservableObject {
     guard activeConsumers > 0 else { return }
 
     activeConsumers -= 1
-
     guard activeConsumers == 0 else { return }
 
     sampler?.stop()
@@ -56,7 +56,6 @@ public final class DebugRenderMetrics: ObservableObject {
 
   public func resetSamplingState() {
     let displayHz = snapshot.displayHz > 0 ? snapshot.displayHz : 60
-
     aggregator = DebugRenderMetricsAggregator(displayHz: displayHz)
     lastPublishTime = 0
     snapshot = .empty
@@ -84,7 +83,6 @@ public final class DebugRenderMetrics: ObservableObject {
 #if DEBUG
 @MainActor
 private protocol DisplayFrameSampling: AnyObject {
-
   func stop()
   func start()
 }
@@ -160,7 +158,6 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
     stop()
 
     var displayLink: CVDisplayLink?
-
     guard
       CVDisplayLinkCreateWithActiveCGDisplays(&displayLink) == kCVReturnSuccess,
       let displayLink
@@ -169,20 +166,14 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       return
     }
 
-    let callbackTarget = MacDisplayLinkCallbackTarget(
-      displayHz: Self.currentDisplayHz(),
-      onFrame: onFrame
-    )
-
+    let callbackTarget = MacDisplayLinkCallbackTarget(displayHz: Self.currentDisplayHz(), onFrame: onFrame)
     let context = Unmanaged.passUnretained(callbackTarget).toOpaque()
 
     let callback: CVDisplayLinkOutputCallback = { _, _, _, _, _, context in
       guard let context else { return kCVReturnSuccess }
-
       let target = Unmanaged<MacDisplayLinkCallbackTarget>
         .fromOpaque(context)
         .takeUnretainedValue()
-
       target.displayLinkDidFire()
 
       return kCVReturnSuccess
@@ -195,7 +186,6 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       startFallbackSampler()
       return
     }
-
     self.displayLink = displayLink
     self.callbackTarget = callbackTarget
   }
@@ -216,7 +206,6 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       displayHz: Self.currentDisplayHz(),
       onFrame: onFrame
     )
-
     fallbackSampler.start()
     self.fallbackSampler = fallbackSampler
   }

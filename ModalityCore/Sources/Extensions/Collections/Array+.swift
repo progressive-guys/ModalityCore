@@ -7,7 +7,6 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
       let data = rawValue.data(using: .utf8),
       let result = try? JSONDecoder().decode([Element].self, from: data)
     else { return nil }
-
     self = result
   }
 
@@ -16,7 +15,6 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
       let data = try? JSONEncoder().encode(self),
       let result = String(data: data, encoding: .utf8)
     else { return "[]" }
-
     return result
   }
 }
@@ -34,7 +32,6 @@ extension Array {
 
 // MARK: - Statistical Functions
 extension Array where Element: BinaryFloatingPoint {
-
   public var sum: Element { sum(\.self) }
   public var median: Element { median(\.self) }
   public var average: Element { average(\.self) }
@@ -52,7 +49,6 @@ extension Array {
 
     let sorted = lazy.map { $0[keyPath: keyPath] }.sorted()
     let mid = count / 2
-
     return count.isMultiple(of: 2) ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
   }
 

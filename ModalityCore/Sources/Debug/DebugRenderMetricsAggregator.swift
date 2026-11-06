@@ -93,9 +93,7 @@ public struct DebugRenderMetricsAggregator: Sendable {
     totalFrameCount += 1
 
     let duration = timestamp - lastFrameTimestamp
-
     guard duration.isFinite, duration >= 0 else { return }
-
     frameSamples.append(FrameSample(timestamp: timestamp, duration: duration))
   }
 
@@ -106,7 +104,6 @@ public struct DebugRenderMetricsAggregator: Sendable {
 
     let durations = frameSamples.map(\.duration)
     let expectedFrameDuration = expectedFrameDuration(from: durations)
-
     return DebugRenderMetricsSnapshot(
       displayHz: displayHz,
       frameCadenceHz: expectedFrameDuration > 0 ? 1 / expectedFrameDuration : 0,
@@ -151,7 +148,6 @@ public struct DebugRenderMetricsAggregator: Sendable {
     let sorted = values.sorted()
     let rawIndex = ceil(Double(sorted.count) * percentile) - 1
     let index = min(sorted.count - 1, max(0, Int(rawIndex)))
-
     return sorted[index]
   }
 }

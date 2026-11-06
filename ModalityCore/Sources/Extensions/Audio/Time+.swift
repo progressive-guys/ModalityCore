@@ -6,7 +6,6 @@ public extension AVAudioTime {
     let seconds = AVAudioTime.seconds(forHostTime: hostTime)
     let bootTime = ProcessInfo.processInfo.systemUptime
     let startupDate = Date(timeIntervalSinceNow: -bootTime)
-
     return startupDate.addingTimeInterval(seconds)
   }
 }
@@ -19,7 +18,6 @@ public extension DispatchWallTime {
     let frac = interval - Double(seconds)
     let nanoseconds = Int(Double(NSEC_PER_SEC) * frac)
     let ts = timespec(tv_sec: seconds, tv_nsec: nanoseconds)
-
     self = DispatchWallTime(timespec: ts)
   }
 

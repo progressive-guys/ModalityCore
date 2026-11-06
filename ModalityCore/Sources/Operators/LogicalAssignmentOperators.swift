@@ -1,6 +1,5 @@
 infix operator ||=
 extension Bool {
-
   public static func ||= (lhs: inout Bool, rhs: @autoclosure () -> Bool) {
     lhs = (lhs || rhs())
   }
@@ -8,7 +7,6 @@ extension Bool {
 
 infix operator &&=
 extension Bool {
-
   public static func &&= (lhs: inout Bool, rhs: @autoclosure () -> Bool) {
     lhs = (lhs && rhs())
   }

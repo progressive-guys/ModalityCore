@@ -11,7 +11,6 @@ public extension DispatchSource {
     timer.schedule(wallDeadline: deadline)
     timer.setEventHandler(qos: .userInteractive, flags: [], handler: operation)
     timer.resume()
-
     return timer
   }
 }

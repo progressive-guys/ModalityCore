@@ -14,7 +14,6 @@ public extension Logger {
 }
 
 public extension Logger {
-
   static let `default` = Logger(subsystem: "", category: "default")
 }
 

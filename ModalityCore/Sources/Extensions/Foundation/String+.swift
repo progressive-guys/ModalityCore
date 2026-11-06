@@ -21,7 +21,6 @@ public extension String {
 }
 
 public extension String.StringInterpolation {
-
   mutating func appendInterpolation<T: CustomStringConvertible>(_ value: T?) {
     appendInterpolation(value ?? "nil" as CustomStringConvertible)
   }
@@ -37,7 +36,6 @@ public extension String.StringInterpolation {
       appendInterpolation(String(data: JSONData, encoding: .utf8))
       return
     }
-
     appendInterpolation("\(String(decoding: jsonData, as: UTF8.self))")
   }
 }

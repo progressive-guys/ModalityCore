@@ -12,6 +12,7 @@ public extension FileManager {
     else { return [] }
 
     var files: [URL] = []
+
     for case let fileURL as URL in enumerator where fileURL.pathExtension == type {
       files.append(fileURL)
     }

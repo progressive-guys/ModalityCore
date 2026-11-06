@@ -27,7 +27,6 @@ public extension Observable where Self: AnyObject & Sendable {
       let _ = self[keyPath: keyPath]
     } onChange: { [weak self] in
       guard let self else { return }
-
       Task { @MainActor in
         onChange(self[keyPath: keyPath])
         self.withContinuousObservation(keyPath, onChange: onChange)

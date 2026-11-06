@@ -21,14 +21,12 @@ public extension NumericValidationError {
 }
 
 extension NumericValidationError: LocalizedError {
-
   public var errorDescription: String? { message }
 }
 
 public enum NumericValidation {
 
   public enum Constraint: Sendable {
-
     case finite, positive, nonNegative
   }
 
@@ -52,19 +50,15 @@ public enum NumericValidation {
 
   public static func validate<Root>(_ value: Root, fields: [String: Constraint]) throws {
     let children = Array(Mirror(reflecting: value).children)
-
     for field in fields.keys.sorted() {
       let words = field
         .replacingOccurrences( of: "([a-z0-9])([A-Z])", with: "$1 $2", options: .regularExpression )
         .lowercased()
-
       let name = words.prefix(1).uppercased() + words.dropFirst()
-
       guard
         let constraint = fields[field],
         let number = children.first(where: { $0.label == field })?.value as? Double
       else { throw NumericValidationError.missingField(name) }
-
       try validate(number, named: name, constraint: constraint)
     }
   }
