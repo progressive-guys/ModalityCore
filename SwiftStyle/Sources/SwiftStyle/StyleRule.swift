@@ -70,9 +70,14 @@ enum StyleRule: String, CaseIterable {
   /// Preserve explicit initializers or generate a known memberwise signature, including Binding inputs.
   case privateViewProperties = "private_view_properties"
 
-  /// Separate local declarations, checks and final exits with one blank line between groups.
-  /// Keep statements together in bodies with at most three code lines. Leading comments start a group.
-  /// Keep compact checks together. Use one blank line next to a multiline check.
+  /// Keep consecutive uses of local values together, including branches, captures and final exits.
+  /// Keep declarations and assignments beside an immediate if or guard whose conditions read the value.
+  /// Separate independent declarations, combined preparation groups and leading comments.
+  /// Bodies with at most three code lines stay compact, except at leading group comments.
+  /// Consecutive single-line assignments stay compact at any group length.
+  /// Longer bodies allow manual separators between ordinary actions.
+  /// Remove opening blank lines from executable bodies of any length, after the opening brace or closure signature.
+  /// Keep compact independent checks together. Separate multiline independent checks.
   case statementGrouping = "statement_grouping"
 
   /// Use a switch for two or more consecutive SwiftSyntax type checks of the same object.
@@ -101,7 +106,8 @@ enum StyleRule: String, CaseIterable {
   case selfMemberNewline = "self_member_newline"
 
   /// Require a blank line after a single-line else block before the next statement. The enclosing closing brace
-  /// needs no blank line. Consecutive if and guard checks use statement grouping.
+  /// needs no blank line. Bodies with at most three code lines keep statements together.
+  /// Consecutive checks and connected local uses follow statement_grouping.
   case compactElseBlankLine = "compact_else_blank_line"
 
   /// Start the assigned expression on the same line as =.

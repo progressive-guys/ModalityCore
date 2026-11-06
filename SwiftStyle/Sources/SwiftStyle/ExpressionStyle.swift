@@ -1,5 +1,4 @@
 import SwiftSyntax
-import SwiftOperators
 
 extension StyleVisitor {
 
@@ -8,8 +7,8 @@ extension StyleVisitor {
 
   func checkBinary(_ node: InfixOperatorExprSyntax) {
     guard let token = node.operator.firstToken(viewMode: .sourceAccurate) else { return }
-
     let name = token.text
+
     let left = node.leftOperand
     let right = node.rightOperand
 
@@ -17,19 +16,14 @@ extension StyleVisitor {
       checkOperatorChain(node, rule: rule, token: token)
     }
 
-    if name == "=",
-       layout.line(token) != layout.line(right)
-    {
+    if name == "=", layout.line(token) != layout.line(right) {
       report(.assignmentRhsSameLine, token)
     }
-
     if Self.comparisons.contains(name), layout.line(token) != layout.line(right) {
       report(.comparisonOperatorNewline, token)
     }
 
-    let isAssignment = node.operator.is(AssignmentExprSyntax.self)
-      || OperatorTable.standardOperators.infixOperator(named: name)?.precedenceGroup == "AssignmentPrecedence"
-
+    let isAssignment = node.isAssignmentOperation
     if !isAssignment, layout.line(token) != layout.line(right) {
       report(.binaryOperatorWrap, token)
 
@@ -37,7 +31,6 @@ extension StyleVisitor {
         report(.arithmeticOperatorEndOfLine, token)
       }
     }
-
     if Self.arithmetic.contains(name) {
       checkArithmeticPrecedence(node)
     }
@@ -45,13 +38,11 @@ extension StyleVisitor {
     if Self.arithmetic.contains(name), brokenMember(left) || brokenMember(right) {
       report(.arithmeticMemberWrap, token)
     }
-
     if Self.arithmetic.contains(name) || Self.comparisons.contains(name) || ["&&", "||", "??"].contains(name),
        brokenMember(right)
     {
       report(.binaryOperandMemberWrap, token)
     }
-
     if name == "??" {
       if layout.line(token) != layout.line(right) || brokenMember(right) {
         report(.nilCoalescingMemberWrap, token)
@@ -59,12 +50,10 @@ extension StyleVisitor {
 
       let operatorLine = layout.line(token)
       let lineLength = layout.text(at: operatorLine).count
-
       if lineLength > 120, !layout.startsLine(token) {
         report(.longNilCoalescing, token)
       }
     }
-
     if name == "+" {
       switch (Syntax(left).as(SyntaxEnum.self)) {
     case .stringLiteralExpr where (right.is(StringLiteralExprSyntax.self)):
@@ -73,7 +62,6 @@ extension StyleVisitor {
       break
     }
     }
-
     switch (Syntax(left).as(SyntaxEnum.self)) {
     case .functionCallExpr(let call):
       checkShortCall(call, operatorToken: token)
@@ -84,7 +72,6 @@ extension StyleVisitor {
 
   func checkMember(_ node: MemberAccessExprSyntax) {
     guard let base = node.base else { return }
-
     switch (Syntax(base).as(SyntaxEnum.self)) {
     case .declReferenceExpr(let name) where (name.baseName.text == "self") && (
       layout.endLine(base) != layout.line(node.period)
@@ -98,11 +85,8 @@ extension StyleVisitor {
 
     let members = memberChain(ExprSyntax(node))
     let leading = members.map { $0.base != nil && layout.startsLine($0.period) }
-
     guard let first = leading.firstIndex(of: true) else { return }
-
     let hasLaterInlineMember = leading.dropFirst(first).contains(false)
-
     if first >= 2 || hasLaterInlineMember {
       report(.mixedMemberChainWrap, node.firstToken(viewMode: .sourceAccurate) ?? node.period)
     }
@@ -110,19 +94,16 @@ extension StyleVisitor {
 
   func checkChainedCall(_ node: FunctionCallExprSyntax) {
     var callee = node.calledExpression
-
     switch (Syntax(callee).as(SyntaxEnum.self)) {
     case .genericSpecializationExpr(let specialized):
       callee = specialized.expression
     default:
       break
     }
-
     guard let member = callee.as(MemberAccessExprSyntax.self),
           let base = member.base,
           let previous = receiverCall(base)
     else { return }
-
     if let leftParen = node.leftParen,
        let rightParen = node.rightParen,
        layout.line(leftParen) != layout.line(rightParen),
@@ -130,7 +111,6 @@ extension StyleVisitor {
     {
       report(.chainedCallArgumentsWrap, member.period)
     }
-
     if let closure = node.trailingClosure,
        layout.line(closure.leftBrace) != layout.line(closure.rightBrace),
        let previousClosure = previous.additionalTrailingClosures.last?.closure ?? previous.trailingClosure,
@@ -147,7 +127,6 @@ extension StyleVisitor {
     guard token.tokenKind == .rightParen || token.tokenKind == .rightSquare,
           let expression = token.parent?.as(ExprSyntax.self)
     else { return }
-
     let opening: TokenSyntax? = switch expression.as(ExprSyntaxEnum.self) {
     case .functionCallExpr(let call): call.leftParen
     case .tupleExpr(let tuple): tuple.leftParen
@@ -156,7 +135,6 @@ extension StyleVisitor {
     case .dictionaryExpr(let dictionary): dictionary.leftSquare
     default: nil
     }
-
     guard let opening,
           layout.line(opening) != layout.line(token),
           let previous = token.previousToken(viewMode: .sourceAccurate),
@@ -165,7 +143,6 @@ extension StyleVisitor {
 
     let location = layout.converter.location(for: token.positionAfterSkippingLeadingTrivia)
     let prefix = String(decoding: layout.text(at: location.line).utf8.prefix(location.column - 1), as: UTF8.self)
-
     if prefix.allSatisfy({ $0.isWhitespace || ")]},".contains($0) })
       || hasClosingContinuation(expression, before: token)
     { return }
@@ -177,7 +154,6 @@ extension StyleVisitor {
   /// Arithmetic and ternary expressions keep their own closing-line requirement.
   private func hasClosingContinuation(_ expression: ExprSyntax, before closing: TokenSyntax) -> Bool {
     let line = layout.line(closing)
-
     guard let first = expression.tokens(viewMode: .sourceAccurate).first(where: {
       !$0.text.isEmpty && layout.line($0) == line
     }), layout.startsLine(first)
@@ -195,16 +171,13 @@ extension StyleVisitor {
       guard let nested = first.parent?.as(ExprSyntax.self),
             nested.lastToken(viewMode: .sourceAccurate)?.id == first.id
       else { return false }
-
       boundary = nested
 
     default: return false
     }
 
     guard layout.line(boundary) < line else { return false }
-
     var node: Syntax? = Syntax(boundary)
-
     while let current = node, current.id != expression.id {
       if ({ () -> Bool in
         switch (Syntax(current).as(SyntaxEnum.self)) {
@@ -227,7 +200,6 @@ extension StyleVisitor {
 
       node = current.parent
     }
-
     return node?.id == expression.id
   }
 
@@ -244,7 +216,6 @@ extension StyleVisitor {
     else { return }
 
     let prefix = layout.converter.location(for: call.positionAfterSkippingLeadingTrivia).column - 1
-
     guard prefix + SourceLayout.compact(call.trimmedDescription).count <= 120 else { return }
 
     report(.arithmeticCallArgumentsWrap, operatorToken)
@@ -303,7 +274,6 @@ extension StyleVisitor {
     let operations = chainOperations(node, rule: rule)
     let tokens = operations.compactMap { $0.operator.firstToken(viewMode: .sourceAccurate) }
     let isArithmeticChain = Self.arithmetic.contains(token.text)
-
     let wrappedTokens = if isArithmeticChain {
       tokens.filter { token in
         guard let next = token.nextToken(viewMode: .sourceAccurate) else { return false }
@@ -312,11 +282,9 @@ extension StyleVisitor {
     } else {
       tokens
     }
-
     let leading = wrappedTokens.map { layout.startsLine($0) }
     let partialWrap = isArithmeticChain && !wrappedTokens.isEmpty && wrappedTokens.count != tokens.count
     let trailingWrap = isArithmeticChain && wrappedTokens.contains { !layout.startsLine($0) }
-
     if partialWrap || trailingWrap || (leading.contains(true) && leading.contains(false)) {
       report(rule, token)
     }
@@ -373,7 +341,6 @@ extension StyleVisitor {
 
   private func extendsChain(_ node: MemberAccessExprSyntax) -> Bool {
     var current = Syntax(node)
-
     while let parent = current.parent {
       switch (Syntax(parent).as(SyntaxEnum.self)) {
       case .memberAccessExpr(let member) where (member.base?.id == current.id):

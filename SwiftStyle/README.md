@@ -56,7 +56,21 @@ Stored-property groups use one blank line on each side when they contain more th
 
 `private_view_properties` requires private instance properties in structs that explicitly conform to `View` or `SwiftUI.View`, except `body`. It keeps explicit initializers and can generate a known memberwise signature, including `Binding` inputs. Private optional `State` values keep their implicit nil initialization. Unknown wrappers, conditional stored declarations and additional protocol conformances keep diagnostics when a safe initializer or access change cannot be determined.
 
-`member_spacing` keeps nested types one blank line from adjacent declarations. Type and extension bodies with at most three code lines have no blank line after the opening brace. Longer bodies start with one blank line.
+`member_spacing` keeps nested types one blank line from adjacent declarations. Type and extension bodies with at most three code lines have no blank line after the opening brace. Longer bodies start with one blank line. `statement_grouping` removes opening blank lines from executable bodies of any length: functions, initializers, deinitializers, closures, accessors and control-flow bodies. A closure body starts after `in` when it has a signature. The count for type bodies includes nested code and excludes the outer braces, blank lines and comments.
+
+`multiline_string_indent` aligns contents and closing quotes with opening quotes that start a line, including raw literals. When opening quotes follow code on the same line, contents and closing quotes use two extra spaces from that line. It preserves raw text, escapes and string values. Multiline interpolation expressions keep their diagnostic. SwiftFormat `semicolons` with `--semicolons never` separates inline statements. `statement_grouping` keeps consecutive local uses together across multiline expressions, conditions, branches, loops and closure captures. Derived bindings and successful guard bindings extend the group. References respect lexical scope and shadowing. Consecutive single-line declarations start one preparation group. Independent declarations, leading comments and conditional compilation boundaries start another group. A call that combines values from separate preparation groups starts a shared use group. Statement order stays unchanged.
+
+Groups use local declarations from the current body. Parameters and outer properties are inputs to that body. An independent operation ends the immediate declaration-use chain. Other pairs of ordinary actions, including calls on different receivers, allow zero or one blank line. Reuse of an older local value follows this spacing. A call that combines preparation groups still requires a separator. Other statements keep kind-based spacing. Bodies with at most three code lines keep statements together. This takes priority over dependency groups, statement kinds and manual separators. A leading group comment keeps its separator. The count includes nested code and excludes outer braces, blank lines and comments. Each nested body has its own count. `compact_else_blank_line` follows these group boundaries after a guard.
+
+A standalone `switch` connects to the preceding group through its subject. Values used only in its branches keep a blank line before the switch. A switch expression used to compute a value includes branch inputs. Closure captures include uses inside nested switches.
+
+Two adjacent multiline statements in a dependency group allow zero or one blank line. The separator keeps both statements in the same group. Extra blank lines are reduced to one.
+
+Consecutive single-line assignments with `=` use no blank lines, at any group length. This takes priority over dependency boundaries and manual separators. A leading group comment, call, declaration or multiline statement ends the assignment group.
+
+An assignment followed by an `if` or `guard` stays beside the check when its conditions read the changed variable or property path. This includes standard compound assignment operators. Conditions respect shadowing and compare full property paths. An intervening operation or group comment ends the connection. Two multiline operations can keep one blank line.
+
+A local declaration stays beside the next `if` or `guard` when its conditions read the declared value, including checks that use values from earlier preparation groups. Two multiline operations can keep one blank line. A leading group comment keeps its separator.
 
 ## Tests
 

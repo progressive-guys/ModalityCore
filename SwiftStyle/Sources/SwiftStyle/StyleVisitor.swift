@@ -10,6 +10,7 @@ final class StyleVisitor: SyntaxVisitor {
 
   var editPriority = 0
   var edits: [SourceEdit] = []
+  var compactStatementStarts: Set<Int> = []
   private(set) var diagnostics: [LintDiagnostic] = []
 
   init(file: String, source: String, tree: SourceFileSyntax, fixingRules: Set<String>? = nil, isFormatting: Bool = false) {
@@ -266,6 +267,7 @@ final class StyleVisitor: SyntaxVisitor {
 
     if token.tokenKind == .leftBrace, let parent = token.parent {
       checkInlineBlock(parent, brace: token)
+      checkScopeOpening(parent, brace: token)
     }
 
     return .visitChildren
@@ -370,6 +372,13 @@ final class StyleVisitor: SyntaxVisitor {
       layout.line(next) == layout.line(block.rightBrace) + 1,
       !["}", ")", "]", "else", "catch", "#endif", "#else", "#elseif", "if", "guard", ""].contains(next.text)
     else { return }
+    if compactStatementStarts.contains(next.positionAfterSkippingLeadingTrivia.utf8Offset) {
+      return
+    }
+
+    if let statements = block.ancestor(CodeBlockItemListSyntax.self), layout.codeLineCount(statements) <= 3 {
+      return
+    }
 
     report(.compactElseBlankLine, keyword)
   }
