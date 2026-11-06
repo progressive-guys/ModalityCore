@@ -47,7 +47,6 @@ final class StructuralFormatter: SyntaxVisitor {
   override func visit(_ node: MemberBlockItemListSyntax) -> SyntaxVisitorContinueKind {
     if enabled(.privateViewProperties) {
       let access = ViewPropertyAccess.edits(in: node, layout: layout)
-
       if !access.isEmpty {
         edits += access
         return .skipChildren
@@ -56,7 +55,6 @@ final class StructuralFormatter: SyntaxVisitor {
 
     if enabled(.memberOrder) {
       let order = MemberOrderFormatter.edits(in: node)
-
       if !order.isEmpty {
         edits += order
         return .skipChildren
@@ -73,7 +71,6 @@ final class StructuralFormatter: SyntaxVisitor {
     guard enabled(.concatenatedStringLiterals) else { return .visitChildren }
 
     let elements = Array(node.elements)
-
     guard elements.count >= 3, elements.count % 2 == 1 else { return .visitChildren }
 
     var value = ""
@@ -120,18 +117,15 @@ final class StructuralFormatter: SyntaxVisitor {
 
     let start = layout.line(node)
     let end = layout.endLine(node)
-
     guard end - start == 2, !node.trimmedDescription.contains("\\n"),
           !node.trimmedDescription.contains("\\r"), !node.trimmedDescription.contains("\\u{")
     else { return .visitChildren }
 
     var contents = ""
-
     for segment in node.segments {
       switch segment {
       case .stringSegment(let text):
         var escaped = false
-
         for character in text.content.text {
           if character == "\"", !escaped { contents += "\\" }
           contents.append(character)
@@ -142,7 +136,6 @@ final class StructuralFormatter: SyntaxVisitor {
       @unknown default: return .visitChildren
       }
     }
-
     edits.append(SourceEdit(
       range: node.positionAfterSkippingLeadingTrivia.utf8Offset..<node.endPositionBeforeTrailingTrivia.utf8Offset,
       replacement: "\"" + contents + "\""
@@ -159,7 +152,6 @@ final class StructuralFormatter: SyntaxVisitor {
       case .matchingPattern(let matching): matching.pattern
       default: nil
       }
-
       return pattern?.tokens(viewMode: .sourceAccurate).compactMap { token in
         if case .identifier = token.tokenKind { return token.text }
         return nil
@@ -184,10 +176,8 @@ final class StructuralFormatter: SyntaxVisitor {
       default: String(scalar)
       }
     }
-
     let contents = parts.joined()
     let column = layout.converter.location(for: node.positionAfterSkippingLeadingTrivia).column
-
     if column + contents.count + 1 <= 120 { return "\"" + contents + "\"" }
 
     let newline = source.contains("\r\n") ? "\r\n" : "\n"
@@ -203,7 +193,6 @@ final class StructuralFormatter: SyntaxVisitor {
 
       line += part
     }
-
     lines.append(line)
 
     return "\"\"\""

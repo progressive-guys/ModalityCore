@@ -75,7 +75,6 @@ extension StyleVisitor {
         let operands = rule == .arithmeticMemberWrap
           ? [operation.leftOperand, operation.rightOperand]
           : [operation.rightOperand]
-
         for operand in operands {
           for member in memberChain(operand) { before(member.period, with: "") }
         }
@@ -102,7 +101,6 @@ extension StyleVisitor {
       if let expression = chainRoot(token) {
         let members = memberChain(expression)
         let leading = members.firstIndex { layout.startsLine($0.period) } ?? 1
-
         for part in members.dropFirst(min(leading, 1)) where part.base != nil {
           before(part.period, with: lineBreak(indent: layout.indent(expression) + 2))
         }
@@ -147,7 +145,6 @@ extension StyleVisitor {
           case .ifExpr(let conditional):
             let tokens = Array(declaration.tokens(viewMode: .sourceAccurate))
               .prefix { $0.position < conditional.ifKeyword.position }
-
             for part in tokens {
               if let next = part.nextToken(viewMode: .sourceAccurate), layout.endLine(part) != layout.line(next) {
                 after(part, with: " ")
@@ -210,7 +207,6 @@ extension StyleVisitor {
       let block = token.ancestor(IfExprSyntax.self).flatMap { conditional in
         rule == .singleLineIfExit ? conditional.body : conditional.elseBody?.as(CodeBlockSyntax.self)
       } ?? token.ancestor(GuardStmtSyntax.self)?.body
-
       if let block {
         expand(block, indent: layout.indent(token))
       }
@@ -263,7 +259,6 @@ extension StyleVisitor {
   private func chainRoot(_ token: TokenSyntax) -> ExprSyntax? {
     var current = token.parent
     var result: ExprSyntax?
-
     while let node = current {
       if let expression = node.as(ExprSyntax.self) {
         switch expression.as(ExprSyntaxEnum.self) {
@@ -277,7 +272,6 @@ extension StyleVisitor {
 
       current = node.parent
     }
-
     return result
   }
 
@@ -297,7 +291,6 @@ extension SyntaxProtocol {
   /// Finds the owner of a diagnostic token in the current syntax tree.
   func ancestor<T: SyntaxProtocol>(_ type: T.Type) -> T? {
     var current: Syntax? = Syntax(self)
-
     while let node = current {
       if let value = node.as(type) { return value }
       current = node.parent

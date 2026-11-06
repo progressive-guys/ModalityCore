@@ -16,7 +16,6 @@ struct PropertyLayout {
     let names = declaration.attributes.compactMap { element in
       element.as(AttributeSyntax.self)?.attributeName.trimmedDescription
     }
-
     annotations = names.sorted()
 
     if declaration.modifiers.contains(where: { $0.name.text == "static" || $0.name.text == "class" }) {
@@ -29,7 +28,6 @@ struct PropertyLayout {
 
     var types: [String?] = []
     var followingType: String?
-
     for binding in declaration.bindings.reversed() {
       if let annotation = binding.typeAnnotation {
         followingType = Self.typeName(annotation.type)
@@ -41,7 +39,6 @@ struct PropertyLayout {
         types.append(followingType)
       }
     }
-
     type = types.first.flatMap { first in
       first.flatMap { name in types.allSatisfy { $0 == name } ? name : nil }
     }
@@ -57,7 +54,6 @@ struct PropertyLayout {
   var isStored: Bool {
     declaration.bindings.allSatisfy { binding in
       guard let block = binding.accessorBlock else { return true }
-
       switch block.accessors {
       case .getter: return false
       case .accessors(let list):
@@ -75,7 +71,6 @@ struct PropertyLayout {
   func hasLongAccessor(in layout: SourceLayout) -> Bool {
     declaration.bindings.contains { binding in
       guard let accessors = binding.accessorBlock else { return false }
-
       let computed: Bool = switch accessors.accessors {
       case .getter: true
 
@@ -84,7 +79,6 @@ struct PropertyLayout {
 
       @unknown default: false
       }
-
       return computed && layout.endLine(declaration) - layout.line(declaration) + 1 > 3
     }
   }
@@ -98,7 +92,6 @@ struct PropertyLayout {
     if let explicit = visibility(in: modifiers) { return explicit }
 
     var ancestor = parent
-
     while let node = ancestor {
       if let declaration = node.as(DeclSyntax.self) {
         switch declaration.as(DeclSyntaxEnum.self) {
@@ -144,7 +137,6 @@ struct PropertyLayout {
     switch expression.as(ExprSyntaxEnum.self) {
     case .declReferenceExpr(let reference): name = reference.baseName.text
     case .memberAccessExpr(let member): name = member.declName.baseName.text
-
     case .genericSpecializationExpr(let specialization):
       return constructorType(specialization.expression).map { _ in
         expression.tokens(viewMode: .sourceAccurate).map(\.text).joined()

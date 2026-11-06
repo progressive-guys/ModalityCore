@@ -5,7 +5,6 @@ enum ViewPropertyAccess {
 
   static func owner(of node: some SyntaxProtocol) -> StructDeclSyntax? {
     var ancestor = node.parent
-
     while let current = ancestor {
       switch current.as(SyntaxEnum.self) {
       case .structDecl(let declaration):
@@ -31,10 +30,10 @@ enum ViewPropertyAccess {
     guard let owner = owner(of: members), owner.inheritanceClause?.inheritedTypes.count == 1 else { return [] }
 
     let properties = members.compactMap { $0.decl.as(VariableDeclSyntax.self) }.filter(needsPrivate)
-
     guard !properties.isEmpty else { return [] }
 
     let hasInitializer = owner.memberBlock.members.contains { $0.decl.is(InitializerDeclSyntax.self) }
+
     let needsInitializer = !hasInitializer && properties.contains { PropertyLayout($0).isStored }
 
     let initializer = needsInitializer
@@ -45,7 +44,6 @@ enum ViewPropertyAccess {
 
     let eligible = properties.filter { !PropertyLayout($0).isStored || hasInitializer || initializer != nil }
     var edits = eligible.compactMap(accessEdit)
-
     if let initializer, !edits.isEmpty {
       for member in members {
         if let replacement = initializer.declarations[member.id] {
@@ -53,7 +51,6 @@ enum ViewPropertyAccess {
           let prefix = zip(member.description.utf8, replacement.utf8).prefix { $0 == $1 }.count
           let suffix = zip(member.description.utf8.reversed(), replacement.utf8.reversed()).prefix { $0 == $1 }.count
           let start = member.position.utf8Offset
-
           edits.append(SourceEdit(
             range: (start + prefix)..<(member.endPosition.utf8Offset - suffix),
             replacement: String(decoding: replacement.utf8.dropFirst(prefix).dropLast(suffix), as: UTF8.self)
@@ -67,7 +64,6 @@ enum ViewPropertyAccess {
       let end = members.endPosition.utf8Offset
       edits.append(SourceEdit(range: end..<end, replacement: source))
     }
-
     return edits
   }
 
@@ -81,9 +77,7 @@ enum ViewPropertyAccess {
     let access = property.modifiers.filter { ["open", "public", "internal", "fileprivate", "private"].contains(
       $0.name.text
     ) }
-
     guard access.allSatisfy({ $0.detail == nil }), access.count <= 1 else { return nil }
-
     if let modifier = access.first {
       return SourceEdit(
         range: modifier.name.positionAfterSkippingLeadingTrivia.utf8Offset..<modifier.name.endPositionBeforeTrailingTrivia.utf8Offset,
@@ -92,7 +86,6 @@ enum ViewPropertyAccess {
     }
 
     let position = property.bindingSpecifier.positionAfterSkippingLeadingTrivia.utf8Offset
-
     return SourceEdit(range: position..<position, replacement: "private ")
   }
 }

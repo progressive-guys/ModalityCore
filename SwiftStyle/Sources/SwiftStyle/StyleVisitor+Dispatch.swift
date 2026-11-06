@@ -9,7 +9,6 @@ extension StyleVisitor {
       guard let previousCase = previous.as(SwitchCaseSyntax.self),
             let currentCase = current.as(SwitchCaseSyntax.self)
       else { continue }
-
       if let spacing = layout.elementSpacing(between: previousCase, and: currentCase),
          spacing.blankLines.count != spacing.required,
          let token = currentCase.firstToken(viewMode: .sourceAccurate)
@@ -21,7 +20,6 @@ extension StyleVisitor {
 
     for element in cases {
       guard let configuration = element.as(IfConfigDeclSyntax.self) else { continue }
-
       for clause in configuration.clauses {
         switch (Syntax(clause.elements)?.as(SyntaxEnum.self)) {
         case .switchCaseList(let branch)?:
@@ -53,32 +51,25 @@ enum TypeCheckSequence {
 
   static func contains(_ conditional: IfExprSyntax, rule: StyleRule, subject: String? = nil) -> Bool {
     let receivers = subjects(in: Syntax(conditional.conditions), rule: rule)
-
     guard !receivers.isEmpty else { return false }
-
     if zip(receivers, receivers.dropFirst()).contains(where: { $0 == $1 && (subject == nil || $0 == subject) }) {
       return true
     }
 
     var neighbors: [(conditional: IfExprSyntax, follows: Bool)] = []
-
     if case .ifExpr(let next)? = conditional.elseBody { neighbors.append((next, true)) }
 
     var node = Syntax(conditional)
-
     if case .ifExpr(let parent)? = node.parent?.as(SyntaxEnum.self) {
       neighbors.append((parent, false))
     }
-
     if case .expressionStmt? = node.parent?.as(SyntaxEnum.self), let parent = node.parent {
       node = parent
     }
-
     if let item = node.parent?.as(CodeBlockItemSyntax.self),
        let items = item.parent?.as(CodeBlockItemListSyntax.self)
     {
       let siblings = Array(items)
-
       if let index = siblings.firstIndex(where: { $0.id == item.id }) {
         if index > 0, let previous = Self.conditional(in: siblings[index - 1]) { neighbors.append((previous, false)) }
 
@@ -92,7 +83,6 @@ enum TypeCheckSequence {
       let other = subjects(in: Syntax(neighbor.conditional.conditions), rule: rule)
       let left = neighbor.follows ? receivers.last : other.last
       let right = neighbor.follows ? other.first : receivers.first
-
       return left != nil && left == right && (subject == nil || left == subject)
     }
   }
@@ -138,7 +128,6 @@ enum TypeCheckSequence {
             let name = argument.base?.lastToken(viewMode: .sourceAccurate)?.text,
             SyntaxProjection.isConcrete(name)
       else { return nil }
-
       receiver = base
 
     case (.preferTypeSwitch, .isExpr(let test)):

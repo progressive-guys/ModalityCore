@@ -7,12 +7,10 @@ extension StyleVisitor {
   func checkArithmeticPrecedence(_ node: InfixOperatorExprSyntax) {
     let root = ArithmeticLayout.root(of: ExprSyntax(node))
     let operations = ArithmeticLayout.operations(in: root)
-
     guard operations.first?.id == node.id,
           let expression = ArithmeticLayout(root: root, operations: operations, layout: layout),
           let token = node.operator.firstToken(viewMode: .sourceAccurate)
     else { return }
-
     if expression.hasInvalidWrap {
       if permitsFix(.arithmeticPrecedenceWrap) { fixArithmetic(root, operations: operations) }
       report(.arithmeticPrecedenceWrap, token)
@@ -29,7 +27,6 @@ private struct ArithmeticLayout {
     guard !layout.hasComments(root) else { return nil }
 
     let tokens = Array(root.tokens(viewMode: .sourceAccurate))
-
     guard let first = tokens.first, let last = tokens.last,
           tokens.allSatisfy({ !$0.text.contains("\n") && !$0.text.contains("\r") })
     else { return nil }
@@ -43,7 +40,6 @@ private struct ArithmeticLayout {
     for token in tokens {
       if let previous {
         let gap = previous.trailingTrivia.description + token.leadingTrivia.description
-
         if layout.endLine(previous) != layout.line(token) {
           // Other layout boundaries belong to call, collection or block formatting.
           guard operators.contains(previous.id) || operators.contains(token.id) else { return nil }
@@ -58,7 +54,6 @@ private struct ArithmeticLayout {
       text += token.text
       previous = token
     }
-
     guard !continuations.isEmpty else {
       hasInvalidWrap = false
       return
@@ -71,7 +66,6 @@ private struct ArithmeticLayout {
     let prefix = String(decoding: firstLine.utf8.prefix(firstLocation.column - 1), as: UTF8.self).count
     let suffix = String(decoding: lastLine.utf8.dropFirst(lastLocation.column - 1), as: UTF8.self).count
     let indent = layout.indent(first) + 2
-
     if prefix + text.count + suffix <= 120 || continuations.contains(where: { layout.indent($0) != indent }) {
       hasInvalidWrap = true
       return
@@ -86,25 +80,19 @@ private struct ArithmeticLayout {
       else { return false }
 
       let priority = Self.wrapPriority(operation, in: root)
-
       let preferredOffsets = operations.compactMap { candidate -> Int? in
         guard Self.wrapPriority(candidate, in: root) < priority,
               let token = candidate.operator.firstToken(viewMode: .sourceAccurate),
               let offset = offsets[token.id]
         else { return nil }
-
         return offset + token.text.count
       }
-
       let boundaries = [0] + preferredOffsets + [text.count]
-
       guard let start = boundaries.last(where: { $0 <= offset }),
             let end = boundaries.first(where: { $0 > offset })
       else { return false }
-
       let segment = text.dropFirst(start).prefix(end - start)
       let width = segment.trimmingCharacters(in: .whitespaces).count
-
       return (start == 0 ? prefix : indent) + width + (end == text.count ? suffix : 0) <= 120
     }
   }
@@ -112,21 +100,18 @@ private struct ArithmeticLayout {
   /// Crosses only arithmetic nodes, single-argument calls, parentheses and unary expressions.
   static func root(of expression: ExprSyntax) -> ExprSyntax {
     guard let parent = expression.parent else { return expression }
-
     switch (Syntax(parent).as(SyntaxEnum.self)) {
     case .infixOperatorExpr(let operation) where (isArithmetic(operation)):
       return root(of: ExprSyntax(operation))
     default:
       break
     }
-
     switch (Syntax(parent).as(SyntaxEnum.self)) {
     case .prefixOperatorExpr(let unary):
       return root(of: ExprSyntax(unary))
     default:
       break
     }
-
     switch (Syntax(parent).as(SyntaxEnum.self)) {
     case .labeledExpr:
       switch (Syntax(parent.parent)?.as(SyntaxEnum.self)) {
@@ -199,7 +184,6 @@ private struct ArithmeticLayout {
   static func wrapPriority(_ operation: InfixOperatorExprSyntax, in root: ExprSyntax) -> Int {
     var depth = 0
     var current: Syntax? = Syntax(operation)
-
     while let parent = current, parent.id != root.id {
       if ({ () -> Bool in
         switch (Syntax(parent).as(SyntaxEnum.self)) {
@@ -217,7 +201,6 @@ private struct ArithmeticLayout {
 
       current = parent.parent
     }
-
     return depth * 2 + (["+", "-"].contains(operation.operator.trimmedDescription) ? 0 : 1)
   }
 
@@ -234,7 +217,6 @@ extension StyleVisitor {
     defer { editPriority = 0 }
 
     let tokens = Array(root.tokens(viewMode: .sourceAccurate))
-
     guard let first = tokens.first, let last = tokens.last else { return }
 
     var text = ""
@@ -267,19 +249,13 @@ extension StyleVisitor {
 
     func split(_ start: Int, _ end: Int, first: Bool, last: Bool) {
       let segment = text.dropFirst(start).prefix(end - start).trimmingCharacters(in: .whitespaces)
-
       guard (first ? prefix : indent) + segment.count + (last ? suffix : 0) > 120 else { return }
 
       let available = candidates.filter { $0.offset > start && $0.offset < end }
-
       guard let priority = available.map(\.priority).min() else { return }
-
       let selected = available.filter { $0.priority == priority }
-
       for boundary in selected { breaks.insert(boundary.token.id) }
-
       let boundaries = [start] + selected.map(\.offset) + [end]
-
       for (left, right) in zip(boundaries, boundaries.dropFirst()) {
         split(left, right, first: first && left == start, last: last && right == end)
       }

@@ -6,9 +6,7 @@ extension StructuralFormatter {
 
   /// Changes one projection at a time. Separate checks keep separate receiver evaluations.
   func fixSyntaxDispatch(_ conditional: IfExprSyntax) -> Bool {
-
     let conditions = Array(conditional.conditions)
-
     for (index, condition) in conditions.enumerated() {
       let projection: DispatchProjection
       let binding: String?
@@ -20,7 +18,6 @@ extension StructuralFormatter {
               needsTypeSwitch(value, in: conditional),
               let parsed = DispatchProjection(value, rules: self, allowWrapper: true), !parsed.isTest
         else { continue }
-
         projection = parsed
         binding = item.bindingSpecifier.text + " " + item.pattern.trimmedDescription
         negated = false
@@ -53,16 +50,13 @@ extension StructuralFormatter {
 
       let prefix = Array(conditions.prefix(index))
       let suffix = Array(conditions.dropFirst(index + 1))
-
       guard prefix.isEmpty || conditional.elseBody == nil, !negated || suffix.isEmpty else { continue }
-
       let expressions = suffix.compactMap { element -> ExprSyntax? in
         switch element.condition {
         case .expression(let expression): expression
         default: nil
         }
       }
-
       guard expressions.count == suffix.count || conditional.elseBody == nil else { continue }
 
       guard let replacement = dispatch(
@@ -75,13 +69,13 @@ extension StructuralFormatter {
         expressions: expressions
       )
       else { continue }
-
       guard SourceFormatter.comments(Parser.parse(source: conditional.trimmedDescription)).sorted()
         == SourceFormatter.comments(Parser.parse(source: replacement)).sorted()
       else { continue }
 
       let start = conditional.positionAfterSkippingLeadingTrivia.utf8Offset
       let end = conditional.endPositionBeforeTrailingTrivia.utf8Offset
+
       edits.append(SourceEdit(range: start..<end, replacement: replacement))
 
       return true
@@ -154,7 +148,6 @@ extension StructuralFormatter {
       + newline
       + indent
       + "}"
-
     if !prefix.isEmpty {
       result = "if "
         + conditionText(prefix)
@@ -167,14 +160,12 @@ extension StructuralFormatter {
         + indent
         + "}"
     }
-
     return result
   }
 
   private func blockContents(_ block: CodeBlockSyntax) -> String {
     let start = block.leftBrace.endPositionBeforeTrailingTrivia.utf8Offset
     let end = block.rightBrace.positionAfterSkippingLeadingTrivia.utf8Offset
-
     return String(decoding: Array(source.utf8)[start..<end], as: UTF8.self)
       .trimmingCharacters(in: .whitespacesAndNewlines)
   }
@@ -204,7 +195,6 @@ struct SyntaxProjection {
 
   private static let concreteTypes: Set<String> = {
     guard case .choices(let choices) = Syntax.structure else { return [] }
-
     return Set(choices.compactMap { choice in
       switch choice {
       case .node(let type): String(describing: type)
@@ -222,11 +212,9 @@ struct SyntaxProjection {
           let name = type.lastToken(viewMode: .sourceAccurate)?.text,
           Self.concreteTypes.contains(name)
     else { return nil }
-
     kind = Self.caseName(name)
     typeName = type.trimmedDescription
     method = member.declName.baseName.text
-
     if method == "as" || method == "is" {
       if Self.optionalReceiver(base) {
         let receiver = base.as(OptionalChainingExprSyntax.self)?.expression ?? base
@@ -263,7 +251,6 @@ struct SyntaxProjection {
     let name = String(stem.dropFirst(prefix.count))
     let capitals = name.prefix(while: \.isUppercase).count
     let count = capitals > 1 && capitals < name.count ? capitals - 1 : max(1, capitals)
-
     return prefix + name.prefix(count).lowercased() + name.dropFirst(count)
   }
 }
@@ -300,11 +287,9 @@ struct DispatchProjection {
 
   init?(_ expression: ExprSyntax, rules: StructuralFormatter, allowWrapper: Bool = false) {
     var value = expression
-
     while let tuple = value.as(TupleExprSyntax.self), tuple.elements.count == 1,
           let first = tuple.elements.first
     { value = first.expression }
-
     if rules.enabled(.preferSyntaxKindSwitch), let projection = SyntaxProjection(value),
        allowWrapper || ["as", "is"].contains(projection.method)
     {
@@ -342,7 +327,6 @@ struct DispatchProjection {
     }
 
     guard let nativeType else { return "_" }
-
     return binding.map { "\($0) as \(nativeType)" } ?? "is \(nativeType)"
   }
 }
@@ -380,18 +364,17 @@ final class EmbeddedDispatchVisitor: SyntaxVisitor {
           let projection = DispatchProjection(expression, rules: formatter),
           !expression.tokens(viewMode: .sourceAccurate).contains(where: { ["await", "try"].contains($0.text) })
     else { return .visitChildren }
-
     let optionalTest = projection.isTest && projection.syntax?.optional == true
-
     let resultType = projection.isTest
       ? (optionalTest ? "Bool?" : "Bool")
       : (projection.syntax?.typeName ?? projection.nativeType ?? "Never") + "?"
-
     let pattern = projection.pattern(binding: projection.isTest ? nil : "let value")
     let value = projection.isTest ? "true" : "value"
     let fallback = projection.isTest ? "false" : "nil"
+
     let newline = formatter.source.contains("\r\n") ? "\r\n" : "\n"
     let indent = String(repeating: " ", count: formatter.layout.indent(expression))
+
     let missing = optionalTest ? "  case nil: return nil" + newline + indent : ""
 
     let replacement = "({ () -> \(resultType) in"
@@ -411,11 +394,9 @@ final class EmbeddedDispatchVisitor: SyntaxVisitor {
       + newline
       + indent
       + "}())"
-
     guard SourceFormatter.comments(Parser.parse(source: expression.trimmedDescription)).sorted()
       == SourceFormatter.comments(Parser.parse(source: replacement)).sorted()
     else { return .visitChildren }
-
     formatter.edits.append(SourceEdit(
       range: expression.positionAfterSkippingLeadingTrivia.utf8Offset..<expression.endPositionBeforeTrailingTrivia.utf8Offset,
       replacement: replacement

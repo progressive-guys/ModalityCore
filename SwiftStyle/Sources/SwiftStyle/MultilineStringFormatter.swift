@@ -18,10 +18,9 @@ enum MultilineStringFormatter {
     let source = node.trimmedDescription
     let newline = source.contains("\r\n") ? "\r\n" : "\n"
     let lines = source.components(separatedBy: newline)
-
     guard let first = lines.first, let last = lines.last, lines.count > 1 else { return nil }
-
     let oldIndent = String(last.prefix(while: { $0 == " " || $0 == "\t" }))
+
     let indent = String(repeating: " ", count: contentIndent(node, layout: layout))
 
     let hasMultilineInterpolation = node.segments.contains { segment in
@@ -30,7 +29,6 @@ enum MultilineStringFormatter {
       default: false
       }
     }
-
     guard !hasMultilineInterpolation else { return nil }
 
     var result = [first]

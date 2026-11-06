@@ -7,7 +7,6 @@ enum MemberOrderFormatter {
   static func groups(in members: MemberBlockItemListSyntax) -> [[MemberBlockItemSyntax]] {
     var groups: [[MemberBlockItemSyntax]] = []
     var group: [MemberBlockItemSyntax] = []
-
     for member in members {
       switch (Syntax(member.decl).as(SyntaxEnum.self)) {
       case .ifConfigDecl where rank(member) == nil:
@@ -21,9 +20,7 @@ enum MemberOrderFormatter {
       default: break
       }
     }
-
     if !group.isEmpty { groups.append(group) }
-
     return groups
   }
 
@@ -31,21 +28,20 @@ enum MemberOrderFormatter {
     let ordered = group.enumerated().sorted {
       [rank($0.element) ?? 0, $0.offset].lexicographicallyPrecedes([rank($1.element) ?? 0, $1.offset])
     }
-
     return ordered.map(\.element)
   }
 
   static func edits(in members: MemberBlockItemListSyntax) -> [SourceEdit] {
     groups(in: members).compactMap { group in
       let ordered = sorted(group)
-
       guard let first = group.first, let last = group.last,
             zip(group, ordered).contains(where: { $0.id != $1.id })
       else { return nil }
-
       let start = first.position.utf8Offset
       let end = last.endPosition.utf8Offset
+
       let offset = members.position.utf8Offset
+
       var bytes = Array(members.description.utf8)[(start - offset)..<(end - offset)]
 
       for (original, replacement) in zip(group, ordered).reversed() {
@@ -84,9 +80,7 @@ enum MemberOrderFormatter {
         guard case .accessors(let accessors)? = binding.accessorBlock?.accessors,
               let getter = accessors.first(where: { $0.accessorSpecifier.text == "get" })
         else { return nil }
-
         let effects = getter.effectSpecifiers
-
         return (effects?.asyncSpecifier == nil ? 0 : 2) + (effects?.throwsClause == nil ? 0 : 1)
       }
       .max() ?? 0
@@ -100,7 +94,6 @@ enum MemberOrderFormatter {
     guard let leftRank = rank(left), let rightRank = rank(right), leftRank >= 24,
           leftRank / 4 == rightRank / 4
     else { return false }
-
     return leftRank != rightRank
   }
 
@@ -108,10 +101,8 @@ enum MemberOrderFormatter {
   /// Mixed sections or effects keep their boundary; each branch receives its own order check.
   private static func conditionalRank(_ configuration: IfConfigDeclSyntax) -> Int? {
     var ranks: Set<Int> = []
-
     for clause in configuration.clauses {
       guard case .memberBlockItemList(let members)? = Syntax(clause.elements)?.as(SyntaxEnum.self) else { return nil }
-
       for member in members {
         if let value = rank(member) {
           ranks.insert(value)
@@ -123,7 +114,6 @@ enum MemberOrderFormatter {
         }
       }
     }
-
     return ranks.count == 1 ? ranks.first : nil
   }
 }

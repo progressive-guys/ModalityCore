@@ -15,15 +15,12 @@ struct MemberwiseInitializer {
     var assignments: [String] = []
     var replacements: [SyntaxIdentifier: String] = [:]
     var visibility = 2
-
     for member in members {
       guard let property = member.decl.as(VariableDeclSyntax.self),
             !property.modifiers.contains(where: { ["static", "class"].contains($0.name.text) })
       else { continue }
-
       guard property.bindings.count == 1, let binding = property.bindings.first
       else { return nil }
-
       if let accessors = binding.accessorBlock {
         switch accessors.accessors {
         case .getter: continue
@@ -32,15 +29,12 @@ struct MemberwiseInitializer {
         @unknown default: return nil
         }
       }
-
       let attributes = property.attributes.compactMap { $0.as(AttributeSyntax.self)?.attributeName.trimmedDescription }
       let wrapper = attributes.first?.split(separator: ".").last.map(String.init)
-
       if preservingViewInputs, PropertyLayout(property).visibility == 3,
          attributes.count == 1, let wrapper, ["State", "Environment", "EnvironmentObject", "Namespace"].contains(wrapper),
          binding.initializer != nil || wrapper != "State" || PropertyLayout(property).type?.hasPrefix("Optional<") == true
       { continue }
-
       if preservingViewInputs, attributes.count == 1, wrapper == "Binding", binding.initializer == nil {
         switch (Syntax(binding.pattern).as(SyntaxEnum.self)) {
       case .identifierPattern(let pattern):
@@ -48,6 +42,7 @@ struct MemberwiseInitializer {
         let qualifier = attributes[0].hasPrefix("SwiftUI.") ? "SwiftUI." : ""
         parameters.append("\(name): \(qualifier)Binding<\(type.trimmedDescription)>")
         assignments.append("  self._\(name) = \(name)")
+
         visibility = max(visibility, PropertyLayout(property).visibility)
 
         continue
@@ -57,21 +52,14 @@ struct MemberwiseInitializer {
         break
       }
       }
-
       guard property.attributes.isEmpty, let pattern = binding.pattern.as(IdentifierPatternSyntax.self)
       else { return nil }
-
       if property.bindingSpecifier.text == "let", binding.initializer != nil { continue }
-
       let layout = PropertyLayout(property)
-
       guard let type = binding.typeAnnotation?.type.trimmedDescription ?? layout.type else { return nil }
-
       visibility = max(visibility, layout.visibility)
-
       let name = pattern.trimmedDescription
       var parameterType = type
-
       if ({ () -> Bool? in
         switch (Syntax(binding.typeAnnotation?.type)?.as(SyntaxEnum.self)) {
         case .functionType?: return true
@@ -81,9 +69,7 @@ struct MemberwiseInitializer {
       }()) == true {
         parameterType = "@escaping " + type
       }
-
       var parameter = "\(name): \(parameterType)"
-
       if let initializer = binding.initializer {
         parameter += " = " + initializer.value.trimmedDescription
 
@@ -103,22 +89,17 @@ struct MemberwiseInitializer {
       }()) == true || layout.type?.hasPrefix("Optional<") == true {
         parameter += " = nil"
       }
-
       parameters.append(parameter)
       assignments.append("  self.\(name) = \(name)")
     }
-
     guard !parameters.isEmpty || preservingViewInputs else { return nil }
-
     let access = visibility == 3 ? "private " : visibility == 4 ? "fileprivate " : ""
-
     source = access
       + "init("
       + parameters.joined(separator: ", ")
       + ") {\n"
       + assignments.joined(separator: "\n")
       + "\n}"
-
     declarations = replacements
   }
 }

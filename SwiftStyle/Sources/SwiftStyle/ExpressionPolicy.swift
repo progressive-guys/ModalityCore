@@ -7,7 +7,8 @@ import SwiftSyntax
 /// Permit one arithmetic operation per operand. Require named values for multiple operations.
 /// The compiler and code review check names, types, side effects and conditional evaluation.
 ///
-/// - Important: This policy has no automatic fixes. Extraction can change evaluation order or count.
+/// ConditionExtractionFormatter can name the first Boolean condition of a standalone if or guard.
+/// Other conditions keep their diagnostics for an owner to review their evaluation order and scope.
 enum ExpressionPolicy {
 
   private static let logical = Set(["&&", "||"])
@@ -76,7 +77,6 @@ enum ExpressionPolicy {
   /// Counts operations through parentheses, result properties and conversions such as Double(...).
   private static func arithmeticCount(_ expression: ExprSyntax) -> Int {
     let value = unwrapped(expression)
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .infixOperatorExpr(let operation):
       let name = operation.operator.trimmedDescription
@@ -86,7 +86,6 @@ enum ExpressionPolicy {
     default:
       break
     }
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .memberAccessExpr(let member):
       if let base = member.base {return arithmeticCount(base)
@@ -95,7 +94,6 @@ enum ExpressionPolicy {
     default:
       break
     }
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .functionCallExpr(let call):
       if isConstructor(call), call.arguments.count == 1, let argument = call.arguments.first {return arithmeticCount(
@@ -114,15 +112,11 @@ enum ExpressionPolicy {
     let closures = call.arguments.compactMap { $0.expression.as(ClosureExprSyntax.self) }
       + [call.trailingClosure].compactMap { $0 }
       + call.additionalTrailingClosures.map(\.closure)
-
     guard closures.allSatisfy(isSimpleClosure) else { return true }
-
     let permitsPipeline = !closures.isEmpty
-
     guard isSimpleReceiver(call.calledExpression, permitsPipeline: permitsPipeline) else { return true }
 
     let hasOutputArgument = call.arguments.contains { $0.expression.is(InOutExprSyntax.self) }
-
     return call.arguments.contains { argument in
       switch (Syntax(argument.expression).as(SyntaxEnum.self)) {
       case .closureExpr:
@@ -137,16 +131,13 @@ enum ExpressionPolicy {
 
   private static func isSimpleReceiver(_ expression: ExprSyntax, permitsPipeline: Bool) -> Bool {
     let value = unwrapped(expression)
-
     switch value.as(ExprSyntaxEnum.self) {
     case .genericSpecializationExpr(let specialization):
       return isSimpleReceiver(specialization.expression, permitsPipeline: permitsPipeline)
 
     case .memberAccessExpr(let member):
       guard let base = member.base else { return true }
-
       let receiver = unwrapped(base)
-
       switch (Syntax(receiver).as(SyntaxEnum.self)) {
       case .functionCallExpr(let call):
         let permitsCall = isConstructor(call) || permitsPipeline
@@ -155,7 +146,6 @@ enum ExpressionPolicy {
       default:
         break
       }
-
       return isSimpleReceiver(receiver, permitsPipeline: permitsPipeline)
 
     case .subscriptCallExpr(let subscriptCall):
@@ -172,9 +162,7 @@ enum ExpressionPolicy {
   /// Permits short nested calls, constructors and empty calls for output arguments: api(currentID(), &output).
   private static func isSimpleArgument(_ expression: ExprSyntax, permitsEmptyCall: Bool = false) -> Bool {
     let value = unwrapped(expression)
-
     if arithmeticCount(value) > 1 { return false }
-
     switch value.as(ExprSyntaxEnum.self) {
     case .functionCallExpr(let call):
       let permitsCall = isConstructor(call) || SourceLayout.compact(call.trimmedDescription).count <= 120
@@ -203,22 +191,18 @@ enum ExpressionPolicy {
 
   private static func isSimpleComparedValue(_ expression: ExprSyntax) -> Bool {
     let value = unwrapped(expression)
-
     if arithmeticCount(value) > 1 { return false }
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .infixOperatorExpr(let operation) where (arithmetic.contains(operation.operator.trimmedDescription)):
       return isSimpleComparedValue(operation.leftOperand) && isSimpleComparedValue(operation.rightOperand)
     default:
       break
     }
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .functionCallExpr(let call):
       guard isSimpleReceiver(call.calledExpression, permitsPipeline: false) else { return false }
 
       let hasOutputArgument = call.arguments.contains { $0.expression.is(InOutExprSyntax.self) }
-
       return call.arguments.allSatisfy { argument in
         if arithmeticCount(argument.expression) == 1 { return isSimpleComparedValue(argument.expression) }
         return isSimpleArgument(argument.expression, permitsEmptyCall: hasOutputArgument)
@@ -227,7 +211,6 @@ enum ExpressionPolicy {
     default:
       break
     }
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .memberAccessExpr(let member):
       if let base = member.base {return isSimpleComparedValue(base)
@@ -236,7 +219,6 @@ enum ExpressionPolicy {
     default:
       break
     }
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .subscriptCallExpr(let subscriptCall):
       return isSimpleComparedValue(subscriptCall.calledExpression)
@@ -245,7 +227,6 @@ enum ExpressionPolicy {
     default:
       break
     }
-
     return isSimpleArgument(value)
   }
 
@@ -253,7 +234,6 @@ enum ExpressionPolicy {
   /// The compiler and code review check the name's actual meaning.
   private static func isConstructor(_ call: FunctionCallExprSyntax) -> Bool {
     let callee = unwrapped(call.calledExpression)
-
     return switch callee.as(ExprSyntaxEnum.self) {
     case .genericSpecializationExpr(let specialization):
       startsWithUppercase(specialization.expression.trimmedDescription)
@@ -274,7 +254,6 @@ enum ExpressionPolicy {
   /// Each predicate can compare two values with one arithmetic operation per operand.
   private static func isSimpleClosure(_ closure: ClosureExprSyntax) -> Bool {
     guard closure.statements.count == 1, let statement = closure.statements.first else { return false }
-
     let expression: ExprSyntax? = switch (Syntax(statement.item).as(SyntaxEnum.self)) {
     case .returnStmt(let returned):
       returned.expression
@@ -286,23 +265,18 @@ enum ExpressionPolicy {
         statement.item.as(ExprSyntax.self)
       }
     }
-
     guard let expression else { return false }
-
     let value = unwrapped(expression)
-
     switch (Syntax(value).as(SyntaxEnum.self)) {
     case .functionCallExpr(let call):
       let hasNestedClosure = call.trailingClosure != nil
         || !call.additionalTrailingClosures.isEmpty
         || call.arguments.contains { $0.expression.is(ClosureExprSyntax.self) }
-
       return !hasNestedClosure && !isComplexCall(call)
 
     default:
       break
     }
-
     return predicateParts(value).map { parts in
       parts.count <= 2 && parts.allSatisfy { !isComplex($0) }
     } ?? false
@@ -310,19 +284,14 @@ enum ExpressionPolicy {
 
   private static func predicateParts(_ expression: ExprSyntax) -> [ExprSyntax]? {
     let value = unwrapped(expression)
-
     guard let operation = value.as(InfixOperatorExprSyntax.self) else { return [value] }
-
     let name = operation.operator.trimmedDescription
-
     guard logical.contains(name) else { return [value] }
-
     guard
       name == "&&",
       let left = predicateParts(operation.leftOperand),
       let right = predicateParts(operation.rightOperand)
     else { return nil }
-
     return left + right
   }
 }
