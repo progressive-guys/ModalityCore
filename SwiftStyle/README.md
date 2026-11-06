@@ -72,6 +72,8 @@ An assignment followed by an `if` or `guard` stays beside the check when its con
 
 A local declaration stays beside the next `if` or `guard` when its conditions read the declared value, including checks that use values from earlier preparation groups. Two multiline operations can keep one blank line. A leading group comment keeps its separator.
 
+`complex_control_flow_condition` can move the first Boolean condition of a standalone `if` or `guard` into a local `let` with type `Swift.Bool`. It keeps the complete expression, its evaluation order and short-circuit operations. The generated name avoids names in the source file. Later conditions, bindings, `where` clauses, labels, macros and `else if` branches keep their diagnostics for review. An `if` with an `else` needs another statement in its enclosing block, to preserve implicit results. `no_global_functions` keeps reporting errors for owner review.
+
 ## Tests
 
 ```sh
