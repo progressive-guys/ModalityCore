@@ -36,9 +36,11 @@ The main repository includes this folder's `.mise.toml` in its root config. Its 
 sh Scripts/lint.sh Sources Tests/SwiftStyleTests Project.swift
 sh Scripts/lint.sh --fix Sources Tests/SwiftStyleTests Project.swift
 sh Scripts/run.sh --json Sources
+sh Scripts/run.sh --fix Sources
+sh Scripts/run.sh --fix --stdin < Input.swift > Output.swift
 ```
 
-The script uses the configs shipped with this tool version. Set `SWIFT_STYLE_CONFIG_ROOT` to use consumer-owned configs. Without paths, the script checks the current directory. SwiftFormat, SwiftLint and the approved SwiftStyle rules run: `enum_case_blank_line`, `collapsible_nested_if`, `arithmetic_call_arguments_wrap`, `mixed_additive_expression_wrap`, `mixed_multiplicative_expression_wrap`, `member_spacing`, `property_grouping`, `statement_grouping`, `prefer_syntax_kind_switch` and `prefer_type_switch`. Each failure returns a nonzero status. With `--fix`, SwiftFormat and SwiftLint apply their fixes first. A nonempty `CI` value other than `false` or `0` turns fixes off. Other structural rules are available through `Scripts/run.sh` for manual checks while they await approval.
+The script uses the configs shipped with this tool version. Set `SWIFT_STYLE_CONFIG_ROOT` to use consumer-owned configs. Without paths, the script checks the current directory. SwiftFormat, SwiftLint and the approved SwiftStyle rules run: `enum_case_blank_line`, `collapsible_nested_if`, `switch_case_pattern_indent`, `multiline_string_indent`, `arithmetic_call_arguments_wrap`, `mixed_additive_expression_wrap`, `mixed_multiplicative_expression_wrap`, `member_spacing`, `member_order`, `property_grouping`, `attribute_newline`, `private_view_properties`, `statement_grouping`, `prefer_syntax_kind_switch` and `prefer_type_switch`. Each failure returns a nonzero status. With `--fix`, SwiftFormat and SwiftLint apply their fixes first, then SwiftStyle applies fixes for the selected rules. A nonempty `CI` value other than `false` or `0` turns fixes off. Other structural rules are available through `Scripts/run.sh` for manual checks while they await approval.
 
 The build configuration comments out SwiftFormat `indent`, SwiftLint `line_length`, and SwiftStyle `arithmetic_precedence_wrap`, `binary_operator_wrap`, `multiline_expression_closing_delimiter` and `switch_case_spacing`. Existing library sources fail these checks. The comments beside the selections state why they are disabled.
 

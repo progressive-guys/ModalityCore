@@ -7,7 +7,11 @@
 # Existing UIStressKit switch patterns fail indent. Enable it after those sources are corrected.
 # --enable indent
 --rules blankLineAfterSwitchCase,conditionalAssignment,elseOnSameLine,wrapArguments,wrapIfExpressionBodies,trailingSpace,semicolons,sortImports
-# SwiftStyle property_grouping wraps property attributes only above 120 columns.
+# SwiftStyle attribute_newline separates declaration attributes and keeps import attributes inline.
+# Trailing objc and concurrent attributes share the declaration line through column 120.
+# Protocol member attributes share the declaration line through column 120.
+# available attributes always use separate lines.
+# property_grouping keeps stored-property attributes inline through column 120.
 # sortImports: sort imported module paths by length. Keep equal lengths in source order.
 # Keep imports inside their conditional branches and existing file sections.
 --import-grouping length
@@ -44,4 +48,4 @@
 --wrap-ternary before-operators
 # Skip fixtures, dependencies and build output during formatting.
 # Active Codex checkouts can have a parent directory named worktrees.
---exclude **/SwiftStyle/Tests/Fixtures/**,**/.build/**,**/.swiftpm/**,**/Derived/**,**/DerivedData/**,**/build/**,**/*.xcodeproj/**,**/*.xcworkspace/**,**/Evidence/**,**/perf/**
+--exclude Tests/Fixtures,**/.build/**,**/.swiftpm/**,**/Derived/**,**/DerivedData/**,**/build/**,**/*.xcodeproj/**,**/*.xcworkspace/**,**/Evidence/**,**/perf/**

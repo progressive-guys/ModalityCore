@@ -1,6 +1,6 @@
 # Exclude fixtures, dependencies and build output from normal checks.
 excluded:
-  - "**/SwiftStyle/Tests/Fixtures/**"
+  - "Tests/Fixtures"
   - "**/.build/**"
   - "**/.swiftpm/**"
   - "**/Derived/**"
