@@ -62,12 +62,10 @@ final class StyleVisitor: SyntaxVisitor {
 
   override func visit(_ node: SwitchCaseLabelSyntax) -> SyntaxVisitorContinueKind {
     let indent = layout.indent(node.caseKeyword) + 2
-
     for item in node.caseItems {
       guard let token = item.firstToken(viewMode: .sourceAccurate), layout.startsLine(token),
             layout.line(token) > layout.line(node.caseKeyword), layout.indent(token) != indent
       else { continue }
-
       if permitsFix(.switchCasePatternIndent) {
         let start = token.positionAfterSkippingLeadingTrivia.utf8Offset
         let column = layout.converter.location(for: token.positionAfterSkippingLeadingTrivia).column - 1
@@ -98,12 +96,28 @@ final class StyleVisitor: SyntaxVisitor {
     return .visitChildren
   }
 
+  override func visit(_ node: AttributeListSyntax) -> SyntaxVisitorContinueKind {
+    guard !node.isEmpty, let declaration = node.parent?.as(DeclSyntax.self) else { return .visitChildren }
+    switch declaration.as(DeclSyntaxEnum.self) {
+    case .variableDecl(let property) where PropertyLayout(property).isStored:
+      checkStoredPropertyAttributes(property)
+    case .importDecl:
+      if node.allSatisfy({ $0.is(AttributeSyntax.self) }) {
+        checkDeclarationAttributes(node, indent: layout.indent(declaration), inline: true)
+      }
+
+    default:
+      checkDeclarationAttributes(node, indent: layout.indent(declaration))
+    }
+
+    return .visitChildren
+  }
+
   override func visit(_ node: GuardStmtSyntax) -> SyntaxVisitorContinueKind {
     checkElse(node.body, keyword: node.elseKeyword)
 
     let header = "guard " + SourceLayout.compact(node.conditions.trimmedDescription)
     let starts = node.conditions.map { layout.line($0) }
-
     if layout.indent(node) + header.count > 120,
        !layout.hasComments(node.conditions),
        starts.first == layout.line(node.guardKeyword) || Set(starts).count != starts.count
@@ -133,7 +147,6 @@ final class StyleVisitor: SyntaxVisitor {
       switch (Syntax(node.parent?.parent?.parent)?.as(SyntaxEnum.self)) {
       case .variableDecl(let declaration)?:
         let keyword = declaration.bindingSpecifier
-
       if layout.line(keyword) != layout.line(conditional.ifKeyword) {
         report(.ifExpressionBindingSameLine, keyword)
       }
@@ -145,7 +158,6 @@ final class StyleVisitor: SyntaxVisitor {
         guard let token = segment.firstToken(viewMode: .sourceAccurate), layout.startsLine(token) else { return false }
         return layout.indent(token) != layout.indent(keyword) + 2
       }
-
       if hasInvalidIndent {
         report(.ifExpressionConditionIndent, conditional.ifKeyword)
       }
@@ -262,7 +274,6 @@ final class StyleVisitor: SyntaxVisitor {
   /// Reports each rule once per source line, including chains with multiple nested syntax nodes.
   func report(_ rule: StyleRule, _ token: TokenSyntax, reason: String? = nil) {
     let location = layout.converter.location(for: token.positionAfterSkippingLeadingTrivia)
-
     guard !diagnostics.contains(where: { $0.ruleID == rule.rawValue && $0.line == location.line }) else { return }
 
     fix(rule, at: token)
@@ -281,7 +292,6 @@ final class StyleVisitor: SyntaxVisitor {
       guard previous.decl.is(EnumCaseDeclSyntax.self),
             let nextCase = current.decl.as(EnumCaseDeclSyntax.self)
       else { continue }
-
       if let spacing = layout.elementSpacing(between: previous, and: current),
          spacing.blankLines.count != spacing.required
       {
@@ -292,7 +302,6 @@ final class StyleVisitor: SyntaxVisitor {
 
     for member in members {
       guard let configuration = member.decl.as(IfConfigDeclSyntax.self) else { continue }
-
       for clause in configuration.clauses {
         switch (Syntax(clause.elements)?.as(SyntaxEnum.self)) {
         case .memberBlockItemList(let branch)?:
@@ -309,20 +318,17 @@ final class StyleVisitor: SyntaxVisitor {
     let uniqueStarts = Set(starts)
     let nextConditions = node.conditions.dropFirst()
     let overlappingConditions = zip(node.conditions, nextConditions).contains { layout.endLine($0) >= layout.line($1) }
-
     if uniqueStarts.count > 1,
        uniqueStarts.count != starts.count || overlappingConditions
     {
       report(.mixedIfConditions, node.ifKeyword)
     }
-
     let externalBreak = layout.line(node.ifKeyword) != starts.first || layout.headerBreaks(node.conditions)
-    let last = node.conditions.last
 
+    let last = node.conditions.last
     if externalBreak, let last, layout.endLine(last) == layout.line(node.body.leftBrace) {
       report(.multilineIfBrace, node.ifKeyword)
     }
-
     if !externalBreak,
        let last,
        layout.line(node.conditions) != layout.endLine(last),
@@ -334,22 +340,16 @@ final class StyleVisitor: SyntaxVisitor {
 
   private func simpleExit(_ block: CodeBlockSyntax, permitsNestedBody: Bool = false) -> CodeBlockItemSyntax? {
     guard block.statements.count == 1, let statement = block.statements.first else { return nil }
-
     let item = statement.item
-
     let isExit = item.is(ReturnStmtSyntax.self)
       || item.is(ThrowStmtSyntax.self)
       || item.is(BreakStmtSyntax.self)
       || item.is(ContinueStmtSyntax.self)
-
     guard isExit else { return nil }
     if permitsNestedBody { return statement }
-
     let tokens = statement.tokens(viewMode: .sourceAccurate)
     let hasNestedBody = tokens.contains { $0.tokenKind == .leftBrace || $0.tokenKind == .semicolon }
-
     guard !hasNestedBody else { return nil }
-
     return statement
   }
 
@@ -379,7 +379,6 @@ final class StyleVisitor: SyntaxVisitor {
       || node.is(MemberBlockSyntax.self)
       || node.is(AccessorBlockSyntax.self)
       || node.is(ClosureExprSyntax.self)
-
     guard isBlock else { return }
 
     switch (Syntax(node).as(SyntaxEnum.self)) {
@@ -402,7 +401,6 @@ final class StyleVisitor: SyntaxVisitor {
 
   private func isGlobal(_ node: FunctionDeclSyntax) -> Bool {
     var parent = node.parent
-
     while let current = parent {
       if ({ () -> Bool in
         switch (Syntax(current).as(SyntaxEnum.self)) {
@@ -434,7 +432,6 @@ extension SyntaxProtocol {
 
   func ancestorIs<T: SyntaxProtocol>(_ type: T.Type) -> Bool {
     var current = parent
-
     while let node = current {
       if node.is(type) { return true }
       current = node.parent

@@ -39,8 +39,8 @@ enum StyleRule: String, CaseIterable {
   /// Keep adjacent single-line methods and protocol requirements of the same kind together.
   /// Use one blank line if either member spans multiple lines, including comments and attributes.
   /// Properties, methods, initializers, deinitializers, subscripts and associated types form separate groups.
-  /// Separate nested types from adjacent declarations. An enum with one case has no opening blank line.
-  /// Other nonempty types and extensions start with one blank line. MARK comments start new groups.
+  /// Separate nested types from adjacent declarations. Bodies with at most three code lines have no opening blank line.
+  /// Longer type and extension bodies start with one blank line. MARK comments start new groups.
   /// Getter and function effect groups use one blank line between them.
   case memberSpacing = "member_spacing"
 
@@ -53,8 +53,18 @@ enum StyleRule: String, CaseIterable {
   /// Group stored properties by read visibility, static/let/var/attribute kind, type and attribute name.
   /// Separate groups of more than three stored properties and computed-property effect groups.
   /// Keep computed-property order. Keep single-line declarations together within each effect group.
-  /// Keep property attributes inline through column 120; separate longer declarations with blank lines.
+  /// Count attributes on separate lines as part of the declaration and put its separator before them.
+  /// Keep stored-property attributes inline through column 120, including indentation.
   case propertyGrouping = "property_grouping"
+
+  /// Put each declaration attribute on a separate line, except for imports and stored properties.
+  /// Keep import attributes on the import line.
+  /// Keep trailing objc and concurrent attributes with a declaration through column 120.
+  /// Keep protocol member attributes with their declaration through column 120.
+  /// Put available attributes on separate lines in all declarations.
+  /// Stored properties use the column limit in property_grouping.
+  /// Keep comments and attribute arguments in place.
+  case attributeNewline = "attribute_newline"
 
   /// Instance properties in structs that explicitly conform to View are private, except body.
   /// Preserve explicit initializers or generate a known memberwise signature, including Binding inputs.
@@ -236,6 +246,7 @@ extension StyleRule {
     case .privateViewProperties: "Make View instance properties private, except body; pass inputs through an initializer."
     case .memberSpacing: "Separate type openings, member kinds and multiline members with one blank line."
     case .propertyGrouping: "Group stored properties by visibility, kind, type and attribute; sort each block by line length and separate groups larger than three."
+    case .attributeNewline: "Put each declaration attribute on a separate line before the declaration."
     case .statementGrouping: "Separate statement groups and multiline checks with one blank line."
     case .preferTypeSwitch: "Use a switch for consecutive as? or is checks of the same object."
     case .preferSyntaxKindSwitch: "Use a syntax-kind switch for consecutive type checks of the same object."

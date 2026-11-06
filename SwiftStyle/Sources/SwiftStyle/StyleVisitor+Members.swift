@@ -24,11 +24,9 @@ extension StyleVisitor {
 
       for member in group {
         let rank = ranks[member.id, default: 0]
-
         if rank < previous, let token = member.decl.firstToken(viewMode: .sourceAccurate) {
           report(.memberOrder, token)
         }
-
         previous = max(previous, rank)
       }
     }
@@ -60,14 +58,7 @@ extension StyleVisitor {
             let spacing = layout.groupSpacing(between: previous, and: current),
             let token = current.decl.firstToken(viewMode: .sourceAccurate)
       else { continue }
-
-      let required: Int = if left == .method, right == .method, spacing.required == 0 {
-        // A blank line can mark an author-defined group of single-line functions.
-        min(spacing.blankLines.count, 1)
-      } else {
-        left == .nestedType || right == .nestedType || left != right ? 1 : spacing.required
-      }
-
+      let required = left == .nestedType || right == .nestedType || left != right ? 1 : spacing.required
       if spacing.blankLines.count != required {
         fixSpacing(spacing.blankLines, required: required, rule: .memberSpacing)
         report(.memberSpacing, token)
@@ -75,42 +66,28 @@ extension StyleVisitor {
     }
   }
 
-  /// Requires one blank line before the first member, including its leading comments.
+  /// Uses no opening blank line through three code lines, then one before the first member or comment.
   /// Empty bodies and conditional branch lists have no opening separator to check.
   private func checkMemberBlockOpening(_ members: MemberBlockItemListSyntax) {
     guard let body = members.parent?.as(MemberBlockSyntax.self),
           let first = members.first
     else { return }
-
     let spacing = layout.groupSpacing(between: body.leftBrace, and: first)
-    let required = memberOpeningBlankLines(members)
 
+    let required = memberOpeningBlankLines(members)
     if spacing?.blankLines.count != required {
       if let spacing { fixSpacing(spacing.blankLines, required: required, rule: .memberSpacing) }
 
       let reason = required == 0
-        ? "Do not put a blank line after the opening brace of an enum with one case."
+        ? "Remove the opening blank line from a body with at most three code lines."
         : "Put one blank line after the type opening brace."
-
       report(.memberSpacing, body.leftBrace, reason: reason)
     }
   }
 
-  /// An enum with one case starts without an opening blank line.
+  /// Counts code lines in the body, including nested code and excluding comments.
   func memberOpeningBlankLines(_ members: MemberBlockItemListSyntax) -> Int {
-    switch (Syntax(members.parent?.parent)?.as(SyntaxEnum.self)) {
-    case .enumDecl?:
-      let count = members.reduce(0) { count, member in
-        switch member.decl.as(DeclSyntaxEnum.self) {
-        case .enumCaseDecl(let declaration): count + declaration.elements.count
-        default: count
-        }
-      }
-
-      return count == 1 ? 0 : 1
-
-    default: return 1
-    }
+    layout.codeLineCount(members) <= 3 ? 0 : 1
   }
 
   private func memberKind(_ declaration: DeclSyntax) -> MemberKind? {

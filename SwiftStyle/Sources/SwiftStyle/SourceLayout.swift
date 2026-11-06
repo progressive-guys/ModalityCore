@@ -20,6 +20,11 @@ struct SourceLayout {
     converter.location(for: node.endPositionBeforeTrailingTrivia).line
   }
 
+  /// Counts lines occupied by tokens, including nested code and excluding standalone comments.
+  func codeLineCount(_ node: some SyntaxProtocol) -> Int {
+    Set(node.tokens(viewMode: .sourceAccurate).flatMap { line($0)...endLine($0) }).count
+  }
+
   /// Keeps adjacent single-line elements together. Uses one blank line if either element spans multiple lines.
   /// Includes attached comments in each element. Places separation before the next element's leading comments.
   func elementSpacing(
@@ -29,12 +34,11 @@ struct SourceLayout {
   ) -> (blankLines: Range<Int>, required: Int)? {
     let previousEnd = commentedEndLine(previous)
     let currentStart = commentedStartLine(current, ignoringSectionMarkers: ignoringSectionMarkers)
-
     guard previousEnd < currentStart else { return nil }
 
     let previousStart = commentedStartLine(previous, ignoringSectionMarkers: ignoringSectionMarkers)
-    let compact = previousStart == previousEnd && currentStart == commentedEndLine(current)
 
+    let compact = previousStart == previousEnd && currentStart == commentedEndLine(current)
     return ((previousEnd + 1)..<currentStart, compact ? 0 : 1)
   }
 
@@ -51,11 +55,11 @@ struct SourceLayout {
   ) -> (blankLines: Range<Int>, required: Int)? {
     let previousEnd = commentedEndLine(previous)
     let currentStart = commentedStartLine(current)
-
     guard previousEnd < currentStart else { return nil }
 
     let previousStart = commentedStartLine(previous, ignoringGroupHeaders: true)
     let currentBodyStart = commentedStartLine(current, ignoringGroupHeaders: true)
+
     let compact = previousStart == previousEnd && currentBodyStart == commentedEndLine(current)
 
     return ((previousEnd + 1)..<currentStart, hasGroupHeader(current) || !compact ? 1 : 0)
@@ -92,7 +96,6 @@ struct SourceLayout {
   ) -> Int {
     var position = node.position
     var firstComment: Int?
-
     for piece in node.leadingTrivia {
       switch piece {
       case .lineComment, .docLineComment, .blockComment, .docBlockComment:
@@ -107,7 +110,6 @@ struct SourceLayout {
 
       position = position.advanced(by: piece.sourceLength.utf8Length)
     }
-
     return firstComment ?? line(node)
   }
 
@@ -126,7 +128,6 @@ struct SourceLayout {
   private func commentedEndLine(_ node: some SyntaxProtocol) -> Int {
     var position = node.endPositionBeforeTrailingTrivia
     var result = endLine(node)
-
     for piece in node.trailingTrivia {
       let length = piece.sourceLength.utf8Length
 
@@ -139,7 +140,6 @@ struct SourceLayout {
 
       position = position.advanced(by: length)
     }
-
     return result
   }
 
@@ -228,7 +228,6 @@ struct SourceLayout {
     let segments = headerSegments(Syntax(node))
     let nextSegments = segments.dropFirst()
     let hasBoundaryBreak = zip(segments, nextSegments).contains { endLine($0) != line($1) }
-
     if hasBoundaryBreak { return true }
 
     return receiverBreaks(Syntax(node))
