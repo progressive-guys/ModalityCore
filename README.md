@@ -125,7 +125,9 @@ mise exec -- tuist install
 mise exec -- tuist generate --no-open
 ```
 
-`Project.swift` declares the native libraries and tests. Keep sources, resources and dependencies consistent with `Package.swift`. The `ModalityBuild` Git plugin provides the lint phase at tag `1.1.1`. Its source is in `SwiftStyle`. SwiftMusicTheory resolves from version `1.0.0` or later in the same major version. A consumer can set `TUIST_LOCAL_PROJECTS_ROOT` to select its local projects; standalone checkouts leave it unset.
+The local plugin `Tuist/Plugins/ModalityCoreBuild` declares the native targets. `Project.swift` uses these targets and adds the shared settings and lint phase from `ModalityBuild`. `ModalityCoreProjects.allCases` supplies the library and SwiftStyle projects to `Workspace.swift`. Consumers can import the same plugin to include all projects and targets. Keep sources, resources and dependencies consistent with `Package.swift`.
+
+This workspace loads `ModalityBuild` from its own `SwiftStyle` directory. External consumers can use the Git plugin at tag `1.1.1`. SwiftMusicTheory resolves from version `1.0.0` or later in the same major version. A consumer can set `TUIST_LOCAL_PROJECTS_ROOT` to select its local projects. Standalone checkouts leave it unset.
 
 SwiftPM remains available through `Package.swift`:
 

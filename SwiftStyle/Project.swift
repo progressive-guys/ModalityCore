@@ -1,14 +1,11 @@
-import Foundation
 import ModalityBuild
+import ModalityCoreBuild
 import ProjectDescription
 
-let fixtureRoot = URL(fileURLWithPath: #filePath)
-  .deletingLastPathComponent()
-  .appendingPathComponent("Tests/Fixtures")
-
-let fixtureDirectories = Set(try FileManager.default.subpathsOfDirectory(atPath: fixtureRoot.path)
-  .filter { $0.hasSuffix(".swift") }
-  .map { ($0 as NSString).deletingLastPathComponent })
+let lintPaths: [String: [String]] = [
+  "SwiftStyle": ["Sources"],
+  "SwiftStyleTests": ["Tests/SwiftStyleTests"]
+]
 
 let project = Project(
   name: "SwiftStyle",
@@ -22,48 +19,9 @@ let project = Project(
     "LD_RUNPATH_SEARCH_PATHS":
       "$(inherited) $(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host"
   ]),
-  targets: [
-    .target(
-      name: "SwiftStyle",
-      destinations: [.mac],
-      product: .commandLineTool,
-      bundleId: "dev.progressive-guys.SwiftStyle",
-      deploymentTargets: .macOS("14.0"),
-      sources: ["Sources/**"]
-    ).withLint(
-      paths: ["Sources"], script: .relativeToManifest("Scripts/lint.sh")
-    ),
-    .target(
-      name: "SwiftStyleTests",
-      destinations: [.mac],
-      product: .unitTests,
-      bundleId: "dev.progressive-guys.SwiftStyleTests",
-      deploymentTargets: .macOS("14.0"),
-      buildableFolders: ["Tests/SwiftStyleTests"],
-      copyFiles: [.resources(
-        name: "Embed fixture bundle",
-        files: [.buildProduct(name: "SwiftStyleFixtures")]
-      )],
-      dependencies: [.target(name: "SwiftStyle"), .library("ModalityCore")]
-    )
-    .withLint(
-      paths: ["Tests/SwiftStyleTests"], script: .relativeToManifest("Scripts/lint.sh")
-    ),
-    .target(
-      name: "SwiftStyleFixtures",
-      destinations: [.mac],
-      product: .bundle,
-      bundleId: "dev.progressive-guys.SwiftStyleFixtures",
-      deploymentTargets: .macOS("14.0"),
-      copyFiles: fixtureDirectories.sorted().map { directory in
-          .resources(
-            name: "Copy \(directory)",
-            subpath: "Fixtures/\(directory)",
-            files: [.glob(pattern: .relativeToManifest("Tests/Fixtures/\(directory)/*.swift"))]
-          )
-      }
-    )
-  ],
+  targets: SwiftStyleProject.targets.map {
+    $0.withLint(paths: lintPaths[$0.name] ?? [], script: .relativeToManifest("Scripts/lint.sh"))
+  },
   schemes: [
     .scheme(
       name: "SwiftStyleTests",
