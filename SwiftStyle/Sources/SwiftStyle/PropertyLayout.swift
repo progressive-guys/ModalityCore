@@ -6,12 +6,14 @@ struct PropertyLayout {
   let kind: Int
   let type: String?
   let visibility: Int
+  let setterVisibility: Int
   let annotations: [String]
   let declaration: VariableDeclSyntax
 
   init(_ declaration: VariableDeclSyntax) {
     self.declaration = declaration
     visibility = Self.visibility(of: declaration)
+    setterVisibility = Self.visibility(in: declaration.modifiers, setter: true) ?? visibility
 
     let names = declaration.attributes.compactMap { element in
       element.as(AttributeSyntax.self)?.attributeName.trimmedDescription
@@ -45,9 +47,10 @@ struct PropertyLayout {
   }
 
   var groups: [[String]] {
-    let prefix = [String(visibility), String(kind)]
+    let access = [String(visibility), String(setterVisibility)]
+    let prefix = access + [String(kind)]
     let typeKey = type ?? "unknown:\(declaration.position.utf8Offset)"
-    return [Array(prefix.prefix(1)), prefix, prefix + [typeKey], prefix + [typeKey] + annotations]
+    return [[String(visibility)], access, prefix, prefix + [typeKey], prefix + [typeKey] + annotations]
   }
 
   /// Observers keep a stored value. Getter and setter accessors describe a computed property.
@@ -67,6 +70,11 @@ struct PropertyLayout {
 
   /// Uses the longest declaration line, without its leading indentation.
   var lineLength: Int { SourceLayout.lineLength(declaration) }
+
+  /// Separates different setter access within the same read-access group, at any group size.
+  func separatesSetterGroup(from other: Self) -> Bool {
+    visibility == other.visibility && setterVisibility != other.setterVisibility
+  }
 
   func hasLongAccessor(in layout: SourceLayout) -> Bool {
     declaration.bindings.contains { binding in
@@ -108,9 +116,11 @@ struct PropertyLayout {
     return 2
   }
 
-  private static func visibility(in modifiers: DeclModifierListSyntax) -> Int? {
+  private static func visibility(in modifiers: DeclModifierListSyntax, setter: Bool = false) -> Int? {
     let names = ["open", "public", "internal", "private", "fileprivate"]
-    return modifiers.first(where: { $0.detail == nil && names.contains($0.name.text) })
+    return modifiers.first(where: {
+      (setter ? $0.detail?.detail.text == "set" : $0.detail == nil) && names.contains($0.name.text)
+    })
       .flatMap { names.firstIndex(of: $0.name.text) }
   }
 

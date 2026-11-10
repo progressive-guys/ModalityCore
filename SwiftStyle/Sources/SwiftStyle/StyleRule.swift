@@ -50,7 +50,8 @@ enum StyleRule: String, CaseIterable {
   /// Check each conditional branch on its own.
   case memberOrder = "member_order"
 
-  /// Group stored properties by read visibility, static/let/var/attribute kind, type and attribute name.
+  /// Group stored properties by read and setter access, static/let/var/attribute kind, type and attribute name.
+  /// Separate setter-access groups within one read-access group with one blank line at any group size.
   /// Separate groups of more than three stored properties and computed-property effect groups.
   /// Keep computed-property order. Keep single-line declarations together within each effect group.
   /// Count attributes on separate lines as part of the declaration and put its separator before them.

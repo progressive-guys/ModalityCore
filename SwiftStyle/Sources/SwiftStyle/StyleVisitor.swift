@@ -11,6 +11,7 @@ final class StyleVisitor: SyntaxVisitor {
   var editPriority = 0
   var edits: [SourceEdit] = []
   var compactStatementStarts: Set<Int> = []
+
   private(set) var diagnostics: [LintDiagnostic] = []
 
   init(file: String, source: String, tree: SourceFileSyntax, fixingRules: Set<String>? = nil, isFormatting: Bool = false) {

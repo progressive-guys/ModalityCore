@@ -3,6 +3,7 @@ public enum Examples {
   struct ReadVisibilityWithPrivateSetter {
 
     public var b : Int
+
     public private(set) var a : Int
     var c : Int
 

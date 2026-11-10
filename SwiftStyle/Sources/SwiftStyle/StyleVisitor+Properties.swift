@@ -2,7 +2,7 @@ import SwiftSyntax
 
 extension StyleVisitor {
 
-  /// Groups stored properties by read visibility, static/let/var/attribute kind, type and attribute name.
+  /// Groups stored properties by read and setter access, static/let/var/attribute kind, type and attribute name.
   /// Checks order across methods. Counts group size within consecutive property runs.
   /// Types and attribute kinds follow their first occurrence. Checks each conditional branch independently.
   /// Separates groups with more than three declared properties.
@@ -46,15 +46,19 @@ extension StyleVisitor {
       let sectionBoundary = left != nil && right != nil && left?.isStored != right?.isStored
       let bindingBoundary = left?.isStored == true && right?.isStored == true
         && left?.declaration.bindingSpecifier.text != right?.declaration.bindingSpecifier.text
+      let setterBoundary = left?.isStored == true && right?.isStored == true
+        && right.map { left?.separatesSetterGroup(from: $0) == true } == true
       let effectBoundary = left?.isStored == false && right?.isStored == false
         && MemberOrderFormatter.effects(of: previous.decl) != MemberOrderFormatter.effects(of: current.decl)
-      if longAccessor || largeGroup || sectionBoundary || bindingBoundary || effectBoundary {
+      if longAccessor || largeGroup || sectionBoundary || bindingBoundary || setterBoundary || effectBoundary {
         if spacing.blankLines.count != 1 {
           let reason = if longAccessor {
             "Separate a computed property longer than three lines with one blank line."
 
           } else if bindingBoundary {
             "Separate stored let and var declarations with one blank line."
+          } else if setterBoundary {
+            "Separate properties with different setter access with one blank line."
           } else if effectBoundary {
             "Separate getter effect groups with one blank line."
           } else if sectionBoundary {
