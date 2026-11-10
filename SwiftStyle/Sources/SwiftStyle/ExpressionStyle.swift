@@ -19,7 +19,10 @@ extension StyleVisitor {
     if name == "=", layout.line(token) != layout.line(right) {
       report(.assignmentRhsSameLine, token)
     }
-    if Self.comparisons.contains(name), layout.line(token) != layout.line(right) {
+    if Self.comparisons.contains(name),
+       layout.line(token) != layout.line(right)
+       || (layout.line(right) != layout.endLine(right) && !layout.startsLine(token))
+    {
       report(.comparisonOperatorNewline, token)
     }
 

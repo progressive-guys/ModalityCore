@@ -58,6 +58,7 @@ run_swiftformat() {
 # rules=$rules,arithmetic_precedence_wrap,binary_operator_wrap,multiline_expression_closing_delimiter,switch_case_spacing
 rules=enum_case_blank_line,collapsible_nested_if,switch_case_pattern_indent,multiline_string_indent
 rules=$rules,arithmetic_call_arguments_wrap,mixed_additive_expression_wrap,mixed_multiplicative_expression_wrap
+rules=$rules,comparison_operator_newline
 rules=$rules,member_spacing,member_order,property_grouping,attribute_newline,private_view_properties,statement_grouping,prefer_syntax_kind_switch,prefer_type_switch
 
 case "${CI:-}" in

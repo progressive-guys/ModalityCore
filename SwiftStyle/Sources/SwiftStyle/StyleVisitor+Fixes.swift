@@ -34,6 +34,16 @@ extension StyleVisitor {
     case .binaryOperatorWrap, .comparisonOperatorNewline, .arithmeticOperatorEndOfLine:
       switch (token.ancestor(InfixOperatorExprSyntax.self).map { Syntax($0).as(SyntaxEnum.self) }) {
       case .infixOperatorExpr(let operation)?:
+        if rule == .comparisonOperatorNewline, !layout.startsLine(token),
+           let previous = token.previousToken(viewMode: .sourceAccurate),
+           (previous.trailingTrivia.description + token.leadingTrivia.description).allSatisfy(\.isWhitespace)
+        {
+          indentContinuationLines(
+            of: operation.rightOperand,
+            by: layout.indent(operation) + 2 - layout.indent(operation.rightOperand)
+          )
+        }
+
         before(token, with: lineBreak(indent: layout.indent(operation) + 2))
         after(token, with: " ")
 
@@ -245,19 +255,20 @@ extension StyleVisitor {
     case .memberSpacing:
       if token.tokenKind == .leftBrace {
         switch (Syntax(token.parent)?.as(SyntaxEnum.self)) {
-      case .memberBlock(let block)?:
-        if let first = block.members.first?.firstToken(viewMode: .sourceAccurate), layout.line(first) == layout.line(
-          token
-        ) {before(
-          first,
-          with: String(repeating: newline, count: memberOpeningBlankLines(block.members))
-        + lineBreak(indent: layout.indent(block) + 2)
-        )
-      }
+        case .memberBlock(let block)?:
+          if let first = block.members.first?.firstToken(viewMode: .sourceAccurate),
+             layout.line(first) == layout.line(token)
+          {
+            before(
+              first,
+              with: String(repeating: newline, count: memberOpeningBlankLines(block.members))
+                + lineBreak(indent: layout.indent(block) + 2)
+            )
+          }
 
-      default:
-        break
-      }
+        default:
+          break
+        }
       }
 
     default: break

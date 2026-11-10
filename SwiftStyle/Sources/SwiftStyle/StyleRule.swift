@@ -102,6 +102,7 @@ enum StyleRule: String, CaseIterable {
   case singleLineElseExit = "single_line_else_exit"
 
   /// Keep a comparison operator with its right operand when the expression wraps.
+  /// Start the operator on a continuation line when the right operand spans multiple lines.
   case comparisonOperatorNewline = "comparison_operator_newline"
 
   /// Keep self and the following member on the same line.

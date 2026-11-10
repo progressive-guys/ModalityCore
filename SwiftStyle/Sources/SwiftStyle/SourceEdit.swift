@@ -81,4 +81,19 @@ extension StyleVisitor {
       gap(after: left, before: right, with: tight ? "" : " ")
     }
   }
+
+  /// Moves continuation lines together, including the indentation of multiline string contents.
+  func indentContinuationLines(of node: some SyntaxProtocol, by offset: Int) {
+    let first = layout.line(node)
+    let last = layout.endLine(node)
+    guard offset > 0, first < last else { return }
+    var start = layout.lines.prefix(first).reduce(0) { $0 + $1.utf8.count + newline.utf8.count }
+    for line in first..<last {
+      if !layout.lines[line].isEmpty {
+        edits.append(SourceEdit(range: start..<start, replacement: String(repeating: " ", count: offset)))
+      }
+
+      start += layout.lines[line].utf8.count + newline.utf8.count
+    }
+  }
 }
