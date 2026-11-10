@@ -58,11 +58,19 @@ extension StyleVisitor {
     case .arithmeticCallArgumentsWrap:
       switch (token.ancestor(InfixOperatorExprSyntax.self).map { Syntax($0).as(SyntaxEnum.self) }) {
       case .infixOperatorExpr(let operation)?:
-        switch (Syntax(operation.leftOperand).as(SyntaxEnum.self)) {
-        case .functionCallExpr(let call):
+        for operand in [operation.leftOperand, operation.rightOperand] {
+          guard case .functionCallExpr(let call) = operand.as(ExprSyntaxEnum.self) else { continue }
+
+          let right = operand.id == operation.rightOperand.id
+          if right, !["+", "-", "*", "/", "%"].contains(token.text) { continue }
+
+          let column = layout.converter.location(for: call.positionAfterSkippingLeadingTrivia).column - 1
+          guard canJoinArithmeticCall(call, column: right ? layout.indent(operation) + 2 : column) else { continue }
           join(call)
-        default:
-          break
+          if right, column + SourceLayout.compact(call.trimmedDescription).count > 120 {
+            before(token, with: lineBreak(indent: layout.indent(operation) + 2))
+            after(token, with: " ")
+          }
         }
 
       default:

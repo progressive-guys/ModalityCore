@@ -202,8 +202,8 @@ enum StyleRule: String, CaseIterable {
   /// Put a wrapped +, -, *, / or % at the start of the continuation with its right operand.
   case arithmeticOperatorEndOfLine = "arithmetic_operator_end_of_line"
 
-  /// Keep short single-argument calls with name, member or arithmetic arguments together as left operands.
-  /// Check calls that fit within 120 characters after joining their lines.
+  /// Keep short single-argument calls with name, member or arithmetic arguments whole on either side.
+  /// Move the outer operator before splitting a short right call. Keep each source line within 120 columns.
   case arithmeticCallArgumentsWrap = "arithmetic_call_arguments_wrap"
 
   /// Keep arithmetic on one line when the full source line fits within 120 characters. Otherwise, prefer
@@ -330,7 +330,7 @@ extension StyleRule {
 
     case .binaryOperatorWrap: "Put the binary operator with its right operand on the continuation line."
     case .multilineExpressionClosingDelimiter: "Put the closing delimiter on a separate line after multiline content."
-    case .arithmeticCallArgumentsWrap: "Keep a short single-argument call whole before the outer operator."
+    case .arithmeticCallArgumentsWrap: "Keep a short single-argument call whole and wrap at the outer operator."
     }
   }
 }

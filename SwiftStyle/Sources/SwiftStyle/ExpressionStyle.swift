@@ -68,6 +68,9 @@ extension StyleVisitor {
     default:
       break
     }
+    if Self.arithmetic.contains(name), case .functionCallExpr(let call) = right.as(ExprSyntaxEnum.self) {
+      checkShortCall(call, operatorToken: token, column: layout.indent(node) + 2)
+    }
   }
 
   func checkMember(_ node: MemberAccessExprSyntax) {
@@ -203,7 +206,14 @@ extension StyleVisitor {
     return node?.id == expression.id
   }
 
-  private func checkShortCall(_ call: FunctionCallExprSyntax, operatorToken: TokenSyntax) {
+  private func checkShortCall(_ call: FunctionCallExprSyntax, operatorToken: TokenSyntax, column: Int? = nil) {
+    let prefix = column ?? (layout.converter.location(for: call.positionAfterSkippingLeadingTrivia).column - 1)
+    guard canJoinArithmeticCall(call, column: prefix) else { return }
+    report(.arithmeticCallArgumentsWrap, operatorToken)
+  }
+
+  /// Joins only short single-argument calls whose tokens and comments can stay intact.
+  func canJoinArithmeticCall(_ call: FunctionCallExprSyntax, column: Int) -> Bool {
     guard
       call.arguments.count == 1,
       let argument = call.arguments.first,
@@ -213,12 +223,9 @@ extension StyleVisitor {
       layout.line(call) != layout.endLine(call),
       SourceLayout.compact(call.trimmedDescription).count <= 120,
       !layout.hasComments(call)
-    else { return }
+    else { return false }
 
-    let prefix = layout.converter.location(for: call.positionAfterSkippingLeadingTrivia).column - 1
-    guard prefix + SourceLayout.compact(call.trimmedDescription).count <= 120 else { return }
-
-    report(.arithmeticCallArgumentsWrap, operatorToken)
+    return column + SourceLayout.compact(call.trimmedDescription).count <= 120
   }
 
   /// Keeps single-argument arithmetic calls whole when their text fits on one line.
