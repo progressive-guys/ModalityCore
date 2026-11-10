@@ -47,7 +47,9 @@ final class ConditionExtractionFormatter: SyntaxVisitor {
 
     let base = "matchesCondition"
     var name = base
+
     var suffix = 2
+
     while names.contains(name) {
       name = base + String(suffix)
       suffix += 1

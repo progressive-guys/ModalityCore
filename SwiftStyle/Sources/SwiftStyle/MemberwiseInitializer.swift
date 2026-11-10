@@ -8,7 +8,10 @@ struct MemberwiseInitializer {
 
   init?(members: MemberBlockItemListSyntax, preservingViewInputs: Bool = false) {
     guard members.parent?.parent?.is(StructDeclSyntax.self) == true,
-          !members.contains(where: { $0.decl.is(InitializerDeclSyntax.self) })
+          !members.contains(where: {
+            $0.decl.is(InitializerDeclSyntax.self) || $0.decl.is(IfConfigDeclSyntax.self)
+              || $0.decl.is(MacroExpansionDeclSyntax.self)
+          })
     else { return nil }
 
     var parameters: [String] = []
@@ -59,40 +62,38 @@ struct MemberwiseInitializer {
 
       if property.bindingSpecifier.text == "let", binding.initializer != nil { continue }
       let layout = PropertyLayout(property)
-      guard let type = binding.typeAnnotation?.type.trimmedDescription ?? layout.type else { return nil }
-      visibility = max(visibility, layout.visibility)
-      let name = pattern.trimmedDescription
-      var parameterType = type
-      if ({ () -> Bool? in
-        switch (Syntax(binding.typeAnnotation?.type)?.as(SyntaxEnum.self)) {
-        case .functionType?: return true
-        case nil: return nil
-        default: return false
-        }
-      }()) == true {
-        parameterType = "@escaping " + type
+
+      // An explicit default argument executes at the call site. A lazy value executes on first access.
+      guard !layout.evaluatesInitializer, !property.modifiers.contains(where: { $0.name.text == "lazy" }) else {
+        return nil
       }
+
+      guard let type = binding.typeAnnotation?.type else { return nil }
+      let storage = PropertyLayout.storage(of: type)
+      guard storage != .unknown else { return nil }
+
+      visibility = max(visibility, layout.visibility)
+
+      let name = pattern.trimmedDescription
+      let parameterType = (storage == .function ? "@escaping " : "") + type.trimmedDescription
       var parameter = "\(name): \(parameterType)"
+
       if let initializer = binding.initializer {
         parameter += " = " + initializer.value.trimmedDescription
 
         // Assign the parameter once. Keep its default at the parameter boundary.
-        let annotation = binding.typeAnnotation == nil ? ": " + type : ""
         let lower = initializer.position.utf8Offset - member.position.utf8Offset
         let upper = initializer.endPosition.utf8Offset - member.position.utf8Offset
         var bytes = Array(member.description.utf8)
         let padding = bytes[..<lower].reversed().prefix {
           $0 == UInt8(ascii: " ") || $0 == UInt8(ascii: "\t")
         }.count
-        bytes.replaceSubrange((lower - padding)..<upper, with: annotation.utf8)
+        bytes.removeSubrange((lower - padding)..<upper)
         replacements[member.id] = String(decoding: bytes, as: UTF8.self)
-      } else if ({ () -> Bool? in
-        switch (Syntax(binding.typeAnnotation?.type)?.as(SyntaxEnum.self)) {
-        case .optionalType?: return true
-        case nil: return nil
-        default: return false
-        }
-      }()) == true || layout.type?.hasPrefix("Optional<") == true {
+      } else if property.bindingSpecifier.text == "var",
+                type.is(OptionalTypeSyntax.self) || layout.type?.hasPrefix("Optional<") == true
+                || layout.type?.hasPrefix("Swift.Optional<") == true
+      {
         parameter += " = nil"
       }
       parameters.append(parameter)

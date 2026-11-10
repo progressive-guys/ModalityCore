@@ -80,7 +80,9 @@ public struct WidthDrivenVStack: Layout {
     let drivingWidth = drivingViews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
     let constrainedWidth = max(minWidth, min(maxWidth, drivingWidth))
     let constrainedProposal = ProposedViewSize(width: constrainedWidth, height: nil)
+
     var currentY = bounds.minY
+
     for subview in subviews {
       let size = subview.sizeThatFits(constrainedProposal)
       let xPosition: CGFloat = switch alignment {

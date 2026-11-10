@@ -19,7 +19,9 @@ struct SourceEdit {
   static func apply(_ edits: [SourceEdit], to source: String) -> String {
     var bytes = Array(source.utf8)
     var boundary = bytes.count + 1
+
     let priority = edits.map(\.priority).max() ?? 0
+
     for edit in edits.filter({ $0.priority == priority }).sorted(by: { $0.range.lowerBound > $1.range.lowerBound }) {
       guard edit.range.upperBound < boundary else { continue }
       bytes.replaceSubrange(edit.range, with: edit.replacement.utf8)

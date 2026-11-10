@@ -77,6 +77,7 @@ extension StyleVisitor {
           let column = layout.converter.location(for: call.positionAfterSkippingLeadingTrivia).column - 1
           guard canJoinArithmeticCall(call, column: right ? layout.indent(operation) + 2 : column) else { continue }
           join(call)
+
           if right, column + SourceLayout.compact(call.trimmedDescription).count > 120 {
             before(token, with: lineBreak(indent: layout.indent(operation) + 2))
             after(token, with: " ")
@@ -115,11 +116,27 @@ extension StyleVisitor {
         break
       }
 
+    case .multilineListElementChain:
+      if let call = token.ancestor(FunctionCallExprSyntax.self), let closing = call.rightParen {
+        let indent = layout.indent(call) + 2
+
+        before(token, with: "")
+
+        for argument in call.arguments {
+          if let first = argument.firstToken(viewMode: .sourceAccurate) {
+            before(first, with: lineBreak(indent: indent + 2))
+          }
+        }
+        before(closing, with: lineBreak(indent: indent))
+        after(closing, with: "")
+      }
+
     case .mixedMemberChainWrap:
       if let expression = chainRoot(token) {
         let members = memberChain(expression)
         let leading = members.firstIndex { layout.startsLine($0.period) } ?? 1
         for part in members.dropFirst(min(leading, 1)) where part.base != nil {
+          if let call = part.parent?.as(FunctionCallExprSyntax.self), isMultilineListElementChain(call) { continue }
           before(part.period, with: lineBreak(indent: layout.indent(expression) + 2))
         }
       }
@@ -281,7 +298,7 @@ extension StyleVisitor {
     while let node = current {
       if let expression = node.as(ExprSyntax.self) {
         switch expression.as(ExprSyntaxEnum.self) {
-        case .declReferenceExpr, .memberAccessExpr, .functionCallExpr, .subscriptCallExpr,
+        case .declReferenceExpr, .stringLiteralExpr, .memberAccessExpr, .functionCallExpr, .subscriptCallExpr,
           .optionalChainingExpr, .forceUnwrapExpr, .genericSpecializationExpr:
           result = expression
 

@@ -52,8 +52,8 @@ enum StyleRule: String, CaseIterable {
   case memberOrder = "member_order"
 
   /// Group stored properties by read and setter access, static/let/var/attribute kind, type and attribute name.
-  /// Separate setter-access groups within one read-access group with one blank line at any group size.
-  /// Separate groups of more than three stored properties and computed-property effect groups.
+  /// Separate read and write access groups with one blank line at any group size.
+  /// Separate stored-property groups of more than three elements at each level, and computed-property effect groups.
   /// Keep computed-property order. Keep single-line declarations together within each effect group.
   /// Count attributes on separate lines as part of the declaration and put its separator before them.
   /// Keep stored-property attributes inline through column 120, including indentation.
@@ -75,6 +75,8 @@ enum StyleRule: String, CaseIterable {
   /// Keep consecutive uses of local values together, including branches, captures and final exits.
   /// Keep declarations and assignments beside an immediate if or guard whose conditions read the value.
   /// Separate independent declarations, combined preparation groups and leading comments.
+  /// A directly derived declaration ends the initial preparation stage. Assertions and repeated calls form groups.
+  /// Keep manual separators within assertion groups. Keep a callback assignment beside its immediate uses.
   /// Require one blank line after a multiline guard before the next statement.
   /// Other bodies with at most three code lines stay compact, except at leading group comments.
   /// Consecutive single-line assignments stay compact at any group length.
@@ -151,6 +153,9 @@ enum StyleRule: String, CaseIterable {
   /// Start a call after a previous call on a new line if its arguments wrap after (. Check generic arguments,
   /// optional chaining and closures.
   case chainedCallArgumentsWrap = "chained_call_arguments_wrap"
+
+  /// Join a final multiline list call to its receiver. Its arguments and closing comma use continuation lines.
+  case multilineListElementChain = "multiline_list_element_chain"
 
   /// Start a call with a multiline closure on a new line after the previous closure.
   case chainedClosureNewline = "chained_closure_newline"
@@ -303,6 +308,7 @@ extension StyleRule {
       """
 
     case .chainedCallArgumentsWrap: "Start a chained call on a new line before wrapping its arguments."
+    case .multilineListElementChain: "Wrap the final chained call and place its arguments before a separate closing comma."
     case .chainedClosureNewline: "Start a chained call with a multiline closure on a new line."
     case .multilineStringIndent: "Align multiline string contents with standalone opening quotes; otherwise indent by two spaces."
     case .singleLineInterpolatedString: "Use a single-line literal when interpolated text has one content line."

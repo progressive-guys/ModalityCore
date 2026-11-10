@@ -29,15 +29,7 @@ only_rules:
   #     value + 1
   #   }
   - closure_parameter_position
-  # Valid:
-  #   source
-  #     .first()
-  #     .second()
-  #     .third()
-  # Invalid:
-  #   source
-  #     .first().second()
-  #     .third()
+  # SwiftStyle filters only the accepted joined-list call from native diagnostics.
   - multiline_function_chains
   # Valid: let value: Int = 1
   # Invalid: let value : Int = 1

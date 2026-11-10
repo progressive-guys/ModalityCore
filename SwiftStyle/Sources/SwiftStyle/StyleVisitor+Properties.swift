@@ -5,7 +5,7 @@ extension StyleVisitor {
   /// Groups stored properties by read and setter access, static/let/var/attribute kind, type and attribute name.
   /// Checks order across methods. Counts group size within consecutive property runs.
   /// Types and attribute kinds follow their first occurrence. Checks each conditional branch independently.
-  /// Separates groups with more than three declared properties.
+  /// Separates groups of more than three properties at each hierarchy level.
   /// Separates stored let and var declarations regardless of group size.
   /// Sorts stored properties by line length. Computed properties keep order within each effect group.
   /// Also separates computed properties longer than three lines from any adjacent member.
@@ -47,19 +47,19 @@ extension StyleVisitor {
       let sectionBoundary = left != nil && right != nil && left?.isStored != right?.isStored
       let bindingBoundary = left?.isStored == true && right?.isStored == true
         && left?.declaration.bindingSpecifier.text != right?.declaration.bindingSpecifier.text
-      let setterBoundary = left?.isStored == true && right?.isStored == true
-        && right.map { left?.separatesSetterGroup(from: $0) == true } == true
+      let accessBoundary = left?.isStored == true && right?.isStored == true
+        && right.map { left?.separatesAccess(from: $0) == true } == true
       let effectBoundary = left?.isStored == false && right?.isStored == false
         && MemberOrderFormatter.effects(of: previous.decl) != MemberOrderFormatter.effects(of: current.decl)
-      if longAccessor || largeGroup || sectionBoundary || bindingBoundary || setterBoundary || effectBoundary {
+      if longAccessor || largeGroup || sectionBoundary || bindingBoundary || accessBoundary || effectBoundary {
         if spacing.blankLines.count != 1 {
           let reason = if longAccessor {
             "Separate a computed property longer than three lines with one blank line."
 
           } else if bindingBoundary {
             "Separate stored let and var declarations with one blank line."
-          } else if setterBoundary {
-            "Separate properties with different setter access with one blank line."
+          } else if accessBoundary {
+            "Separate properties with different read or write access with one blank line."
           } else if effectBoundary {
             "Separate getter effect groups with one blank line."
           } else if sectionBoundary {
@@ -105,8 +105,11 @@ extension StyleVisitor {
       body.positionAfterSkippingLeadingTrivia.utf8Offset..<declaration.endPositionBeforeTrailingTrivia.utf8Offset
     ], as: UTF8.self)
     let firstLine = bodyText.split(whereSeparator: { $0.isNewline }).first.map(String.init) ?? ""
+
     let attributeText = attributes.map(\.trimmedDescription).joined(separator: " ")
+
     let wraps = layout.indent(declaration) + attributeText.count + 1 + firstLine.count > 120
+
     let ends = attributes.compactMap { $0.lastToken(viewMode: .sourceAccurate) }
 
     let starts = Array(attributes.dropFirst()).compactMap { $0.firstToken(viewMode: .sourceAccurate) } + [body]
@@ -206,6 +209,7 @@ extension StyleVisitor {
       body.positionAfterSkippingLeadingTrivia.utf8Offset..<declaration.endPositionBeforeTrailingTrivia.utf8Offset
     ], as: UTF8.self)
     let firstLine = bodyText.split(whereSeparator: { $0.isNewline }).first.map(String.init) ?? ""
+
     let attributeText = candidates.map(\.trimmedDescription).joined(separator: " ")
     guard indent + attributeText.count + 1 + firstLine.count <= 120 else { return nil }
 
@@ -215,7 +219,9 @@ extension StyleVisitor {
   private func checkPropertyOrder(_ members: MemberBlockItemListSyntax) {
     let grouping = PropertyGrouping(members, layout: layout)
     let ranks = Dictionary(uniqueKeysWithValues: grouping.sorted.enumerated().map { ($0.element.member.id, $0.offset) })
+
     var previous = 0
+
     for slot in grouping.slots {
       let rank = ranks[slot.member.id, default: 0]
       if rank < previous {
@@ -243,9 +249,11 @@ extension StyleVisitor {
   ) -> Bool {
     let leftGroups = Set(left?.isStored == true ? left?.groups ?? [] : [])
     let rightGroups = Set(right?.isStored == true ? right?.groups ?? [] : [])
-    let leftCounts = left.flatMap { counts[$0.declaration.id] } ?? [:]
-    let rightCounts = right.flatMap { counts[$0.declaration.id] } ?? [:]
-    return leftGroups.subtracting(rightGroups).contains { leftCounts[$0, default: 0] > 3 }
-      || rightGroups.subtracting(leftGroups).contains { rightCounts[$0, default: 0] > 3 }
+    let boundaries = leftGroups.symmetricDifference(rightGroups)
+    return [left, right].compactMap { $0 }.contains { property in
+      return property.groups.contains { group in
+        boundaries.contains(group) && (counts[property.declaration.id]?[group] ?? 0) > 3
+      }
+    }
   }
 }

@@ -22,6 +22,7 @@ enum SourceFormatter {
       let structural = StructuralFormatter(source: result, tree: parsed, rules: rules)
       structural.walk(parsed)
       DispatchVisitor(formatter: structural).walk(folded)
+
       if structural.edits.isEmpty, rules?.contains(LintDiagnostic.rule) ?? true {
         ConditionExtractionFormatter(formatter: structural, tree: folded).walk(folded)
       }

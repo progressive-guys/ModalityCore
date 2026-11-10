@@ -152,6 +152,7 @@ struct StatementDependencies {
         for item in label.caseItems {
           let itemBound = bound.union(names(in: Syntax(item.pattern)))
           result.formUnion(references(in: Syntax(item.pattern), bound: itemBound))
+
           if let clause = item.whereClause {
             result.formUnion(references(in: Syntax(clause.condition), bound: itemBound))
           }

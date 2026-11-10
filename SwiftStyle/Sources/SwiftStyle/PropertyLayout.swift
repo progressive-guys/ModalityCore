@@ -3,6 +3,14 @@ import SwiftSyntax
 /// Describes one property declaration without changing its initializer or resolving external types.
 struct PropertyLayout {
 
+  enum Storage {
+
+    case scalar
+    case function
+    case otherValue
+    case unknown
+  }
+
   let kind: Int
   let type: String?
   let visibility: Int
@@ -46,11 +54,13 @@ struct PropertyLayout {
     }
   }
 
+  /// Counts each level of the property hierarchy, including groups with different data types.
   var groups: [[String]] {
     let access = [String(visibility), String(setterVisibility)]
-    let prefix = access + [String(kind)]
-    let typeKey = type ?? "unknown:\(declaration.position.utf8Offset)"
-    return [[String(visibility)], access, prefix, prefix + [typeKey], prefix + [typeKey] + annotations]
+    let kindGroup = access + [String(kind)]
+    let attributeGroup = kindGroup + ["attributes"] + annotations
+    let typeGroups = type.map { [attributeGroup + ["type", $0]] } ?? []
+    return [[String(visibility)], access, kindGroup, attributeGroup] + typeGroups
   }
 
   /// Observers keep a stored value. Getter and setter accessors describe a computed property.
@@ -71,9 +81,74 @@ struct PropertyLayout {
   /// Uses the longest declaration line, without its leading indentation.
   var lineLength: Int { SourceLayout.lineLength(declaration) }
 
-  /// Separates different setter access within the same read-access group, at any group size.
-  func separatesSetterGroup(from other: Self) -> Bool {
-    visibility == other.visibility && setterVisibility != other.setterVisibility
+  /// Wrappers and initializers can run user code. Plain Swift literals have no side effects.
+  var evaluatesInitializer: Bool {
+    !declaration.attributes.isEmpty || declaration.bindings.contains { binding in
+      guard let value = binding.initializer?.value else { return false }
+      return !Self.isStandardLiteral(value, type: binding.typeAnnotation?.type)
+    }
+  }
+
+  /// Destruction follows stored-property order. A closure or an opaque value can own an object.
+  var requiresStorageOrder: Bool {
+    let sharedType = type == nil ? nil : declaration.bindings.last?.typeAnnotation?.type
+    return evaluatesInitializer || declaration.bindings.contains {
+      Self.storage(of: $0.typeAnnotation?.type ?? sharedType) != .scalar
+    }
+  }
+
+  /// A change in read or write access starts a new group.
+  func separatesAccess(from other: Self) -> Bool {
+    visibility != other.visibility || setterVisibility != other.setterVisibility
+  }
+
+  /// Resolves syntax that determines both object lifetime and the escaping convention of a parameter.
+  /// An unresolved type alias can name a function, even when its declaration is in another file.
+  static func storage(of type: TypeSyntax?) -> Storage {
+    guard let type else { return .unknown }
+
+    let name: String
+
+    switch type.as(TypeSyntaxEnum.self) {
+    case .attributedType(let attributed): return storage(of: attributed.baseType)
+    case .functionType: return .function
+    case .tupleType(let tuple):
+      if tuple.elements.count == 1, let element = tuple.elements.first { return storage(of: element.type) }
+      return tuple.elements.allSatisfy { storage(of: $0.type) == .scalar } ? .scalar : .otherValue
+
+    case .optionalType(let optional): return storage(of: optional.wrappedType) == .scalar ? .scalar : .otherValue
+    case .arrayType, .dictionaryType: return .otherValue
+    case .metatypeType: return .scalar
+    case .identifierType(let identifier): name = identifier.name.text
+    case .memberType(let member) where member.baseType.trimmedDescription == "Swift": name = member.name.text
+    default: return .unknown
+    }
+
+    switch name {
+    case "Bool", "String", "Character", "Int", "Int8", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16",
+      "UInt32", "UInt64", "Float", "Double", "Void", "Never": return .scalar
+    case "Optional", "Array", "Dictionary", "Set", "Result": return .otherValue
+    default: return .unknown
+    }
+  }
+
+  /// A literal in a user-defined type can call its ExpressibleBy... initializer.
+  /// Explicit scalar types use the Swift module name to rule out local types with the same name.
+  private static func isStandardLiteral(_ value: ExprSyntax, type: TypeSyntax?) -> Bool {
+    let isSwiftScalar = type?.as(MemberTypeSyntax.self)?.baseType.trimmedDescription == "Swift"
+      && storage(of: type) == .scalar
+
+    switch value.as(ExprSyntaxEnum.self) {
+    case .integerLiteralExpr, .floatLiteralExpr, .booleanLiteralExpr: return isSwiftScalar
+    case .stringLiteralExpr(let literal):
+      return isSwiftScalar && literal.segments.allSatisfy { $0.is(StringSegmentSyntax.self) }
+    case .arrayExpr(let array):
+      return array.elements.isEmpty && type?.is(ArrayTypeSyntax.self) == true
+    case .dictionaryExpr(let dictionary):
+      return dictionary.content.is(TokenSyntax.self) && type?.is(DictionaryTypeSyntax.self) == true
+    case .nilLiteralExpr: return type?.is(OptionalTypeSyntax.self) == true
+    default: return false
+    }
   }
 
   func hasLongAccessor(in layout: SourceLayout) -> Bool {

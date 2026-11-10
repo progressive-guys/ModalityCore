@@ -61,7 +61,9 @@ enum ViewPropertyAccess {
       let indent = String(repeating: " ", count: layout.indent(owner) + 2)
       let newline = members.description.contains("\r\n") ? "\r\n" : "\n"
       let source = newline + newline + indent + initializer.source.replacingOccurrences(of: "\n", with: newline + indent)
+
       let end = members.endPosition.utf8Offset
+
       edits.append(SourceEdit(range: end..<end, replacement: source))
     }
     return edits

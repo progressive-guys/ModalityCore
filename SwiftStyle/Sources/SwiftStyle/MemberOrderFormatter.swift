@@ -9,7 +9,7 @@ enum MemberOrderFormatter {
     var group: [MemberBlockItemSyntax] = []
     for member in members {
       switch (Syntax(member.decl).as(SyntaxEnum.self)) {
-      case .ifConfigDecl where rank(member) == nil:
+      case .ifConfigDecl where rank(member) == nil, .macroExpansionDecl:
         if !group.isEmpty { groups.append(group) }
         group = []
 
@@ -35,7 +35,8 @@ enum MemberOrderFormatter {
     groups(in: members).compactMap { group in
       let ordered = sorted(group)
       guard let first = group.first, let last = group.last,
-            zip(group, ordered).contains(where: { $0.id != $1.id })
+            zip(group, ordered).contains(where: { $0.id != $1.id }),
+            preservesOrder(in: members, replacing: group, with: ordered, of: requiresStorageOrder)
       else { return nil }
 
       let start = first.position.utf8Offset
@@ -52,6 +53,40 @@ enum MemberOrderFormatter {
       }
 
       return SourceEdit(range: start..<end, replacement: String(decoding: bytes, as: UTF8.self))
+    }
+  }
+
+  /// Includes members between replacement slots, such as conditional declarations and member macros.
+  static func preservesOrder(
+    in members: MemberBlockItemListSyntax,
+    replacing original: [MemberBlockItemSyntax],
+    with ordered: [MemberBlockItemSyntax],
+    of requiresOrder: (MemberBlockItemSyntax) -> Bool
+  ) -> Bool {
+    let protected = members.compactMap { requiresOrder($0) ? $0.id : nil }
+    let ids = Set(protected)
+
+    let replacements = Dictionary(uniqueKeysWithValues: zip(original.map(\.id), ordered.map(\.id)))
+
+    return members.map { replacements[$0.id] ?? $0.id }.filter(ids.contains) == protected
+  }
+
+  /// A conditional declaration keeps its slot relative to other fields with observable initialization or destruction.
+  static func requiresStorageOrder(_ member: MemberBlockItemSyntax) -> Bool {
+    switch member.decl.as(DeclSyntaxEnum.self) {
+    case .variableDecl(let declaration):
+      // A type property initializes on first access, independent of its slot.
+      let property = PropertyLayout(declaration)
+      return property.kind != 0 && property.isStored && property.requiresStorageOrder
+
+    case .ifConfigDecl(let configuration):
+      return configuration.clauses.contains { clause in
+        guard let branch = clause.elements?.as(MemberBlockItemListSyntax.self) else { return true }
+        return branch.contains(where: requiresStorageOrder)
+      }
+
+    case .macroExpansionDecl: return true
+    default: return false
     }
   }
 
@@ -77,7 +112,8 @@ enum MemberOrderFormatter {
       return (effects?.asyncSpecifier == nil ? 0 : 2) + (effects?.throwsClause == nil ? 0 : 1)
 
     case .variableDecl(let property):
-      return property.bindings.compactMap { binding -> Int? in
+      return property.bindings
+        .compactMap { binding -> Int? in
         guard case .accessors(let accessors)? = binding.accessorBlock?.accessors,
               let getter = accessors.first(where: { $0.accessorSpecifier.text == "get" })
         else { return nil }
@@ -85,7 +121,7 @@ enum MemberOrderFormatter {
         let effects = getter.effectSpecifiers
         return (effects?.asyncSpecifier == nil ? 0 : 2) + (effects?.throwsClause == nil ? 0 : 1)
       }
-      .max() ?? 0
+        .max() ?? 0
 
     default: return 0
     }
@@ -111,7 +147,7 @@ enum MemberOrderFormatter {
           ranks.insert(value)
         } else {
           switch member.decl.as(DeclSyntaxEnum.self) {
-          case .ifConfigDecl: return nil
+          case .ifConfigDecl, .macroExpansionDecl: return nil
           default: break
           }
         }

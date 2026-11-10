@@ -76,9 +76,8 @@ struct PropertyGrouping {
   }
 
   static func separatesLargeGroup(_ left: PropertyLayout, _ right: PropertyLayout, sizes: [[String]: Int]) -> Bool {
-    let leftGroups = Set(left.groups)
-    let rightGroups = Set(right.groups)
-    return leftGroups.symmetricDifference(rightGroups).contains { sizes[$0, default: 0] > 3 }
+    let boundaries = Set(left.groups).symmetricDifference(Set(right.groups))
+    return boundaries.contains { sizes[$0, default: 0] > 3 }
   }
 
   private static func sort(_ run: [Slot], layout: SourceLayout, leadingTrivia: inout [SyntaxIdentifier: Trivia]) -> [
@@ -90,7 +89,7 @@ struct PropertyGrouping {
     for slot in run {
       if let previous = block.last {
         let separates = separatesLargeGroup(previous.property, slot.property, sizes: counts)
-          || previous.property.separatesSetterGroup(from: slot.property)
+          || previous.property.separatesAccess(from: slot.property)
           || layout.hasGroupHeader(slot.member)
           || !layout.isSingleLineGroupElement(previous.member)
           || !layout.isSingleLineGroupElement(slot.member)

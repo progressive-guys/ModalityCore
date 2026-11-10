@@ -89,7 +89,10 @@ extension StyleVisitor {
 
     guard !extendsChain(node) else { return }
 
-    let members = memberChain(ExprSyntax(node))
+    let members = memberChain(ExprSyntax(node)).filter { member in
+      guard let call = member.parent?.as(FunctionCallExprSyntax.self) else { return true }
+      return !isMultilineListElementChain(call)
+    }
     let leading = members.map { $0.base != nil && layout.startsLine($0.period) }
     guard let first = leading.firstIndex(of: true) else { return }
     let hasLaterInlineMember = leading.dropFirst(first).contains(false)
@@ -111,7 +114,13 @@ extension StyleVisitor {
           let previous = receiverCall(base)
     else { return }
 
-    if let leftParen = node.leftParen,
+    if isMultilineListElementChain(node), let opening = node.leftParen, let closing = node.rightParen,
+       layout.line(opening) != layout.line(closing)
+    {
+      if !hasJoinedListLayout(node) {
+        report(.multilineListElementChain, member.period)
+      }
+    } else if let leftParen = node.leftParen,
        let rightParen = node.rightParen,
        layout.line(leftParen) != layout.line(rightParen),
        layout.endLine(previous) == layout.line(member.period)
@@ -125,6 +134,40 @@ extension StyleVisitor {
     {
       report(.chainedClosureNewline, member.period)
     }
+  }
+
+  /// The receiver's closing parenthesis and the list comma delimit the final call.
+  func hasJoinedListLayout(_ call: FunctionCallExprSyntax) -> Bool {
+    guard isMultilineListElementChain(call),
+          let member = call.calledExpression.as(MemberAccessExprSyntax.self),
+          let base = member.base, let opening = call.leftParen, let closing = call.rightParen
+    else { return false }
+
+    if layout.line(opening) == layout.line(closing) {
+      return layout.endLine(base) == layout.line(member.period)
+    }
+
+    let indent = layout.indent(call) + 2
+
+    return layout.endLine(base) == layout.line(member.period) && layout.startsLine(closing)
+      && layout.indent(closing) == indent
+      && call.arguments.allSatisfy { argument in
+        guard let token = argument.firstToken(viewMode: .sourceAccurate) else { return false }
+        return layout.startsLine(token) && layout.indent(token) == indent + 2
+      }
+      && closing.nextToken(viewMode: .sourceAccurate).map { layout.line($0) == layout.line(closing) } == true
+  }
+
+  func isMultilineListElementChain(_ call: FunctionCallExprSyntax) -> Bool {
+    guard let member = call.calledExpression.as(MemberAccessExprSyntax.self),
+          let receiver = member.base?.as(FunctionCallExprSyntax.self),
+          let end = receiver.rightParen, receiver.trailingClosure == nil, layout.startsLine(end),
+          layout.line(receiver) < layout.line(end), !call.arguments.isEmpty,
+          let closing = call.rightParen,
+          let comma = call.parent?.asProtocol((any WithTrailingCommaSyntax).self)?.trailingComma
+    else { return false }
+
+    return closing.nextToken(viewMode: .sourceAccurate)?.id == comma.id
   }
 
   /// Puts the closing delimiter on its own line after multiline expression content.
@@ -287,7 +330,9 @@ extension StyleVisitor {
 
     let operations = chainOperations(node, rule: rule)
     let tokens = operations.compactMap { $0.operator.firstToken(viewMode: .sourceAccurate) }
+
     let isArithmeticChain = Self.arithmetic.contains(token.text)
+
     let wrappedTokens = if isArithmeticChain {
       tokens.filter { token in
         guard let next = token.nextToken(viewMode: .sourceAccurate) else { return false }

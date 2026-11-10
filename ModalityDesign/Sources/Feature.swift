@@ -61,9 +61,7 @@ public extension Feature where ID == ObjectIdentifier {
 public struct MockFeature: Feature {
 
   public typealias Input = String
-
   public typealias Output = Void
-
   public typealias state = Void
 
   public let input: Input

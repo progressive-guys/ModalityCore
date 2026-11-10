@@ -6,7 +6,9 @@
 # Only the listed SwiftFormat rules change code. All other rules are disabled.
 # Existing UIStressKit switch patterns fail indent. Enable it after those sources are corrected.
 # --enable indent
---rules blankLineAfterSwitchCase,conditionalAssignment,elseOnSameLine,wrapArguments,wrapIfExpressionBodies,trailingSpace,semicolons,sortImports
+--rules blankLineAfterSwitchCase,conditionalAssignment,elseOnSameLine,linebreaks,wrapArguments,wrapIfExpressionBodies,trailingSpace,semicolons,sortImports
+# SwiftLint 0.65.1 can join comma-separated CRLF lines. Normalize source before its fixes.
+--linebreaks lf
 # SwiftStyle attribute_newline separates declaration attributes and keeps import attributes inline.
 # Trailing objc and concurrent attributes share the declaration line through column 120.
 # Protocol member attributes share the declaration line through column 120.

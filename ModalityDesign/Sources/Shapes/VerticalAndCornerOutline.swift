@@ -20,7 +20,9 @@ public struct VerticalAndCornerOutline: Shape {
     let tr = corners.contains(.topRight) ? r : 0
     let bl = corners.contains(.bottomLeft) ? r : 0
     let br = corners.contains(.bottomRight) ? r : 0
+
     var path = Path()
+
     if hasLeadingEdge {
       path.move(to: CGPoint(x: rect.minX + bl, y: rect.maxY))
 
@@ -46,6 +48,7 @@ public struct VerticalAndCornerOutline: Shape {
         )
       }
     }
+
     if hasTrailingEdge {
       path.move(to: CGPoint(x: rect.maxX - tr, y: rect.minY))
 

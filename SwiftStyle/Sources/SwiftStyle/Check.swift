@@ -108,6 +108,12 @@ enum SwiftStyle {
   static func main() {
     do {
       var arguments = Array(CommandLine.arguments.dropFirst())
+      if arguments.first == "--filter-layout-diagnostics", arguments.count == 2,
+         let status = Int32(arguments[1])
+      {
+        let input = FileHandle.standardInput.readDataToEndOfFile()
+        exit(try ExternalLayoutDiagnostics.filter(input, status: status))
+      }
       let json = arguments.contains("--json")
       arguments.removeAll { $0 == "--json" }
       let fix = arguments.contains("--fix")

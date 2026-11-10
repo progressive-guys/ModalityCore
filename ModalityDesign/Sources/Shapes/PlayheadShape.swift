@@ -12,6 +12,7 @@ public struct PlayheadShape: Shape {
     var path = Path()
     let rectHeight: CGFloat = headHeight * 0.35
     let triangleHeight: CGFloat = headHeight - rectHeight
+
     let headWidth: CGFloat = rect.width
     let lineWidth: CGFloat = 2
     let rectWidth: CGFloat = headWidth
@@ -23,6 +24,7 @@ public struct PlayheadShape: Shape {
     let triangleTop = rectBottom
 
     let trianglBottom = triangleTop + triangleHeight
+
     let lineBottom = rect.maxY
 
     // Draw rectangular area at top
@@ -47,7 +49,6 @@ public struct PlayheadShape: Shape {
 
     // Draw triangular head pointing down
     path.move(to: CGPoint(x: centerX, y: trianglBottom))
-
     path.addLine(to: CGPoint(x: centerX - headWidth / 2, y: triangleTop))
     path.addLine(to: CGPoint(x: centerX + headWidth / 2, y: triangleTop))
     path.closeSubpath()
@@ -57,11 +58,8 @@ public struct PlayheadShape: Shape {
     let lineRight = centerX + lineWidth / 2
 
     path.move(to: CGPoint(x: lineLeft, y: trianglBottom - 2))
-
     path.addLine(to: CGPoint(x: lineRight, y: trianglBottom - 2))
-
     path.addLine(to: CGPoint(x: lineRight, y: lineBottom))
-
     path.addLine(to: CGPoint(x: lineLeft, y: lineBottom))
     path.closeSubpath()
     return path

@@ -6,6 +6,7 @@ extension StyleVisitor {
 
     case declaration
     case check
+    case assertion
     case exit
     case action
     case assignment
@@ -72,6 +73,7 @@ extension StyleVisitor {
   /// Groups consecutive uses of local values, including branches and closure captures.
   /// Immediate declarations and mutations stay beside checks that read their values.
   /// Structural boundaries and combined preparation groups require separation.
+  /// Assertions and checks after actions start a new group. Assertion groups keep manual separators.
   /// Ordinary actions and related multiline pairs allow one manual separator.
   /// Consecutive single-line assignments stay together, at any group length.
   /// Multiline guards require one blank line before the next statement.
@@ -87,8 +89,15 @@ extension StyleVisitor {
     var previousDependencies = StatementDependencies(first)
     var knownNames = previousDependencies.declarations
     var groupNames = knownNames
+
     var declarationsOnly = statementGroup(first) == .declaration
-    for (previous, current) in zip(statements, statements.dropFirst()) {
+    var derivedDeclaration = false
+
+    var configuredReference = layout.isSingleLineGroupElement(first) ? nil : previousDependencies.mutatedReference
+    let series = statements.map { statementSeries($0) }
+
+    for (index, pair) in zip(statements, statements.dropFirst()).enumerated() {
+      let (previous, current) = pair
       let dependencies = StatementDependencies(current)
       let checksMutation = previousDependencies.mutatedReference.map {
         dependencies.conditionReferences.contains($0)
@@ -98,22 +107,43 @@ extension StyleVisitor {
       let currentGroup = statementGroup(current)
       let checksDeclaration = previousGroup == .declaration
         && !previousDependencies.declarations.isDisjoint(with: dependencies.conditionReferences)
-      let related = !uses.isDisjoint(with: groupNames)
+      let usesMutation = currentGroup.isAction
+        && (previousDependencies.mutatedReference.map { dependencies.references.contains($0) } ?? false)
+      let usesConfiguration = currentGroup.isAction
+        && (configuredReference.map { dependencies.references.contains($0) } ?? false)
+      let related = !uses.isDisjoint(with: groupNames) || usesConfiguration
       let combined = related && !uses.isSubset(of: groupNames)
-      let declarations = declarationsOnly && currentGroup == .declaration
+      let declarations = declarationsOnly && !derivedDeclaration && currentGroup == .declaration
         && layout.isSingleLineGroupElement(previous) && layout.isSingleLineGroupElement(current)
       let ordinaryActions = previousGroup.isAction && currentGroup.isAction
       let assignmentPair = previousGroup == .assignment && currentGroup == .assignment
         && layout.isSingleLineGroupElement(previous) && layout.isSingleLineGroupElement(current)
-
       let multilinePair = !layout.isSingleLineGroupElement(previous) && !layout.isSingleLineGroupElement(current)
       let header = layout.hasGroupHeader(current)
       let boundary = current.item.is(IfConfigDeclSyntax.self) || previous.item.is(IfConfigDeclSyntax.self)
+      let assertionBoundary = (previousGroup == .assertion) != (currentGroup == .assertion)
+      let checkAfterAction = previousGroup.isAction && currentGroup == .check
+      let completedConfiguration = configuredReference != nil && previousGroup.isAction
+        && currentGroup != .assignment && !related
 
-      let startsGroup = header || boundary || combined
+      let endsSeries = index > 0 && series[index] != nil && series[index - 1] == series[index]
+
+      let beginsSeries = index + 2 < series.count && series[index + 1] != nil
+        && series[index + 1] == series[index + 2]
+
+      let seriesBoundary = previousGroup.isAction && currentGroup.isAction
+        && series[index] != series[index + 1] && (endsSeries || beginsSeries)
+
+      let spacing = layout.groupSpacing(between: previous, and: current)
+
+      let manualPreparationBoundary = declarations && !related && spacing?.blankLines.isEmpty == false
+        && !previousDependencies.references.isDisjoint(with: groupNames)
+
+      let startsGroup = header || boundary || combined || assertionBoundary || checkAfterAction
+        || completedConfiguration || seriesBoundary || manualPreparationBoundary
         || (!ordinaryActions && !declarations && !related && (!groupNames.isEmpty || !uses.isEmpty))
 
-      if let spacing = layout.groupSpacing(between: previous, and: current),
+      if let spacing,
          let token = current.firstToken(viewMode: .sourceAccurate)
       {
         let multilineGuard = previous.item.is(GuardStmtSyntax.self)
@@ -123,8 +153,12 @@ extension StyleVisitor {
           1...1
         } else if compactScope || assignmentPair {
           0...0
+        } else if previousGroup == .assertion && currentGroup == .assertion {
+          0...1
         } else if checksMutation || checksDeclaration {
           multilinePair ? 0...1 : 0...0
+        } else if (usesMutation || usesConfiguration) && !combined {
+          0...0
         } else if startsGroup {
           1...1
         } else if ordinaryActions || (related && multilinePair) {
@@ -148,11 +182,21 @@ extension StyleVisitor {
       if startsGroup || (!related && !declarations) {
         groupNames = uses
         declarationsOnly = currentGroup == .declaration
+        derivedDeclaration = false
+        configuredReference = nil
       } else {
         declarationsOnly = declarationsOnly && currentGroup == .declaration
       }
 
       groupNames.formUnion(dependencies.declarations)
+
+      if previousGroup == .declaration, currentGroup == .declaration,
+         !previousDependencies.declarations.isDisjoint(with: dependencies.references)
+      { derivedDeclaration = true }
+
+      if currentGroup == .assignment, !layout.isSingleLineGroupElement(current) {
+        configuredReference = dependencies.mutatedReference
+      }
       knownNames.formUnion(dependencies.declarations)
       previousDependencies = dependencies
     }
@@ -177,10 +221,44 @@ extension StyleVisitor {
 
   private func expressionGroup(_ expression: ExprSyntax) -> StatementGroup {
     switch expression.as(ExprSyntaxEnum.self) {
+    case .tryExpr(let expression): expressionGroup(expression.expression)
+    case .awaitExpr(let expression): expressionGroup(expression.expression)
+    case .macroExpansionExpr(let expansion) where expansion.macroName.text == "expect": .assertion
+    case .functionCallExpr(let call) where isAssertion(call.calledExpression): .assertion
     case .ifExpr: .check
     case .switchExpr: .statement
     case .infixOperatorExpr(let operation) where operation.operator.is(AssignmentExprSyntax.self): .assignment
     default: .action
+    }
+  }
+
+  /// Test assertions start a verification group. require macros still produce input values.
+  private func isAssertion(_ expression: ExprSyntax) -> Bool {
+    switch expression.as(ExprSyntaxEnum.self) {
+    case .declReferenceExpr(let reference): reference.baseName.text.hasPrefix("XCTAssert")
+    case .memberAccessExpr(let member): member.declName.baseName.text.hasPrefix("XCTAssert")
+    default: false
+    }
+  }
+
+  /// Repeated method calls and assignments form a series. Keep the full receiver path.
+  private func statementSeries(_ item: CodeBlockItemSyntax) -> String? {
+    switch item.item {
+    case .expr(let expression): expressionSeries(expression)
+    case .stmt(let statement):
+      statement.as(ExpressionStmtSyntax.self).flatMap { expressionSeries($0.expression) }
+    default: nil
+    }
+  }
+
+  private func expressionSeries(_ expression: ExprSyntax) -> String? {
+    switch expression.as(ExprSyntaxEnum.self) {
+    case .tryExpr(let expression): expressionSeries(expression.expression)
+    case .awaitExpr(let expression): expressionSeries(expression.expression)
+    case .infixOperatorExpr(let operation) where operation.operator.is(AssignmentExprSyntax.self): "="
+    case .functionCallExpr(let call):
+      SourceLayout.compact(call.calledExpression.trimmedDescription)
+    default: nil
     }
   }
 }

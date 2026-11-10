@@ -20,6 +20,7 @@ final class StyleVisitor: SyntaxVisitor {
     self.isFormatting = isFormatting
     self.file = file
     layout = SourceLayout(source: source, file: file, tree: tree)
+
     super.init(viewMode: .sourceAccurate)
   }
 
@@ -321,6 +322,7 @@ final class StyleVisitor: SyntaxVisitor {
   private func checkConditions(_ node: IfExprSyntax) {
     let starts = node.conditions.map { layout.line($0) }
     let uniqueStarts = Set(starts)
+
     let nextConditions = node.conditions.dropFirst()
     let overlappingConditions = zip(node.conditions, nextConditions).contains { layout.endLine($0) >= layout.line($1) }
     if uniqueStarts.count > 1,

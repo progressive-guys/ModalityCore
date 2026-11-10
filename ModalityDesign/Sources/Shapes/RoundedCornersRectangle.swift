@@ -39,11 +39,13 @@ public struct RoundedCornersRectangle: Shape {
     let tr = corners.contains(.topRight) ? r : 0
     let bl = corners.contains(.bottomLeft) ? r : 0
     let br = corners.contains(.bottomRight) ? r : 0
+
     var path = Path()
     path.move(to: CGPoint(x: rect.minX + tl, y: rect.minY))
 
     // Top edge & top-right corner
     path.addLine(to: CGPoint(x: rect.maxX - tr, y: rect.minY))
+
     if tr > 0 {
       path.addArc(
         center: CGPoint(x: rect.maxX - tr, y: rect.minY + tr),
@@ -56,6 +58,7 @@ public struct RoundedCornersRectangle: Shape {
 
     // Right edge & bottom-right corner
     path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - br))
+
     if br > 0 {
       path.addArc(
         center: CGPoint(x: rect.maxX - br, y: rect.maxY - br),
@@ -68,6 +71,7 @@ public struct RoundedCornersRectangle: Shape {
 
     // Bottom edge & bottom-left corner
     path.addLine(to: CGPoint(x: rect.minX + bl, y: rect.maxY))
+
     if bl > 0 {
       path.addArc(
         center: CGPoint(x: rect.minX + bl, y: rect.maxY - bl),
@@ -80,6 +84,7 @@ public struct RoundedCornersRectangle: Shape {
 
     // Left edge & top-left corner
     path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + tl))
+
     if tl > 0 {
       path.addArc(
         center: CGPoint(x: rect.minX + tl, y: rect.minY + tl),

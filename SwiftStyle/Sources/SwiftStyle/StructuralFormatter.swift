@@ -16,6 +16,7 @@ final class StructuralFormatter: SyntaxVisitor {
     self.source = source
     layout = SourceLayout(source: source, file: "<format>", tree: tree)
     self.rules = rules
+
     super.init(viewMode: .sourceAccurate)
   }
 
@@ -27,21 +28,74 @@ final class StructuralFormatter: SyntaxVisitor {
           bindings(node.conditions).isDisjoint(with: bindings(nested.conditions))
     else { return .visitChildren }
 
-    let start = node.body.leftBrace.positionAfterSkippingLeadingTrivia.utf8Offset
-    let afterBrace = node.body.leftBrace.endPositionBeforeTrailingTrivia.utf8Offset
-    let beforeIf = nested.ifKeyword.positionAfterSkippingLeadingTrivia.utf8Offset
-    let end = nested.ifKeyword.endPositionBeforeTrailingTrivia.utf8Offset
-    let trivia = String(decoding: Array(source.utf8)[afterBrace..<beforeIf], as: UTF8.self)
-    edits.append(SourceEdit(range: start..<end, replacement: "," + trivia))
+    let opening = node.body.leftBrace
 
-    let innerEnd = nested.body.rightBrace.endPositionBeforeTrailingTrivia.utf8Offset
-    let outerStart = node.body.rightBrace.positionAfterSkippingLeadingTrivia.utf8Offset
-    let outerEnd = node.body.rightBrace.endPositionBeforeTrailingTrivia.utf8Offset
-    let closingTrivia = String(decoding: Array(source.utf8)[innerEnd..<outerStart], as: UTF8.self)
-    let padding = closingTrivia.reversed().prefix { $0 == " " || $0 == "\t" }.count
-    edits.append(SourceEdit(range: innerEnd..<outerEnd, replacement: String(closingTrivia.dropLast(padding))))
+    let boundary = node.conditions.trailingTrivia
+      + opening.leadingTrivia
+      + opening.trailingTrivia
+      + nested.ifKeyword.leadingTrivia
+      + nested.ifKeyword.trailingTrivia
+      + nested.conditions.leadingTrivia
+    let comments = boundary.filter(\.isComment)
+
+    let newline = source.contains("\r\n") ? "\r\n" : "\n"
+    let indent = String(repeating: " ", count: layout.indent(node))
+    let continuation = newline + indent + "  "
+
+    let wrapped = layout.line(node.conditions) != layout.endLine(nested.conditions) || !comments.isEmpty
+
+    let separator = wrapped ? continuation : " "
+
+    let comma = "," + comments.map { separator + Trivia(pieces: [$0]).description }.joined() + separator
+
+    let start = node.conditions.endPositionBeforeTrailingTrivia.utf8Offset
+    let closing = node.body.rightBrace
+    let offset = max(0, layout.indent(nested) - layout.indent(node))
+    let beforeBody = nested.conditions.trailingTrivia + nested.body.leftBrace.leadingTrivia
+
+    let braceGap = beforeBody.contains(where: \.isComment) ? beforeBody.description : (wrapped ? newline + indent : " ")
+
+    let afterBody = nested.body.rightBrace.trailingTrivia + closing.leadingTrivia
+    var suffix = closing.trailingTrivia.description
+
+    if afterBody.contains(where: \.isComment) {
+      let comments = String(afterBody.description.reversed().drop(while: \.isWhitespace).reversed())
+      let continuesLine = closing.nextToken(viewMode: .sourceAccurate).map { layout.line($0) == layout.line(closing) }
+      suffix = closing.trailingTrivia.contains(where: \.isComment) || continuesLine == true
+        ? comments + newline + indent + suffix.drop(while: \.isWhitespace)
+        : comments
+    }
+
+    let merged = comma + lifted(nested.conditions, by: offset) + braceGap + lifted(nested.body, by: offset) + suffix
+
+    edits.append(SourceEdit(range: start..<closing.endPosition.utf8Offset, replacement: merged))
 
     return .skipChildren
+  }
+
+  /// Lifts indentation in trivia. Literal contents and the text inside block comments keep their spelling.
+  private func lifted(_ node: some SyntaxProtocol, by offset: Int) -> String {
+    guard offset > 0 else { return node.trimmedDescription }
+
+    func lift(_ trivia: Trivia) -> String {
+      var afterNewline = false
+      return Trivia(pieces: trivia.map { piece in
+        defer { afterNewline = piece.isNewline }
+        if afterNewline, case .spaces(let count) = piece { return .spaces(max(0, count - offset)) }
+        return piece
+      }).description
+    }
+
+    return node.trimmed
+      .tokens(viewMode: .sourceAccurate)
+      .map { token in
+        if token.ancestorIs(StringLiteralExprSyntax.self) || token.ancestorIs(RegexLiteralExprSyntax.self) {
+          return token.description
+        }
+
+        return lift(token.leadingTrivia) + token.text + lift(token.trailingTrivia)
+      }
+      .joined()
   }
 
   /// Moves complete declarations, including their comments and initializers.
@@ -179,6 +233,7 @@ final class StructuralFormatter: SyntaxVisitor {
       }
     }
     let contents = parts.joined()
+
     let column = layout.converter.location(for: node.positionAfterSkippingLeadingTrivia).column
     if column + contents.count + 1 <= 120 { return "\"" + contents + "\"" }
 
