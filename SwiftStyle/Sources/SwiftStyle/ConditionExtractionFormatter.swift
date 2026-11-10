@@ -20,6 +20,7 @@ final class ConditionExtractionFormatter: SyntaxVisitor {
           let statements = item.parent?.as(CodeBlockItemListSyntax.self),
           node.elseBody == nil || statements.count > 1
     else { return .visitChildren }
+
     return extract(node.conditions, before: item) ? .skipChildren : .visitChildren
   }
 

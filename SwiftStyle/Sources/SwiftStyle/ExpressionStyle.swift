@@ -110,6 +110,7 @@ extension StyleVisitor {
           let base = member.base,
           let previous = receiverCall(base)
     else { return }
+
     if let leftParen = node.leftParen,
        let rightParen = node.rightParen,
        layout.line(leftParen) != layout.line(rightParen),
@@ -133,6 +134,7 @@ extension StyleVisitor {
     guard token.tokenKind == .rightParen || token.tokenKind == .rightSquare,
           let expression = token.parent?.as(ExprSyntax.self)
     else { return }
+
     let opening: TokenSyntax? = switch expression.as(ExprSyntaxEnum.self) {
     case .functionCallExpr(let call): call.leftParen
     case .tupleExpr(let tuple): tuple.leftParen
@@ -171,12 +173,14 @@ extension StyleVisitor {
     case .multilineStringQuote:
       guard let literal = first.parent?.as(StringLiteralExprSyntax.self), literal.closingQuote.id == first.id
       else { return false }
+
       boundary = ExprSyntax(literal)
 
     case .rightParen, .rightSquare, .rightBrace:
       guard let nested = first.parent?.as(ExprSyntax.self),
             nested.lastToken(viewMode: .sourceAccurate)?.id == first.id
       else { return false }
+
       boundary = nested
 
     default: return false

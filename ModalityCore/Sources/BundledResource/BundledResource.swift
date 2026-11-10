@@ -24,6 +24,7 @@ public struct BundledResource<Content>: Hashable, Sendable {
         : (path as NSString).deletingLastPathComponent
       ) ?? bundle.url(forResource: fileName, withExtension: nil)
       else { throw CocoaError(.fileReadNoSuchFile, userInfo: [NSFilePathErrorKey: fileName]) }
+
       return url
     }
   }

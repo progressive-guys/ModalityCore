@@ -9,6 +9,7 @@ extension StyleVisitor {
       guard let previousCase = previous.as(SwitchCaseSyntax.self),
             let currentCase = current.as(SwitchCaseSyntax.self)
       else { continue }
+
       if let spacing = layout.elementSpacing(between: previousCase, and: currentCase),
          spacing.blankLines.count != spacing.required,
          let token = currentCase.firstToken(viewMode: .sourceAccurate)
@@ -128,6 +129,7 @@ enum TypeCheckSequence {
             let name = argument.base?.lastToken(viewMode: .sourceAccurate)?.text,
             SyntaxProjection.isConcrete(name)
       else { return nil }
+
       receiver = base
 
     case (.preferTypeSwitch, .isExpr(let test)):

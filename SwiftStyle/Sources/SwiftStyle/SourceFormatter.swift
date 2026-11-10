@@ -36,6 +36,7 @@ enum SourceFormatter {
             (changesSyntax || tokens(parsed) == tokens(next)), comments(parsed).sorted() == comments(next).sorted(),
             seen.insert(candidate).inserted
       else { return result }
+
       result = candidate
     }
     return result

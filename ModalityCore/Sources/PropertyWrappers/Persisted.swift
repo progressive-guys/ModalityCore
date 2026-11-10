@@ -120,6 +120,7 @@ extension Persisted where Value: Codable {
         let data = UserDefaults.standard.data(forKey: key),
         let decoded = try? JSONDecoder().decode(Value.self, from: data)
       else { return defaultValue }
+
       return decoded
     }()
     self.value = initial

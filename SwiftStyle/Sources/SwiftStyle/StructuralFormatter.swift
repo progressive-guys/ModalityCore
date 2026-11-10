@@ -82,6 +82,7 @@ final class StructuralFormatter: SyntaxVisitor {
       } else {
         guard let literal = element.as(StringLiteralExprSyntax.self), let text = literal.representedLiteralValue
         else { return .visitChildren }
+
         value += text
       }
     }

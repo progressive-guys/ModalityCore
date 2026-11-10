@@ -14,6 +14,7 @@ public extension Selector {
       let delegate = UIApplication.shared.delegate,
       delegate.responds(to: self)
     else { return false }
+
     UIApplication.shared.sendAction(self, to: delegate, from: nil, for: nil)
 
     return true

@@ -18,6 +18,7 @@ extension StructuralFormatter {
               needsTypeSwitch(value, in: conditional),
               let parsed = DispatchProjection(value, rules: self, allowWrapper: true), !parsed.isTest
         else { continue }
+
         projection = parsed
         binding = item.bindingSpecifier.text + " " + item.pattern.trimmedDescription
         negated = false
@@ -69,6 +70,7 @@ extension StructuralFormatter {
         expressions: expressions
       )
       else { continue }
+
       guard SourceFormatter.comments(Parser.parse(source: conditional.trimmedDescription)).sorted()
         == SourceFormatter.comments(Parser.parse(source: replacement)).sorted()
       else { continue }
@@ -212,6 +214,7 @@ struct SyntaxProjection {
           let name = type.lastToken(viewMode: .sourceAccurate)?.text,
           Self.concreteTypes.contains(name)
     else { return nil }
+
     kind = Self.caseName(name)
     typeName = type.trimmedDescription
     method = member.declName.baseName.text
@@ -364,6 +367,7 @@ final class EmbeddedDispatchVisitor: SyntaxVisitor {
           let projection = DispatchProjection(expression, rules: formatter),
           !expression.tokens(viewMode: .sourceAccurate).contains(where: { ["await", "try"].contains($0.text) })
     else { return .visitChildren }
+
     let optionalTest = projection.isTest && projection.syntax?.optional == true
     let resultType = projection.isTest
       ? (optionalTest ? "Bool?" : "Bool")
@@ -397,6 +401,7 @@ final class EmbeddedDispatchVisitor: SyntaxVisitor {
     guard SourceFormatter.comments(Parser.parse(source: expression.trimmedDescription)).sorted()
       == SourceFormatter.comments(Parser.parse(source: replacement)).sorted()
     else { return .visitChildren }
+
     formatter.edits.append(SourceEdit(
       range: expression.positionAfterSkippingLeadingTrivia.utf8Offset..<expression.endPositionBeforeTrailingTrivia.utf8Offset,
       replacement: replacement

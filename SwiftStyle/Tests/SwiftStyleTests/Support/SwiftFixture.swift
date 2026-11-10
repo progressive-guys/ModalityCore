@@ -43,6 +43,7 @@ extension BundledResource where Content == SwiftFixture {
     guard fixture.source.hasPrefix(header), parts.count == 2 else {
       throw CocoaError(.fileReadCorruptFile, userInfo: [NSFilePathErrorKey: path])
     }
+
     return FixingSwiftFixture(
       input: SwiftFixture(name: fixture.name, source: String(parts[0].dropFirst(header.count))),
       output: SwiftFixture(name: fixture.name + "/Output", source: parts[1])

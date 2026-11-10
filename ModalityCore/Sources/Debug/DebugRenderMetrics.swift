@@ -186,6 +186,7 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       startFallbackSampler()
       return
     }
+
     self.displayLink = displayLink
     self.callbackTarget = callbackTarget
   }

@@ -251,6 +251,7 @@ enum SwiftStyle {
           return false }
         )
       else { throw CheckError.missingInput(input) }
+
       for case let file as URL in enumerator {
         if excluded(file) {
           enumerator.skipDescendants()

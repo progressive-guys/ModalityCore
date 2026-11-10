@@ -292,6 +292,7 @@ enum ExpressionPolicy {
       let left = predicateParts(operation.leftOperand),
       let right = predicateParts(operation.rightOperand)
     else { return nil }
+
     return left + right
   }
 }

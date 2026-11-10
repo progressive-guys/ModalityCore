@@ -59,6 +59,7 @@ extension StyleVisitor {
             let spacing = layout.groupSpacing(between: previous, and: current),
             let token = current.decl.firstToken(viewMode: .sourceAccurate)
       else { continue }
+
       let required = left == .nestedType || right == .nestedType || left != right ? 1 : spacing.required
       if spacing.blankLines.count != required {
         fixSpacing(spacing.blankLines, required: required, rule: .memberSpacing)
@@ -73,6 +74,7 @@ extension StyleVisitor {
     guard let body = members.parent?.as(MemberBlockSyntax.self),
           let first = members.first
     else { return }
+
     let spacing = layout.groupSpacing(between: body.leftBrace, and: first)
 
     let required = memberOpeningBlankLines(members)

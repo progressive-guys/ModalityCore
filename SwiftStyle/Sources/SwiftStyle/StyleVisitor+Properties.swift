@@ -41,6 +41,7 @@ extension StyleVisitor {
             let spacing = layout.groupSpacing(between: previous, and: current),
             let token = current.decl.firstToken(viewMode: .sourceAccurate)
       else { continue }
+
       let longAccessor = left?.hasLongAccessor(in: layout) == true || right?.hasLongAccessor(in: layout) == true
       let largeGroup = separatesLargeGroup(left, right, counts: counts)
       let sectionBoundary = left != nil && right != nil && left?.isStored != right?.isStored
@@ -148,6 +149,7 @@ extension StyleVisitor {
       guard let left = attribute.lastToken(viewMode: .sourceAccurate),
             let right = left.nextToken(viewMode: .sourceAccurate)
       else { continue }
+
       let range = left.endPositionBeforeTrailingTrivia.utf8Offset..<right.positionAfterSkippingLeadingTrivia.utf8Offset
       let trivia = String(decoding: bytes[range], as: UTF8.self)
 

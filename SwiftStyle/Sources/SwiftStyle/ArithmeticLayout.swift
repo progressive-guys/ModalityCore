@@ -11,6 +11,7 @@ extension StyleVisitor {
           let expression = ArithmeticLayout(root: root, operations: operations, layout: layout),
           let token = node.operator.firstToken(viewMode: .sourceAccurate)
     else { return }
+
     if expression.hasInvalidWrap {
       if permitsFix(.arithmeticPrecedenceWrap) { fixArithmetic(root, operations: operations) }
       report(.arithmeticPrecedenceWrap, token)
@@ -85,12 +86,14 @@ private struct ArithmeticLayout {
               let token = candidate.operator.firstToken(viewMode: .sourceAccurate),
               let offset = offsets[token.id]
         else { return nil }
+
         return offset + token.text.count
       }
       let boundaries = [0] + preferredOffsets + [text.count]
       guard let start = boundaries.last(where: { $0 <= offset }),
             let end = boundaries.first(where: { $0 > offset })
       else { return false }
+
       let segment = text.dropFirst(start).prefix(end - start)
       let width = segment.trimmingCharacters(in: .whitespaces).count
       return (start == 0 ? prefix : indent) + width + (end == text.count ? suffix : 0) <= 120
@@ -242,6 +245,7 @@ extension StyleVisitor {
     let candidates = operations.compactMap { operation -> (token: TokenSyntax, offset: Int, priority: Int)? in
       guard let token = operation.operator.firstToken(viewMode: .sourceAccurate), let offset = offsets[token.id]
       else { return nil }
+
       return (token, offset, ArithmeticLayout.wrapPriority(operation, in: root))
     }
 

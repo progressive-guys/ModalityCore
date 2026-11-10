@@ -68,6 +68,7 @@ final class StyleVisitor: SyntaxVisitor {
       guard let token = item.firstToken(viewMode: .sourceAccurate), layout.startsLine(token),
             layout.line(token) > layout.line(node.caseKeyword), layout.indent(token) != indent
       else { continue }
+
       if permitsFix(.switchCasePatternIndent) {
         let start = token.positionAfterSkippingLeadingTrivia.utf8Offset
         let column = layout.converter.location(for: token.positionAfterSkippingLeadingTrivia).column - 1
@@ -295,6 +296,7 @@ final class StyleVisitor: SyntaxVisitor {
       guard previous.decl.is(EnumCaseDeclSyntax.self),
             let nextCase = current.decl.as(EnumCaseDeclSyntax.self)
       else { continue }
+
       if let spacing = layout.elementSpacing(between: previous, and: current),
          spacing.blankLines.count != spacing.required
       {
@@ -374,6 +376,7 @@ final class StyleVisitor: SyntaxVisitor {
       layout.line(next) == layout.line(block.rightBrace) + 1,
       !["}", ")", "]", "else", "catch", "#endif", "#else", "#elseif", "if", "guard", ""].contains(next.text)
     else { return }
+
     if compactStatementStarts.contains(next.positionAfterSkippingLeadingTrivia.utf8Offset) {
       return
     }

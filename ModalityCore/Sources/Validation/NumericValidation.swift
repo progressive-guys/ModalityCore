@@ -59,6 +59,7 @@ public enum NumericValidation {
         let constraint = fields[field],
         let number = children.first(where: { $0.label == field })?.value as? Double
       else { throw NumericValidationError.missingField(name) }
+
       try validate(number, named: name, constraint: constraint)
     }
   }

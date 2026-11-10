@@ -37,6 +37,7 @@ enum MemberOrderFormatter {
       guard let first = group.first, let last = group.last,
             zip(group, ordered).contains(where: { $0.id != $1.id })
       else { return nil }
+
       let start = first.position.utf8Offset
       let end = last.endPosition.utf8Offset
 
@@ -80,6 +81,7 @@ enum MemberOrderFormatter {
         guard case .accessors(let accessors)? = binding.accessorBlock?.accessors,
               let getter = accessors.first(where: { $0.accessorSpecifier.text == "get" })
         else { return nil }
+
         let effects = getter.effectSpecifiers
         return (effects?.asyncSpecifier == nil ? 0 : 2) + (effects?.throwsClause == nil ? 0 : 1)
       }
@@ -94,6 +96,7 @@ enum MemberOrderFormatter {
     guard let leftRank = rank(left), let rightRank = rank(right), leftRank >= 24,
           leftRank / 4 == rightRank / 4
     else { return false }
+
     return leftRank != rightRank
   }
 

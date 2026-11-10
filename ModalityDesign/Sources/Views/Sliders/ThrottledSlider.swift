@@ -41,6 +41,7 @@ public struct ThrottledSlider<Value: BinaryFloatingPoint>: View where Value.Stri
       commit(currentValue)
       return
     }
+
     let delay = commitInterval - elapsed
     pendingCommitTask = Task { @MainActor in
       try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))

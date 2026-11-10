@@ -19,8 +19,10 @@ struct MemberwiseInitializer {
       guard let property = member.decl.as(VariableDeclSyntax.self),
             !property.modifiers.contains(where: { ["static", "class"].contains($0.name.text) })
       else { continue }
+
       guard property.bindings.count == 1, let binding = property.bindings.first
       else { return nil }
+
       if let accessors = binding.accessorBlock {
         switch accessors.accessors {
         case .getter: continue
@@ -54,6 +56,7 @@ struct MemberwiseInitializer {
       }
       guard property.attributes.isEmpty, let pattern = binding.pattern.as(IdentifierPatternSyntax.self)
       else { return nil }
+
       if property.bindingSpecifier.text == "let", binding.initializer != nil { continue }
       let layout = PropertyLayout(property)
       guard let type = binding.typeAnnotation?.type.trimmedDescription ?? layout.type else { return nil }
