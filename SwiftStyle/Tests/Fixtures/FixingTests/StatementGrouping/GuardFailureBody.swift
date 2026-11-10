@@ -21,6 +21,7 @@ enum Examples {
       print(value)
       return
     }
+
     print(value)
   }
 }

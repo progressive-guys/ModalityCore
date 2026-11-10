@@ -75,7 +75,8 @@ enum StyleRule: String, CaseIterable {
   /// Keep consecutive uses of local values together, including branches, captures and final exits.
   /// Keep declarations and assignments beside an immediate if or guard whose conditions read the value.
   /// Separate independent declarations, combined preparation groups and leading comments.
-  /// Bodies with at most three code lines stay compact, except at leading group comments.
+  /// Require one blank line after a multiline guard before the next statement.
+  /// Other bodies with at most three code lines stay compact, except at leading group comments.
   /// Consecutive single-line assignments stay compact at any group length.
   /// Longer bodies allow manual separators between ordinary actions.
   /// Remove opening blank lines from executable bodies of any length, after the opening brace or closure signature.
@@ -110,7 +111,7 @@ enum StyleRule: String, CaseIterable {
 
   /// Require a blank line after a single-line else block before the next statement. The enclosing closing brace
   /// needs no blank line. Bodies with at most three code lines keep statements together.
-  /// Consecutive checks and connected local uses follow statement_grouping.
+  /// Consecutive checks, connected local uses and multiline guards follow statement_grouping.
   case compactElseBlankLine = "compact_else_blank_line"
 
   /// Start the assigned expression on the same line as =.

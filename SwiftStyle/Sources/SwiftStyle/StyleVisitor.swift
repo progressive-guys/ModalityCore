@@ -368,6 +368,7 @@ final class StyleVisitor: SyntaxVisitor {
     checkSingleLineBody(block, rule: .singleLineElseExit, at: keyword)
 
     guard
+      block.parent?.as(GuardStmtSyntax.self).map({ layout.line($0) != layout.endLine($0) }) != true,
       layout.line(block.leftBrace) == layout.line(block.rightBrace),
       let next = block.rightBrace.nextToken(viewMode: .sourceAccurate),
       layout.line(next) == layout.line(block.rightBrace) + 1,

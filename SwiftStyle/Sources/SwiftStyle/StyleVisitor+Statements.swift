@@ -74,7 +74,8 @@ extension StyleVisitor {
   /// Structural boundaries and combined preparation groups require separation.
   /// Ordinary actions and related multiline pairs allow one manual separator.
   /// Consecutive single-line assignments stay together, at any group length.
-  /// Bodies with at most three code lines stay compact. Leading group comments keep separation.
+  /// Multiline guards require one blank line before the next statement.
+  /// Other bodies with at most three code lines stay compact. Leading group comments keep separation.
   func checkStatementGrouping(_ statements: CodeBlockItemListSyntax) {
     guard statements.ancestorIs(CodeBlockSyntax.self)
       || statements.ancestorIs(ClosureExprSyntax.self)
@@ -115,7 +116,10 @@ extension StyleVisitor {
       if let spacing = layout.groupSpacing(between: previous, and: current),
          let token = current.firstToken(viewMode: .sourceAccurate)
       {
-        let allowedBlankLines = if header {
+        let multilineGuard = previous.item.is(GuardStmtSyntax.self)
+          && layout.line(previous) != layout.endLine(previous)
+
+        let allowedBlankLines = if header || multilineGuard {
           1...1
         } else if compactScope || assignmentPair {
           0...0
