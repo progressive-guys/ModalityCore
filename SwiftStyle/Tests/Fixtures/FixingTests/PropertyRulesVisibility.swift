@@ -29,8 +29,8 @@ public enum Examples {
 
   struct PublicAfterPrivate {
 
-    public var b : Int
-    private var a : Int
+    public var b: Int
+    private var a: Int
 
     private init(a: Int = 1, b: Int = 2) {
       self.a = a
@@ -40,8 +40,8 @@ public enum Examples {
 
   struct PublicAfterPrivateAcrossMethod {
 
-    public var b : Int
-    private var a : Int
+    public var b: Int
+    private var a: Int
 
     private init(a: Int = 1, b: Int = 2) {
       self.a = a
@@ -54,8 +54,8 @@ public enum Examples {
 
   struct PrivateAfterFileprivate {
 
-    private var b : Int
-    fileprivate var a : Int
+    private var b: Int
+    fileprivate var a: Int
 
     fileprivate init(a: Int = 1, b: Int = 2) {
       self.a = a

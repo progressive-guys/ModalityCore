@@ -7,7 +7,6 @@ public struct Persisted<Value> {
 
   private let key: String
   private let defaultValue: Value
-
   private let read: (String) -> Value?
   private let write: (Value, String) -> Void
   private let debounceInterval: TimeInterval?

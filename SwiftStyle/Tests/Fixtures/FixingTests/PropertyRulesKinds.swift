@@ -51,7 +51,7 @@ public enum Examples {
 
     let b = 2
 
-    var a : Int
+    var a: Int
 
     init(a: Int = 1) {
       self.a = a

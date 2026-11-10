@@ -78,7 +78,10 @@ struct MemberwiseInitializer {
         let lower = initializer.position.utf8Offset - member.position.utf8Offset
         let upper = initializer.endPosition.utf8Offset - member.position.utf8Offset
         var bytes = Array(member.description.utf8)
-        bytes.replaceSubrange(lower..<upper, with: annotation.utf8)
+        let padding = bytes[..<lower].reversed().prefix {
+          $0 == UInt8(ascii: " ") || $0 == UInt8(ascii: "\t")
+        }.count
+        bytes.replaceSubrange((lower - padding)..<upper, with: annotation.utf8)
         replacements[member.id] = String(decoding: bytes, as: UTF8.self)
       } else if ({ () -> Bool? in
         switch (Syntax(binding.typeAnnotation?.type)?.as(SyntaxEnum.self)) {

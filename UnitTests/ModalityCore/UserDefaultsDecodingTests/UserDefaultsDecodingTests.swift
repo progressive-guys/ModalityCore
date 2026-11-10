@@ -5,7 +5,6 @@ import ModalityCore
 struct UserDefaultsDecodingTests {
 
   private struct Settings: Codable, Equatable {
-
     var scale = 1.0
     var isVisible = true
   }

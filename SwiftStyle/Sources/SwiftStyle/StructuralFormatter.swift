@@ -38,7 +38,8 @@ final class StructuralFormatter: SyntaxVisitor {
     let outerStart = node.body.rightBrace.positionAfterSkippingLeadingTrivia.utf8Offset
     let outerEnd = node.body.rightBrace.endPositionBeforeTrailingTrivia.utf8Offset
     let closingTrivia = String(decoding: Array(source.utf8)[innerEnd..<outerStart], as: UTF8.self)
-    edits.append(SourceEdit(range: innerEnd..<outerEnd, replacement: closingTrivia))
+    let padding = closingTrivia.reversed().prefix { $0 == " " || $0 == "\t" }.count
+    edits.append(SourceEdit(range: innerEnd..<outerEnd, replacement: String(closingTrivia.dropLast(padding))))
 
     return .skipChildren
   }

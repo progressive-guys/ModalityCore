@@ -82,7 +82,7 @@ enum Examples {
 
   struct Defaults: View {
 
-    private var value: Int 
+    private var value: Int
 
     init(value: Int = 1) {
       self.value = value

@@ -24,7 +24,7 @@ struct Example: View {
   private let title: String
   private let action: () -> Int
 
-  private var count: Int 
+  private var count: Int
   @Binding private var selected: Bool
   @Environment(\.colorScheme) private var colorScheme
   @State private var cached: Int?

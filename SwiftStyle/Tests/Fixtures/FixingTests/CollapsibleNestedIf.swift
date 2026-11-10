@@ -39,7 +39,7 @@ enum Examples {
     {
       print(value)
     }
-    
+
   }
 
   static func comments(_ first: Bool, _ second: Bool) {
@@ -49,7 +49,7 @@ enum Examples {
     {
       print("ready")
     }
-    
+
   }
 
   static func nested(_ first: Bool, _ second: Bool) {
@@ -58,7 +58,7 @@ enum Examples {
     {
         print("ready")
       }
-    
+
   }
 
   static func threeLevels(_ first: Bool, _ second: Bool, _ third: Bool) {
@@ -68,7 +68,7 @@ enum Examples {
     {
       print("ready")
     }
-      
-    
+
+
   }
 }

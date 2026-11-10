@@ -73,9 +73,9 @@ let memberwise = Memberwise(first: 1, text: "two", last: 3)
 @MainActor
 struct Defaults {
 
-  var last: Int 
-  var first: Int 
-  var text: String 
+  var last: Int
+  var first: Int
+  var text: String
 
   init(first: Int = record("first"), text: String = "two", last: Int = record("last")) {
     self.first = first

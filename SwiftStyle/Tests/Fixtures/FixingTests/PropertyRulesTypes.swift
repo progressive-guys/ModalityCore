@@ -42,9 +42,9 @@ public enum Examples {
 
   struct RepeatedExplicitTypeGroup {
 
-    var a: Int 
-    var z: Int 
-    var m: String 
+    var a: Int
+    var z: Int
+    var m: String
 
     init(a: Int = 1, m: String = "value", z: Int = 2) {
       self.a = a
@@ -55,9 +55,9 @@ public enum Examples {
 
   struct RepeatedInferredTypeGroup {
 
-    var a : Int
-    var z : Int
-    var m : String
+    var a: Int
+    var z: Int
+    var m: String
 
     init(a: Int = 1, m: String = "value", z: Int = -2) {
       self.a = a
@@ -86,9 +86,9 @@ public enum Examples {
 
   struct RepeatedArrayTypeGroup {
 
-    var a: [Int] 
-    var s : String
-    var z: Array<Int> 
+    var a: [Int]
+    var s: String
+    var z: Array<Int>
 
     init(a: [Int] = [], s: String = "value", z: Array<Int> = []) {
       self.a = a
