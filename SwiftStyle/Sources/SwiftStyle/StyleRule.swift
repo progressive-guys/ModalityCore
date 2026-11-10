@@ -39,6 +39,7 @@ enum StyleRule: String, CaseIterable {
   /// Keep adjacent single-line methods and protocol requirements of the same kind together.
   /// Use one blank line if either member spans multiple lines, including comments and attributes.
   /// Properties, methods, initializers, deinitializers, subscripts and associated types form separate groups.
+  /// Single-line type aliases stay together. Multiline aliases use one blank line on each side.
   /// Separate nested types from adjacent declarations. Bodies with at most three code lines have no opening blank line.
   /// Longer type and extension bodies start with one blank line. MARK comments start new groups.
   /// Getter and function effect groups use one blank line between them.

@@ -10,6 +10,7 @@ extension StyleVisitor {
     case deinitializer
     case subscriptMember
     case associatedType
+    case typeAlias
     case nestedType
   }
 
@@ -98,7 +99,8 @@ extension StyleVisitor {
     case .deinitializerDecl: .deinitializer
     case .subscriptDecl: .subscriptMember
     case .associatedTypeDecl: .associatedType
-    case .structDecl, .classDecl, .actorDecl, .enumDecl, .protocolDecl, .typeAliasDecl: .nestedType
+    case .typeAliasDecl: .typeAlias
+    case .structDecl, .classDecl, .actorDecl, .enumDecl, .protocolDecl: .nestedType
     default: nil
     }
   }

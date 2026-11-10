@@ -58,7 +58,6 @@ final class Sections {
 
   // Aliases.
   typealias LongName = Int
-
   typealias A = LongName
 
   // Nested types.
