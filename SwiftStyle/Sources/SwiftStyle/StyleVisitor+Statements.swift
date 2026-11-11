@@ -74,7 +74,8 @@ extension StyleVisitor {
   /// Immediate declarations and mutations stay beside checks that read their values.
   /// Configuring a local receiver keeps its group when arguments come from earlier groups.
   /// Structural boundaries and combined preparation groups require separation.
-  /// Assertions and checks after actions start a new group. Assertion groups keep manual separators.
+  /// Direct assertions stay beside the declaration or assignment they check.
+  /// Other assertions and checks after actions start a group. Assertion groups keep manual separators.
   /// Calls on one local receiver stay together across changes of method.
   /// Ordinary actions and related multiline pairs allow one manual separator.
   /// Adjacent multiline assignments require one blank line, including direct dependencies.
@@ -120,15 +121,19 @@ extension StyleVisitor {
     for (index, pair) in zip(statements, statements.dropFirst()).enumerated() {
       let (previous, current) = pair
       let dependencies = dependenciesByStatement[index + 1]
+      let currentGroup = statementGroup(current)
+      let checkReferences = currentGroup == .assertion
+        ? dependencies.immediateReferences
+        : dependencies.conditionReferences
+
       let checksMutation = previousDependencies.mutatedReference.map {
-        dependencies.conditionReferences.contains($0)
+        checkReferences.contains($0)
       } ?? false
 
       let uses = dependencies.references.intersection(knownNames)
       let previousGroup = statementGroup(previous)
-      let currentGroup = statementGroup(current)
       let checksDeclaration = previousGroup == .declaration
-        && !previousDependencies.declarations.isDisjoint(with: dependencies.conditionReferences)
+        && !previousDependencies.declarations.isDisjoint(with: checkReferences)
 
       let returnsDeclaration = previousGroup == .declaration
         && current.item.is(ReturnStmtSyntax.self)
@@ -268,6 +273,14 @@ extension StyleVisitor {
         } else if startsGroup {
           1...1
         } else if ordinaryActions || (related && multilinePair) {
+          0...1
+        } else if related
+          && previousGroup == .action
+          && currentGroup == .declaration
+          && singleLineStatements[index]
+          && singleLineStatements[index + 1]
+          && previousDependencies.sharesCallArgument(with: dependencies, in: groupNames)
+        {
           0...1
         } else if related || declarations {
           0...0

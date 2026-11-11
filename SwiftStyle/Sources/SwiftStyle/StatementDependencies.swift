@@ -28,6 +28,51 @@ struct StatementDependencies {
     Self.references(in: Syntax(item.item), bound: [], includeClosureBodies: false)
   }
 
+  /// Checks whether the call arguments and the initializer read the same local value.
+  func sharesCallArgument(with next: Self, in names: Set<String>) -> Bool {
+    guard let call = Self.standaloneCall(in: Syntax(item.item)),
+          let declaration = next.item.item.as(VariableDeclSyntax.self),
+          declaration.bindings.count == 1, let binding = declaration.bindings.first,
+          binding.pattern.is(IdentifierPatternSyntax.self),
+          binding.accessorBlock == nil, let initializer = binding.initializer
+    else { return false }
+
+    var inputs = Self.references(
+      in: Syntax(initializer.value),
+      bound: [],
+      includeClosureBodies: false,
+      includeInOut: false
+    )
+
+    inputs.formIntersection(names)
+
+    guard !inputs.isEmpty else { return false }
+
+    var arguments = call.arguments.map { Syntax($0.expression) }
+    if let closure = call.trailingClosure { arguments.append(Syntax(closure)) }
+    arguments += call.additionalTrailingClosures.map { Syntax($0.closure) }
+
+    return arguments.contains { argument in
+      !inputs.isDisjoint(with: Self.references(
+        in: argument,
+        bound: [],
+        includeClosureBodies: false,
+        includeInOut: false
+      ))
+    }
+  }
+
+  /// Reads a direct call through statement, try and await wrappers.
+  private static func standaloneCall(in node: Syntax) -> FunctionCallExprSyntax? {
+    switch node.as(SyntaxEnum.self) {
+    case .expressionStmt(let statement): standaloneCall(in: Syntax(statement.expression))
+    case .tryExpr(let expression): standaloneCall(in: Syntax(expression.expression))
+    case .awaitExpr(let expression): standaloneCall(in: Syntax(expression.expression))
+    case .functionCallExpr(let call): call
+    default: nil
+    }
+  }
+
   /// Groups property writes and calls by their owning object, through chained calls and subscripts.
   private static func actionReceiver(in node: Syntax) -> String? {
     switch node.as(SyntaxEnum.self) {
@@ -110,20 +155,24 @@ struct StatementDependencies {
   private static func references(
     in node: Syntax,
     bound: Set<String>,
-    includeClosureBodies: Bool = true
+    includeClosureBodies: Bool = true,
+    includeInOut: Bool = true
   ) -> Set<String> {
     func references(in node: Syntax, bound: Set<String>) -> Set<String> {
-      Self.references(in: node, bound: bound, includeClosureBodies: includeClosureBodies)
+      Self.references(in: node, bound: bound, includeClosureBodies: includeClosureBodies, includeInOut: includeInOut)
     }
 
     func conditions(
       _ elements: ConditionElementListSyntax,
       bound: Set<String>
     ) -> (references: Set<String>, bound: Set<String>) {
-      Self.conditions(elements, bound: bound, includeClosureBodies: includeClosureBodies)
+      Self.conditions(elements, bound: bound, includeClosureBodies: includeClosureBodies, includeInOut: includeInOut)
     }
 
     switch node.as(SyntaxEnum.self) {
+    case .inOutExpr where !includeInOut:
+      return []
+
     case .infixOperatorExpr(let operation)
       where !includeClosureBodies && operation.operator.is(AssignmentExprSyntax.self):
       var result = references(in: Syntax(operation.rightOperand), bound: bound)
@@ -275,10 +324,11 @@ struct StatementDependencies {
   private static func conditions(
     _ conditions: ConditionElementListSyntax,
     bound: Set<String>,
-    includeClosureBodies: Bool = true
+    includeClosureBodies: Bool = true,
+    includeInOut: Bool = true
   ) -> (references: Set<String>, bound: Set<String>) {
     func references(in node: Syntax, bound: Set<String>) -> Set<String> {
-      Self.references(in: node, bound: bound, includeClosureBodies: includeClosureBodies)
+      Self.references(in: node, bound: bound, includeClosureBodies: includeClosureBodies, includeInOut: includeInOut)
     }
 
     var bound = bound

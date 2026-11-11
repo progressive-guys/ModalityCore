@@ -4,15 +4,39 @@ import Foundation
 /// Runs the checker and compiler for fixture sources.
 enum FixtureSupport {
 
-  static func typecheck(_ source: Data, name: String) throws {
+  /// Resolves the active Xcode's syntax libraries, testing frameworks and expectation macros.
+  private static let typecheckArguments = Result {
     let compiler = try run("/usr/bin/xcrun", ["--find", "swiftc"])
     try #require(compiler.status == 0, "\(compiler.text)")
     let host = URL(fileURLWithPath: compiler.text.trimmingCharacters(in: .whitespacesAndNewlines))
       .deletingLastPathComponent()
       .deletingLastPathComponent()
       .appendingPathComponent("lib/swift/host")
-    let arguments = ["swiftc", "-swift-version", "6", "-I", host.path, "-typecheck", "-"]
-    let result = try run("/usr/bin/xcrun", arguments, input: source)
+
+    let platform = try run("/usr/bin/xcrun", ["--sdk", "macosx", "--show-sdk-platform-path"])
+    try #require(platform.status == 0, "\(platform.text)")
+    let developer = URL(fileURLWithPath: platform.text.trimmingCharacters(in: .whitespacesAndNewlines))
+      .appendingPathComponent("Developer")
+
+    return [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-I",
+      host.path,
+      "-F",
+      developer.appendingPathComponent("Library/Frameworks").path,
+      "-I",
+      developer.appendingPathComponent("usr/lib").path,
+      "-plugin-path",
+      host.appendingPathComponent("plugins/testing").path,
+      "-typecheck",
+      "-"
+    ]
+  }
+
+  static func typecheck(_ source: Data, name: String) throws {
+    let result = try run("/usr/bin/xcrun", typecheckArguments.get(), input: source)
     #expect(result.status == 0, "\(name): \(result.text)")
   }
 
