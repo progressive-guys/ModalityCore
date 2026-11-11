@@ -98,6 +98,7 @@ public struct WidthDrivenVStack: Layout {
       default:
         bounds.minX
       }
+
       subview.place(
         at: CGPoint(x: xPosition, y: currentY),
         proposal: constrainedProposal

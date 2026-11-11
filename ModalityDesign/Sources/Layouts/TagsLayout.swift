@@ -99,6 +99,7 @@ public struct TagsLayout: Layout {
     let totalHeight = rows.reduce(0) { partialResult, row in
       partialResult + row.maxHeight + (partialResult > 0 ? Self.verticalTagSpacing : 0)
     }
+
     let totalWidth = rows.map(\.totalWidth).max() ?? 0
     let finalWidth = min(totalWidth, proposal.width ?? .infinity)
     return CGSize(
@@ -130,6 +131,7 @@ public struct TagsLayout: Layout {
       default:
         bounds.minX
       }
+
       var currentX = startX
       for item in row.items {
         let size = item.subview.sizeThatFits(.unspecified)

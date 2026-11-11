@@ -8,6 +8,7 @@ public struct ThrottledSlider<Value: BinaryFloatingPoint>: View where Value.Stri
   private let commitInterval: TimeInterval = 1.0 / 30.0
 
   @Binding private var value: Value
+
   @State private var isEditing = false
   @State private var draftValue: Value?
   @State private var lastCommitDate = Date.distantPast

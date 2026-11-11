@@ -162,6 +162,7 @@ final class StyleVisitor: SyntaxVisitor {
         guard let token = segment.firstToken(viewMode: .sourceAccurate), layout.startsLine(token) else { return false }
         return layout.indent(token) != layout.indent(keyword) + 2
       }
+
       if hasInvalidIndent {
         report(.ifExpressionConditionIndent, conditional.ifKeyword)
       }
@@ -188,6 +189,7 @@ final class StyleVisitor: SyntaxVisitor {
   }
 
   override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+    checkChainedClosureIndent(node)
     checkChainedCall(node)
     return .visitChildren
   }
@@ -352,6 +354,7 @@ final class StyleVisitor: SyntaxVisitor {
       || item.is(ThrowStmtSyntax.self)
       || item.is(BreakStmtSyntax.self)
       || item.is(ContinueStmtSyntax.self)
+
     guard isExit else { return nil }
     if permitsNestedBody { return statement }
     let tokens = statement.tokens(viewMode: .sourceAccurate)
@@ -395,6 +398,7 @@ final class StyleVisitor: SyntaxVisitor {
       || node.is(MemberBlockSyntax.self)
       || node.is(AccessorBlockSyntax.self)
       || node.is(ClosureExprSyntax.self)
+
     guard isBlock else { return }
 
     switch (Syntax(node).as(SyntaxEnum.self)) {
@@ -418,23 +422,11 @@ final class StyleVisitor: SyntaxVisitor {
   private func isGlobal(_ node: FunctionDeclSyntax) -> Bool {
     var parent = node.parent
     while let current = parent {
-      if ({ () -> Bool in
-        switch (Syntax(current).as(SyntaxEnum.self)) {
-        case .memberBlock: return true
-        default: return false
-        }
-      }()) || ({ () -> Bool in
-        switch (Syntax(current).as(SyntaxEnum.self)) {
-        case .codeBlock: return true
-        default: return false
-        }
-      }()) || ({ () -> Bool in
-        switch (Syntax(current).as(SyntaxEnum.self)) {
-        case .closureExpr: return true
-        default: return false
-        }
-      }()) {
+      switch (Syntax(current).as(SyntaxEnum.self)) {
+      case .memberBlock, .codeBlock, .closureExpr:
         return false
+      default:
+        break
       }
 
       parent = current.parent

@@ -174,6 +174,7 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
       let target = Unmanaged<MacDisplayLinkCallbackTarget>
         .fromOpaque(context)
         .takeUnretainedValue()
+
       target.displayLinkDidFire()
 
       return kCVReturnSuccess
@@ -198,6 +199,7 @@ private final class MacDisplayFrameSampler: DisplayFrameSampling {
 
     displayLink = nil
     callbackTarget = nil
+
     fallbackSampler?.stop()
     fallbackSampler = nil
   }

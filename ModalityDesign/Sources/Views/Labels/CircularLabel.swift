@@ -23,6 +23,7 @@ public struct CircularLabel: View {
         degrees
       }
     }()
+
     self.isUpsideDown = abs(degrees) > 90
     self.text = isUpsideDown ? String(text.reversed()) : text
   }

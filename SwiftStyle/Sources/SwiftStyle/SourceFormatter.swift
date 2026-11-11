@@ -14,8 +14,8 @@ enum SourceFormatter {
       guard ParseDiagnosticsGenerator.diagnostics(for: parsed).isEmpty else { return result }
 
       var operators = OperatorTable.standardOperators
-
       operators.addSourceFile(parsed, errorHandler: { _ in })
+
       let folded = operators.foldAll(parsed, errorHandler: { _ in })
       let visitor = StyleVisitor(file: file, source: result, tree: parsed, fixingRules: rules, isFormatting: true)
       visitor.walk(folded)

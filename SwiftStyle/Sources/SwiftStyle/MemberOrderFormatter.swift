@@ -28,6 +28,7 @@ enum MemberOrderFormatter {
     let ordered = group.enumerated().sorted {
       [rank($0.element) ?? 0, $0.offset].lexicographicallyPrecedes([rank($1.element) ?? 0, $1.offset])
     }
+
     return ordered.map(\.element)
   }
 
@@ -36,7 +37,7 @@ enum MemberOrderFormatter {
       let ordered = sorted(group)
       guard let first = group.first, let last = group.last,
             zip(group, ordered).contains(where: { $0.id != $1.id }),
-            preservesOrder(in: members, replacing: group, with: ordered, of: requiresStorageOrder)
+            preservesOrder(in: members, replacing: group, with: ordered, of: requiresInitializerOrder)
       else { return nil }
 
       let start = first.position.utf8Offset
@@ -71,18 +72,18 @@ enum MemberOrderFormatter {
     return members.map { replacements[$0.id] ?? $0.id }.filter(ids.contains) == protected
   }
 
-  /// A conditional declaration keeps its slot relative to other fields with observable initialization or destruction.
-  static func requiresStorageOrder(_ member: MemberBlockItemSyntax) -> Bool {
+  /// A conditional declaration keeps its slot relative to other explicit initializer computations.
+  static func requiresInitializerOrder(_ member: MemberBlockItemSyntax) -> Bool {
     switch member.decl.as(DeclSyntaxEnum.self) {
     case .variableDecl(let declaration):
       // A type property initializes on first access, independent of its slot.
       let property = PropertyLayout(declaration)
-      return property.kind != 0 && property.isStored && property.requiresStorageOrder
+      return property.kind != 0 && property.isStored && property.evaluatesInitializer
 
     case .ifConfigDecl(let configuration):
       return configuration.clauses.contains { clause in
         guard let branch = clause.elements?.as(MemberBlockItemListSyntax.self) else { return true }
-        return branch.contains(where: requiresStorageOrder)
+        return branch.contains(where: requiresInitializerOrder)
       }
 
     case .macroExpansionDecl: return true

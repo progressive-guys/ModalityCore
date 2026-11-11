@@ -26,7 +26,14 @@ struct PropertyGrouping {
     var keys: [SyntaxIdentifier: [Int]] = [:]
     for (index, slot) in slots.enumerated() {
       let property = slot.property
-      let group = [String(property.visibility), String(property.setterVisibility), String(property.kind)]
+      let group = [
+        String(property.staticOrder),
+        String(property.visibility),
+        String(property.setterVisibility),
+        String(property.kind),
+        String(property.bindingOrder)
+      ]
+
       let type = property.type ?? "unknown:\(index)"
       if !typeOrder[group, default: []].contains(type) { typeOrder[group, default: []].append(type) }
       let annotations = property.annotations.joined(separator: ",")
@@ -35,9 +42,11 @@ struct PropertyGrouping {
         annotationOrder[annotationGroup, default: []].append(annotations)
       }
       keys[slot.member.id] = [
+        property.staticOrder,
         property.visibility,
         property.setterVisibility,
         property.kind,
+        property.bindingOrder,
         annotationOrder[annotationGroup]?.firstIndex(of: annotations) ?? index,
         typeOrder[group]?.firstIndex(of: type) ?? index,
         index
@@ -93,6 +102,7 @@ struct PropertyGrouping {
           || layout.hasGroupHeader(slot.member)
           || !layout.isSingleLineGroupElement(previous.member)
           || !layout.isSingleLineGroupElement(slot.member)
+
         if separates {
           result += byLength(block, layout: layout, leadingTrivia: &leadingTrivia)
           block = []
@@ -119,16 +129,28 @@ struct PropertyGrouping {
       let right = $1.element.property
       let leftGroup = annotations.firstIndex(of: left.annotations) ?? $0.offset
       let rightGroup = annotations.firstIndex(of: right.annotations) ?? $1.offset
-      return [left.visibility, left.setterVisibility, left.kind, leftGroup, left.lineLength, $0.offset]
+      return [
+        left.staticOrder,
+        left.visibility,
+        left.setterVisibility,
+        left.kind,
+        left.bindingOrder,
+        leftGroup,
+        left.lineLength,
+        $0.offset
+      ]
         .lexicographicallyPrecedes([
+          right.staticOrder,
           right.visibility,
           right.setterVisibility,
           right.kind,
+          right.bindingOrder,
           rightGroup,
           right.lineLength,
           $1.offset
         ])
     }
+
     let sorted = indexed.map { $0.element }
     leadingTrivia.merge(
       layout.groupHeaderTrivia(first: slots.first?.member, sortedFirst: sorted.first?.member),

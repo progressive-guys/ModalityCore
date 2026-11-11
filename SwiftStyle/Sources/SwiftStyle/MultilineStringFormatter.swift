@@ -29,6 +29,7 @@ enum MultilineStringFormatter {
       default: false
       }
     }
+
     guard !hasMultilineInterpolation else { return nil }
 
     var result = [first]

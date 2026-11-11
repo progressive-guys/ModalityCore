@@ -24,7 +24,6 @@ struct TreeTests {
 
         let title = try #require(title)
         let children = try #require(children)
-
         return Tree(folder: title, children: try children.map { try $0.tree })
       }
     }
@@ -91,7 +90,6 @@ struct TreeTests {
     #endif
 
     let url = try #require(bundle.url(forResource: "tree", withExtension: "json"))
-
     return try JSONDecoder().decode(Fixture.self, from: Data(contentsOf: url)).tree
   }
 }

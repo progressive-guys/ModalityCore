@@ -175,50 +175,11 @@ struct SourceLayout {
   /// Keeps calls, subscripts and closures as whole header segments.
   /// Line breaks inside these segments do not split a control-flow condition.
   func headerSegments(_ node: Syntax) -> [Syntax] {
-    if ({ () -> Bool in
-      switch (Syntax(node).as(SyntaxEnum.self)) {
-      case .functionCallExpr: return true
-      default: return false
-      }
-    }())
-      || ({ () -> Bool in
-        switch (Syntax(node).as(SyntaxEnum.self)) {
-        case .subscriptCallExpr: return true
-        default: return false
-        }
-      }())
-      || ({ () -> Bool in
-        switch (Syntax(node).as(SyntaxEnum.self)) {
-        case .closureExpr: return true
-        default: return false
-        }
-      }())
-      || ({ () -> Bool in
-        switch (Syntax(node).as(SyntaxEnum.self)) {
-        case .tupleExpr: return true
-        default: return false
-        }
-      }())
-      || ({ () -> Bool in
-        switch (Syntax(node).as(SyntaxEnum.self)) {
-        case .stringLiteralExpr: return true
-        default: return false
-        }
-      }())
-      || ({ () -> Bool in
-        switch (Syntax(node).as(SyntaxEnum.self)) {
-        case .regexLiteralExpr: return true
-        default: return false
-        }
-      }())
-      || ({ () -> Bool in
-        switch (Syntax(node).as(SyntaxEnum.self)) {
-        case .token: return true
-        default: return false
-        }
-      }())
-    {
+    switch (Syntax(node).as(SyntaxEnum.self)) {
+    case .functionCallExpr, .subscriptCallExpr, .closureExpr, .tupleExpr, .stringLiteralExpr, .regexLiteralExpr, .token:
       return [node]
+    default:
+      break
     }
 
     return node.children(viewMode: .sourceAccurate).flatMap { headerSegments($0) }

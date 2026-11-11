@@ -36,6 +36,7 @@ final class StructuralFormatter: SyntaxVisitor {
       + nested.ifKeyword.leadingTrivia
       + nested.ifKeyword.trailingTrivia
       + nested.conditions.leadingTrivia
+
     let comments = boundary.filter(\.isComment)
 
     let newline = source.contains("\r\n") ? "\r\n" : "\n"
@@ -208,6 +209,7 @@ final class StructuralFormatter: SyntaxVisitor {
       case .matchingPattern(let matching): matching.pattern
       default: nil
       }
+
       return pattern?.tokens(viewMode: .sourceAccurate).compactMap { token in
         if case .identifier = token.tokenKind { return token.text }
         return nil
@@ -232,6 +234,7 @@ final class StructuralFormatter: SyntaxVisitor {
       default: String(scalar)
       }
     }
+
     let contents = parts.joined()
 
     let column = layout.converter.location(for: node.positionAfterSkippingLeadingTrivia).column

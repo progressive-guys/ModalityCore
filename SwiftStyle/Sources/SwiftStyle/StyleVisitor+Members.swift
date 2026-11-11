@@ -84,6 +84,7 @@ extension StyleVisitor {
       let reason = required == 0
         ? "Remove the opening blank line from a body with at most three code lines."
         : "Put one blank line after the type opening brace."
+
       report(.memberSpacing, body.leftBrace, reason: reason)
     }
   }

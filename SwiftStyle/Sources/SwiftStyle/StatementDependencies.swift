@@ -5,15 +5,75 @@ import SwiftSyntax
 struct StatementDependencies {
 
   let references: Set<String>
+  let calledReceiver: String?
+  let actionReceiver: String?
   let declarations: Set<String>
   let mutatedReference: String?
   let conditionReferences: Set<String>
+
+  private let item: CodeBlockItemSyntax
 
   init(_ item: CodeBlockItemSyntax) {
     references = Self.references(in: Self.groupingInput(in: Syntax(item.item)), bound: [])
     declarations = Self.declarations(in: Syntax(item.item))
     mutatedReference = Self.mutatedReference(in: Syntax(item.item))
     conditionReferences = Self.conditionReferences(in: Syntax(item.item))
+    calledReceiver = Self.calledReceiver(in: Syntax(item.item))
+    actionReceiver = Self.actionReceiver(in: Syntax(item.item))
+    self.item = item
+  }
+
+  /// Reads evaluated arguments, receivers and captures before a closure body runs.
+  var immediateReferences: Set<String> {
+    Self.references(in: Syntax(item.item), bound: [], includeClosureBodies: false)
+  }
+
+  /// Groups property writes and calls by their owning object, through chained calls and subscripts.
+  private static func actionReceiver(in node: Syntax) -> String? {
+    switch node.as(SyntaxEnum.self) {
+    case .expressionStmt(let statement): return actionReceiver(in: Syntax(statement.expression))
+    case .tryExpr(let expression): return actionReceiver(in: Syntax(expression.expression))
+    case .awaitExpr(let expression): return actionReceiver(in: Syntax(expression.expression))
+    case .infixOperatorExpr(let operation) where operation.isAssignmentOperation:
+      if let member = operation.leftOperand.as(MemberAccessExprSyntax.self) {
+        return member.base.flatMap(receiverRoot)
+      }
+
+      return operation.leftOperand.as(SubscriptCallExprSyntax.self).flatMap { receiverRoot($0.calledExpression) }
+
+    case .functionCallExpr(let call):
+      return call.calledExpression.as(MemberAccessExprSyntax.self)?.base.flatMap(receiverRoot)
+    default: return nil
+    }
+  }
+
+  private static func receiverRoot(_ expression: ExprSyntax) -> String? {
+    switch expression.as(ExprSyntaxEnum.self) {
+    case .declReferenceExpr(let reference): return reference.baseName.text
+    case .memberAccessExpr(let member):
+      if member.base?.as(DeclReferenceExprSyntax.self)?.baseName.text == "self" {
+        return member.declName.baseName.text
+      }
+
+      return member.base.flatMap(receiverRoot)
+
+    case .functionCallExpr(let call): return receiverRoot(call.calledExpression)
+    case .subscriptCallExpr(let call): return receiverRoot(call.calledExpression)
+    case .optionalChainingExpr(let optional): return receiverRoot(optional.expression)
+    default: return nil
+    }
+  }
+
+  /// Reads the receiver of a direct call, including optional, throwing and asynchronous calls.
+  private static func calledReceiver(in node: Syntax) -> String? {
+    switch node.as(SyntaxEnum.self) {
+    case .expressionStmt(let statement): calledReceiver(in: Syntax(statement.expression))
+    case .tryExpr(let expression): calledReceiver(in: Syntax(expression.expression))
+    case .awaitExpr(let expression): calledReceiver(in: Syntax(expression.expression))
+    case .functionCallExpr(let call):
+      call.calledExpression.as(MemberAccessExprSyntax.self)?.base.flatMap { referencePath($0)?.joined(separator: ".") }
+    default: nil
+    }
   }
 
   /// A standalone switch joins a preceding group through its subject.
@@ -47,8 +107,37 @@ struct StatementDependencies {
     }
   }
 
-  private static func references(in node: Syntax, bound: Set<String>) -> Set<String> {
+  private static func references(
+    in node: Syntax,
+    bound: Set<String>,
+    includeClosureBodies: Bool = true
+  ) -> Set<String> {
+    func references(in node: Syntax, bound: Set<String>) -> Set<String> {
+      Self.references(in: node, bound: bound, includeClosureBodies: includeClosureBodies)
+    }
+
+    func conditions(
+      _ elements: ConditionElementListSyntax,
+      bound: Set<String>
+    ) -> (references: Set<String>, bound: Set<String>) {
+      Self.conditions(elements, bound: bound, includeClosureBodies: includeClosureBodies)
+    }
+
     switch node.as(SyntaxEnum.self) {
+    case .infixOperatorExpr(let operation)
+      where !includeClosureBodies && operation.operator.is(AssignmentExprSyntax.self):
+      var result = references(in: Syntax(operation.rightOperand), bound: bound)
+
+      switch operation.leftOperand.as(ExprSyntaxEnum.self) {
+      case .declReferenceExpr: break
+      case .memberAccessExpr(let member):
+        if let base = member.base { result.formUnion(references(in: Syntax(base), bound: bound)) }
+      default:
+        result.formUnion(references(in: Syntax(operation.leftOperand), bound: bound))
+      }
+
+      return result
+
     case .declReferenceExpr(let reference):
       let name = reference.baseName.text
       return bound.contains(name) ? [] : [name]
@@ -108,6 +197,7 @@ struct StatementDependencies {
       let bodyBound = bound.union(names(in: Syntax(statement.pattern)))
       var result = references(in: Syntax(statement.sequence), bound: bound)
         .union(references(in: Syntax(statement.body), bound: bodyBound))
+
       if let clause = statement.whereClause {
         result.formUnion(references(in: Syntax(clause.condition), bound: bodyBound))
       }
@@ -117,6 +207,7 @@ struct StatementDependencies {
       let bodyNames = statement.body.statements.reduce(into: bound) {
         $0.formUnion(declarations(in: Syntax($1.item)))
       }
+
       return references(in: Syntax(statement.body), bound: bound)
         .union(references(in: Syntax(statement.condition), bound: bodyNames))
 
@@ -132,6 +223,9 @@ struct StatementDependencies {
 
         bodyBound.insert(capture.name.text)
       }
+
+      // Capture values are evaluated when the closure is created. Its body is a separate operation.
+      guard includeClosureBodies else { return result }
 
       switch closure.signature?.parameterClause {
       case .simpleInput(let parameters):
@@ -180,10 +274,16 @@ struct StatementDependencies {
   /// A condition binding is visible to later conditions and the successful branch.
   private static func conditions(
     _ conditions: ConditionElementListSyntax,
-    bound: Set<String>
+    bound: Set<String>,
+    includeClosureBodies: Bool = true
   ) -> (references: Set<String>, bound: Set<String>) {
+    func references(in node: Syntax, bound: Set<String>) -> Set<String> {
+      Self.references(in: node, bound: bound, includeClosureBodies: includeClosureBodies)
+    }
+
     var bound = bound
     var result: Set<String> = []
+
     for condition in conditions {
       switch condition.condition {
       case .optionalBinding(let binding):

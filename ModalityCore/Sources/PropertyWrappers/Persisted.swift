@@ -52,6 +52,7 @@ public struct Persisted<Value> {
       wrapper.value = newValue
       wrapper.subject.send(newValue)
       wrapper.persistValue(newValue)
+
       instance[keyPath: storageKeyPath] = wrapper
     }
   }
@@ -74,6 +75,7 @@ public struct Persisted<Value> {
       let workItem = DispatchWorkItem {
         write(newValue, key)
       }
+
       debounceWorkItem = workItem
       DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + interval, execute: workItem)
     } else {
@@ -123,6 +125,7 @@ extension Persisted where Value: Codable {
 
       return decoded
     }()
+
     self.value = initial
     self.subject = CurrentValueSubject(initial)
   }
@@ -148,6 +151,7 @@ extension Persisted where Value: RawRepresentable, Value.RawValue == String {
       guard let raw = UserDefaults.standard.string(forKey: key) else { return defaultValue }
       return Value(rawValue: raw) ?? defaultValue
     }()
+
     self.value = initial
     self.subject = CurrentValueSubject(initial)
   }

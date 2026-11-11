@@ -16,6 +16,7 @@ extension Color {
   public static let graphicsBackgroundColor = Color(hue: 0.222, saturation: 0.10, brightness: 0.04115)
 
   private static let ebony = Color(hue: 0.0, saturation: 0.0, brightness: 0.1)
+
   fileprivate static let mintCream = Color(0xF5FFFA)
   fileprivate static let vermilion = Color(0xE34234)
 }

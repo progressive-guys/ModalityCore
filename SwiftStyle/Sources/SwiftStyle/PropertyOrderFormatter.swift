@@ -12,14 +12,21 @@ enum PropertyOrderFormatter {
             in: members,
             replacing: original,
             with: ordered,
-            of: MemberOrderFormatter.requiresStorageOrder
+            of: MemberOrderFormatter.requiresInitializerOrder
           )
     else { return [] }
 
-    let initializer = MemberwiseInitializer(members: members)
+    let changesParameters = !MemberOrderFormatter.preservesOrder(
+      in: members,
+      replacing: original,
+      with: ordered,
+      of: hasParameter
+    )
+
+    let initializer = changesParameters ? MemberwiseInitializer(members: members) : nil
     if initializer == nil, let owner = members.ancestor(MemberBlockSyntax.self)?.parent?.as(StructDeclSyntax.self),
        !owner.memberBlock.members.contains(where: { $0.decl.is(InitializerDeclSyntax.self) }),
-       !MemberOrderFormatter.preservesOrder(in: members, replacing: original, with: ordered, of: hasParameter)
+       changesParameters
     { return [] }
 
     let start = members.position.utf8Offset

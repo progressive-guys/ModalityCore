@@ -66,14 +66,18 @@ public final class BottomViewScrollViewController<Content: View>: UIViewControll
 
   public override func viewDidLoad() {
     super.viewDidLoad()
+
     scrollView.alwaysBounceVertical = true
     scrollView.showsVerticalScrollIndicator = true
     scrollView.showsHorizontalScrollIndicator = false
     scrollView.translatesAutoresizingMaskIntoConstraints = false
+
     view.addSubview(scrollView)
     addChild(hostingController)
+
     hostingController.view.translatesAutoresizingMaskIntoConstraints = false
     hostingController.view.backgroundColor = .clear
+
     scrollView.addSubview(hostingController.view)
     hostingController.didMove(toParent: self)
 

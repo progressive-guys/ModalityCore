@@ -79,6 +79,7 @@ enum ViewPropertyAccess {
     let access = property.modifiers.filter { ["open", "public", "internal", "fileprivate", "private"].contains(
       $0.name.text
     ) }
+
     guard access.allSatisfy({ $0.detail == nil }), access.count <= 1 else { return nil }
     if let modifier = access.first {
       return SourceEdit(

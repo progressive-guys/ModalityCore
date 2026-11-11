@@ -94,6 +94,7 @@ extension StyleVisitor {
         let operands = rule == .arithmeticMemberWrap
           ? [operation.leftOperand, operation.rightOperand]
           : [operation.rightOperand]
+
         for operand in operands {
           for member in memberChain(operand) { before(member.period, with: "") }
         }
@@ -186,6 +187,7 @@ extension StyleVisitor {
           case .ifExpr(let conditional):
             let tokens = Array(declaration.tokens(viewMode: .sourceAccurate))
               .prefix { $0.position < conditional.ifKeyword.position }
+
             for part in tokens {
               if let next = part.nextToken(viewMode: .sourceAccurate), layout.endLine(part) != layout.line(next) {
                 after(part, with: " ")
@@ -248,6 +250,7 @@ extension StyleVisitor {
       let block = token.ancestor(IfExprSyntax.self).flatMap { conditional in
         rule == .singleLineIfExit ? conditional.body : conditional.elseBody?.as(CodeBlockSyntax.self)
       } ?? token.ancestor(GuardStmtSyntax.self)?.body
+
       if let block {
         expand(block, indent: layout.indent(token))
       }
@@ -258,6 +261,7 @@ extension StyleVisitor {
     case .compactElseBlankLine:
       let block = token.ancestor(GuardStmtSyntax.self)?.body
         ?? token.ancestor(IfExprSyntax.self)?.elseBody?.as(CodeBlockSyntax.self)
+
       if let block { after(block.rightBrace, with: newline + lineBreak(indent: layout.indent(token))) }
 
     case .enumCaseNewline:

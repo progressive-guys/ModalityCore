@@ -42,6 +42,7 @@ struct AnimatableTripletTests {
   func scale() {
     var triplet = AnimatableTriplet(2.0, 4.0, 6.0)
     triplet.scale(by: 3.0)
+
     #expect(triplet.first == 6.0)
     #expect(triplet.second == 12.0)
     #expect(triplet.third == 18.0)
@@ -56,8 +57,8 @@ struct AnimatableTripletTests {
   @Test
   func addAssign() {
     var a = AnimatableTriplet(1.0, 2.0, 3.0)
-
     a += AnimatableTriplet(10.0, 20.0, 30.0)
+
     #expect(a.first == 11.0)
     #expect(a.second == 22.0)
     #expect(a.third == 33.0)
@@ -66,8 +67,8 @@ struct AnimatableTripletTests {
   @Test
   func subtractAssign() {
     var a = AnimatableTriplet(10.0, 20.0, 30.0)
-
     a -= AnimatableTriplet(1.0, 2.0, 3.0)
+
     #expect(a.first == 9.0)
     #expect(a.second == 18.0)
     #expect(a.third == 27.0)

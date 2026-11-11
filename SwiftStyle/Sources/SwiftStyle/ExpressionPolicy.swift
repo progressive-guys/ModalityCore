@@ -112,6 +112,7 @@ enum ExpressionPolicy {
     let closures = call.arguments.compactMap { $0.expression.as(ClosureExprSyntax.self) }
       + [call.trailingClosure].compactMap { $0 }
       + call.additionalTrailingClosures.map(\.closure)
+
     guard closures.allSatisfy(isSimpleClosure) else { return true }
     let permitsPipeline = !closures.isEmpty
     guard isSimpleReceiver(call.calledExpression, permitsPipeline: permitsPipeline) else { return true }
@@ -165,8 +166,10 @@ enum ExpressionPolicy {
     if arithmeticCount(value) > 1 { return false }
     switch value.as(ExprSyntaxEnum.self) {
     case .functionCallExpr(let call):
-      let permitsCall = isConstructor(call) || SourceLayout.compact(call.trimmedDescription).count <= 120
+      let permitsCall = isConstructor(call)
+        || SourceLayout.compact(call.trimmedDescription).count <= 120
         || (permitsEmptyCall && call.arguments.isEmpty)
+
       return permitsCall && !isComplexCall(call)
 
     case .closureExpr(let closure): return isSimpleClosure(closure)
@@ -265,6 +268,7 @@ enum ExpressionPolicy {
         statement.item.as(ExprSyntax.self)
       }
     }
+
     guard let expression else { return false }
     let value = unwrapped(expression)
     switch (Syntax(value).as(SyntaxEnum.self)) {
@@ -272,6 +276,7 @@ enum ExpressionPolicy {
       let hasNestedClosure = call.trailingClosure != nil
         || !call.additionalTrailingClosures.isEmpty
         || call.arguments.contains { $0.expression.is(ClosureExprSyntax.self) }
+
       return !hasNestedClosure && !isComplexCall(call)
 
     default:

@@ -6,6 +6,8 @@ extension StructuralFormatter {
 
   /// Changes one projection at a time. Separate checks keep separate receiver evaluations.
   func fixSyntaxDispatch(_ conditional: IfExprSyntax) -> Bool {
+    if fixTypeAlternatives(conditional) { return true }
+
     let conditions = Array(conditional.conditions)
     for (index, condition) in conditions.enumerated() {
       let projection: DispatchProjection
@@ -26,12 +28,7 @@ extension StructuralFormatter {
       case .expression(let expression):
         guard needsTypeSwitch(expression, in: conditional) else { continue }
 
-        if let prefix = ({ () -> PrefixOperatorExprSyntax? in
-          switch (Syntax(expression).as(SyntaxEnum.self)) {
-          case .prefixOperatorExpr(let value): return value
-          default: return nil
-          }
-        }()), prefix.operator.text == "!",
+        if let prefix = expression.as(PrefixOperatorExprSyntax.self), prefix.operator.text == "!",
            let parsed = DispatchProjection(prefix.expression, rules: self), parsed.isTest
         {
           projection = parsed
@@ -58,6 +55,7 @@ extension StructuralFormatter {
         default: nil
         }
       }
+
       guard expressions.count == suffix.count || conditional.elseBody == nil else { continue }
 
       guard let replacement = dispatch(
@@ -86,6 +84,122 @@ extension StructuralFormatter {
     return false
   }
 
+  /// Combines plain type alternatives of one local value into one switch.
+  private func fixTypeAlternatives(_ conditional: IfExprSyntax) -> Bool {
+    guard conditional.conditions.count == 1,
+          case .expression(let expression) = conditional.conditions.first?.condition,
+          !layout.hasComments(expression),
+          !conditional.body.statements.contains(where: { hasOuterBreak(Syntax($0)) })
+    else { return false }
+
+    let alternatives = typeAlternatives(expression)
+    let projections = alternatives.compactMap { DispatchProjection($0, rules: self) }
+    guard projections.count > 1, projections.count == alternatives.count,
+          let first = projections.first,
+          projections.allSatisfy({ $0.isTest && $0.subject == first.subject && $0.syntax?.optional != true }),
+          alternatives.allSatisfy({ isLocalTypeTest($0) })
+    else { return false }
+
+    guard let replacement = dispatch(
+      conditional,
+      projection: first,
+      binding: nil,
+      negated: false,
+      prefix: [],
+      suffix: [],
+      expressions: [],
+      alternatives: projections.dropFirst().map { $0.pattern(binding: nil) }
+    ), SourceFormatter.comments(Parser.parse(source: conditional.trimmedDescription)).sorted()
+      == SourceFormatter.comments(Parser.parse(source: replacement)).sorted()
+    else { return false }
+
+    let start = conditional.positionAfterSkippingLeadingTrivia.utf8Offset
+    let end = conditional.endPositionBeforeTrailingTrivia.utf8Offset
+
+    edits.append(SourceEdit(range: start..<end, replacement: replacement))
+
+    return true
+  }
+
+  private func typeAlternatives(_ expression: ExprSyntax) -> [ExprSyntax] {
+    switch (Syntax(expression).as(SyntaxEnum.self)) {
+    case .tupleExpr(let tuple):
+      if tuple.elements.count == 1, let element = tuple.elements.first {return typeAlternatives(element.expression)
+    }
+
+    default:
+      break
+    }
+
+    switch (Syntax(expression).as(SyntaxEnum.self)) {
+    case .infixOperatorExpr(let operation) where (operation.operator.trimmedDescription == "||"):
+      return typeAlternatives(operation.leftOperand) + typeAlternatives(operation.rightOperand)
+    default:
+      break
+    }
+
+    return [expression]
+  }
+
+  /// Property reads can run getters, so only a plain local reference can be evaluated once.
+  private func isLocalTypeTest(_ expression: ExprSyntax) -> Bool {
+    if let tuple = expression.as(TupleExprSyntax.self), tuple.elements.count == 1,
+       let element = tuple.elements.first { return isLocalTypeTest(element.expression) }
+
+    switch expression.as(ExprSyntaxEnum.self) {
+    case .functionCallExpr(let call):
+      return call.calledExpression.as(MemberAccessExprSyntax.self)?.base.map(isLocalReference) ?? false
+    case .isExpr(let test): return isLocalReference(test.expression)
+    default: return false
+    }
+  }
+
+  /// An unqualified property can be a getter. Combine only references bound in an executable scope.
+  private func isLocalReference(_ expression: ExprSyntax) -> Bool {
+    guard let reference = expression.as(DeclReferenceExprSyntax.self) else { return false }
+    let name = reference.baseName.text
+
+    var ancestor = expression.parent
+
+    while let node = ancestor {
+      switch node.as(SyntaxEnum.self) {
+      case .functionDecl(let function):
+        if function.signature.parameterClause.parameters.contains(where: {
+          ($0.secondName ?? $0.firstName).text == name
+        }) { return true }
+
+      case .whileStmt(let statement):
+        if statement.conditions.contains(where: {
+          $0.condition
+            .as(OptionalBindingConditionSyntax.self)?
+            .pattern
+            .as(IdentifierPatternSyntax.self)?
+            .identifier
+            .text == name
+        }) { return true }
+
+      case .codeBlockItemList(let statements):
+        if let binding = statements.last(where: {
+          $0.endPosition.utf8Offset <= expression.position.utf8Offset
+            && StatementDependencies($0).declarations.contains(name)
+        }) {
+          if let variable = binding.item.as(VariableDeclSyntax.self) {
+            return PropertyLayout(variable).isStored
+          }
+
+          return true
+        }
+
+      case .memberBlock: return false
+      default: break
+      }
+
+      ancestor = node.parent
+    }
+
+    return false
+  }
+
   /// Keeps unrelated checks in the same condition unchanged.
   func needsTypeSwitch(_ expression: ExprSyntax, in conditional: IfExprSyntax) -> Bool {
     enabled(.preferSyntaxKindSwitch)
@@ -101,7 +215,8 @@ extension StructuralFormatter {
     negated: Bool,
     prefix: [ConditionElementSyntax],
     suffix: [ConditionElementSyntax],
-    expressions: [ExprSyntax]
+    expressions: [ExprSyntax],
+    alternatives: [String] = []
   ) -> String? {
     let newline = source.contains("\r\n") ? "\r\n" : "\n"
     let indent = String(repeating: " ", count: layout.indent(conditional))
@@ -116,7 +231,7 @@ extension StructuralFormatter {
     }
 
     let receiver = "(" + projection.subject + ")"
-    var pattern = projection.pattern(binding: binding)
+    var pattern = ([projection.pattern(binding: binding)] + alternatives).joined(separator: ", ")
     let success: String
 
     if suffix.isEmpty || expressions.count == suffix.count {
@@ -150,6 +265,7 @@ extension StructuralFormatter {
       + newline
       + indent
       + "}"
+
     if !prefix.isEmpty {
       result = "if "
         + conditionText(prefix)
@@ -188,13 +304,6 @@ extension StructuralFormatter {
 /// Identifies a concrete SwiftSyntax type from the active toolchain.
 struct SyntaxProjection {
 
-  let kind: String
-  let method: String
-  let subject: String
-  let typeName: String
-
-  let optional: Bool
-
   private static let concreteTypes: Set<String> = {
     guard case .choices(let choices) = Syntax.structure else { return [] }
     return Set(choices.compactMap { choice in
@@ -206,6 +315,11 @@ struct SyntaxProjection {
     })
   }()
 
+  let kind: String
+  let method: String
+  let optional: Bool
+  let subject: String
+
   init?(_ expression: ExprSyntax) {
     guard let call = expression.as(FunctionCallExprSyntax.self), call.arguments.count == 1,
           let member = call.calledExpression.as(MemberAccessExprSyntax.self), let base = member.base,
@@ -216,7 +330,6 @@ struct SyntaxProjection {
     else { return nil }
 
     kind = Self.caseName(name)
-    typeName = type.trimmedDescription
     method = member.declName.baseName.text
     if method == "as" || method == "is" {
       if Self.optionalReceiver(base) {
@@ -275,8 +388,6 @@ final class DispatchVisitor: SyntaxVisitor {
 
     if formatter.fixSyntaxDispatch(node) { return .skipChildren }
 
-    EmbeddedDispatchVisitor(formatter: formatter, conditional: node).walk(node.conditions)
-
     return .visitChildren
   }
 }
@@ -331,82 +442,5 @@ struct DispatchProjection {
 
     guard let nativeType else { return "_" }
     return binding.map { "\($0) as \(nativeType)" } ?? "is \(nativeType)"
-  }
-}
-
-/// Keeps short-circuit conditions in place when a direct branch rewrite is not possible.
-final class EmbeddedDispatchVisitor: SyntaxVisitor {
-
-  private let conditional: IfExprSyntax
-  private let formatter: StructuralFormatter
-
-  init(formatter: StructuralFormatter, conditional: IfExprSyntax) {
-    self.formatter = formatter
-    self.conditional = conditional
-    super.init(viewMode: .sourceAccurate)
-  }
-
-  override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind { .skipChildren }
-
-  override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
-    replace(ExprSyntax(node))
-  }
-
-  override func visit(_ node: AsExprSyntax) -> SyntaxVisitorContinueKind {
-    replace(ExprSyntax(node))
-  }
-
-  override func visit(_ node: IsExprSyntax) -> SyntaxVisitorContinueKind {
-    replace(ExprSyntax(node))
-  }
-
-  private func replace(_ expression: ExprSyntax) -> SyntaxVisitorContinueKind {
-    guard formatter.needsTypeSwitch(expression, in: conditional),
-          expression.parent?.is(TryExprSyntax.self) != true,
-          expression.parent?.is(AwaitExprSyntax.self) != true,
-          let projection = DispatchProjection(expression, rules: formatter),
-          !expression.tokens(viewMode: .sourceAccurate).contains(where: { ["await", "try"].contains($0.text) })
-    else { return .visitChildren }
-
-    let optionalTest = projection.isTest && projection.syntax?.optional == true
-    let resultType = projection.isTest
-      ? (optionalTest ? "Bool?" : "Bool")
-      : (projection.syntax?.typeName ?? projection.nativeType ?? "Never") + "?"
-    let pattern = projection.pattern(binding: projection.isTest ? nil : "let value")
-    let value = projection.isTest ? "true" : "value"
-    let fallback = projection.isTest ? "false" : "nil"
-
-    let newline = formatter.source.contains("\r\n") ? "\r\n" : "\n"
-    let indent = String(repeating: " ", count: formatter.layout.indent(expression))
-
-    let missing = optionalTest ? "  case nil: return nil" + newline + indent : ""
-
-    let replacement = "({ () -> \(resultType) in"
-      + newline
-      + indent
-      + "  switch (\(projection.subject)) {"
-      + newline
-      + indent
-      + "  case \(pattern): return \(value)"
-      + newline
-      + indent
-      + missing
-      + "  default: return \(fallback)"
-      + newline
-      + indent
-      + "  }"
-      + newline
-      + indent
-      + "}())"
-    guard SourceFormatter.comments(Parser.parse(source: expression.trimmedDescription)).sorted()
-      == SourceFormatter.comments(Parser.parse(source: replacement)).sorted()
-    else { return .visitChildren }
-
-    formatter.edits.append(SourceEdit(
-      range: expression.positionAfterSkippingLeadingTrivia.utf8Offset..<expression.endPositionBeforeTrailingTrivia.utf8Offset,
-      replacement: replacement
-    ))
-
-    return .skipChildren
   }
 }

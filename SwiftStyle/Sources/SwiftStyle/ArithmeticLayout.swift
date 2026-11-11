@@ -89,6 +89,7 @@ private struct ArithmeticLayout {
 
         return offset + token.text.count
       }
+
       let boundaries = [0] + preferredOffsets + [text.count]
       guard let start = boundaries.last(where: { $0 <= offset }),
             let end = boundaries.first(where: { $0 > offset })
@@ -188,18 +189,11 @@ private struct ArithmeticLayout {
     var depth = 0
     var current: Syntax? = Syntax(operation)
     while let parent = current, parent.id != root.id {
-      if ({ () -> Bool in
-        switch (Syntax(parent).as(SyntaxEnum.self)) {
-        case .functionCallExpr: return true
-        default: return false
-        }
-      }()) || ({ () -> Bool in
-        switch (Syntax(parent).as(SyntaxEnum.self)) {
-        case .tupleExpr: return true
-        default: return false
-        }
-      }()) {
+      switch (Syntax(parent).as(SyntaxEnum.self)) {
+      case .functionCallExpr, .tupleExpr:
         depth += 1
+      default:
+        break
       }
 
       current = parent.parent

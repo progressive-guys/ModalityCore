@@ -11,6 +11,7 @@ final class ApproximateComparisonTests {
 
     // y ≈ -1.1102230246251565e-16
     for _ in 0..<10 { y -= 0.1 }
+
     #expect((y == 0.0) == false)
     #expect((y ~~== 0.0) == true)
     #expect((y ~~!= 0.0) == false)

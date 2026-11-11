@@ -51,7 +51,7 @@ enum StyleRule: String, CaseIterable {
   /// Check each conditional branch on its own.
   case memberOrder = "member_order"
 
-  /// Group stored properties by read and setter access, static/let/var/attribute kind, type and attribute name.
+  /// Put static properties first, then group by read and setter access, let/var/attribute kind and type.
   /// Separate read and write access groups with one blank line at any group size.
   /// Separate stored-property groups of more than three elements at each level, and computed-property effect groups.
   /// Keep computed-property order. Keep single-line declarations together within each effect group.
@@ -74,10 +74,13 @@ enum StyleRule: String, CaseIterable {
 
   /// Keep consecutive uses of local values together, including branches, captures and final exits.
   /// Keep declarations and assignments beside an immediate if or guard whose conditions read the value.
+  /// Keep a declaration beside a return that reads it before entering a closure body.
   /// Separate independent declarations, combined preparation groups and leading comments.
   /// A directly derived declaration ends the initial preparation stage. Assertions and repeated calls form groups.
   /// Keep manual separators within assertion groups. Keep a callback assignment beside its immediate uses.
   /// Require one blank line after a multiline guard before the next statement.
+  /// Require one blank line after a multiline local declaration; wrapped calls use their argument rule.
+  /// Require one blank line between adjacent multiline assignments, including dependent assignments.
   /// Other bodies with at most three code lines stay compact, except at leading group comments.
   /// Consecutive single-line assignments stay compact at any group length.
   /// Longer bodies allow manual separators between ordinary actions.
@@ -146,8 +149,8 @@ enum StyleRule: String, CaseIterable {
   /// Keep a qualified return type together across member access. Check nested generic arguments recursively.
   case splitReturnTypeMember = "split_return_type_member"
 
-  /// Keep && and || operands on one line, or put each continuation on a separate line. Check parenthesized groups
-  /// separately.
+  /// Keep operands at the same Boolean precedence on one line, or put each continuation on a separate line.
+  /// Check &&, || and parenthesized groups separately.
   case mixedBooleanConditionWrap = "mixed_boolean_condition_wrap"
 
   /// After two or more members on one line, put each further member on a new line. The base can include one
@@ -163,6 +166,10 @@ enum StyleRule: String, CaseIterable {
 
   /// Start a call with a multiline closure on a new line after the previous closure.
   case chainedClosureNewline = "chained_closure_newline"
+
+  /// In a stored call chain, indent the first multiline closure body four spaces from the binding.
+  /// Align its closing brace and the following calls two spaces from the binding.
+  case chainedClosureIndent = "chained_closure_indent"
 
   /// Join a multiline trailing closure to the closing parenthesis of wrapped receiver arguments.
   case chainedClosureSameLine = "chained_closure_same_line"
@@ -244,6 +251,7 @@ extension StyleRule {
 
   var message: String {
     switch self {
+    case .chainedClosureIndent: "Indent the closure body and align its closing brace with the following call chain."
     case .mixedNilCoalescingWrap: "Put ?? operands on one line or each continuation on its own line."
     case .ifExpressionBindingSameLine: "Keep let or var and the if expression binding on the same line."
 
@@ -267,7 +275,7 @@ extension StyleRule {
     case .memberOrder: "Order member sections, then group getters and functions: plain, throwing, async, async throwing."
     case .privateViewProperties: "Make View instance properties private, except body; pass inputs through an initializer."
     case .memberSpacing: "Separate type openings, member kinds and multiline members with one blank line."
-    case .propertyGrouping: "Group stored properties by visibility, kind, type and attribute; sort each block by line length and separate groups larger than three."
+    case .propertyGrouping: "Put static properties first, then group by visibility, kind, type and attribute; sort each block by line length and separate groups larger than three."
     case .attributeNewline: "Put each declaration attribute on a separate line before the declaration."
     case .statementGrouping: "Separate statement groups and multiline checks with one blank line."
     case .multilineCallDeclarationSpacing: "Use a blank line after more than three argument code lines; group shorter calls by dependency."

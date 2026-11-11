@@ -80,6 +80,7 @@ extension StyleVisitor {
     for (left, right) in zip(tokens, tokens.dropFirst()) where layout.endLine(left) != layout.line(right) {
       let tight = [".", ")", "]", ",", ">", "?", "!"].contains(right.text)
         || [".", "(", "[", "<"].contains(left.text)
+
       gap(after: left, before: right, with: tight ? "" : " ")
     }
   }

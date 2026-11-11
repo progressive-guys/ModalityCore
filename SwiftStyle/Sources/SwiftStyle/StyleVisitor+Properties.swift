@@ -45,12 +45,18 @@ extension StyleVisitor {
       let longAccessor = left?.hasLongAccessor(in: layout) == true || right?.hasLongAccessor(in: layout) == true
       let largeGroup = separatesLargeGroup(left, right, counts: counts)
       let sectionBoundary = left != nil && right != nil && left?.isStored != right?.isStored
-      let bindingBoundary = left?.isStored == true && right?.isStored == true
+      let bindingBoundary = left?.isStored == true
+        && right?.isStored == true
         && left?.declaration.bindingSpecifier.text != right?.declaration.bindingSpecifier.text
-      let accessBoundary = left?.isStored == true && right?.isStored == true
+
+      let accessBoundary = left?.isStored == true
+        && right?.isStored == true
         && right.map { left?.separatesAccess(from: $0) == true } == true
-      let effectBoundary = left?.isStored == false && right?.isStored == false
+
+      let effectBoundary = left?.isStored == false
+        && right?.isStored == false
         && MemberOrderFormatter.effects(of: previous.decl) != MemberOrderFormatter.effects(of: current.decl)
+
       if longAccessor || largeGroup || sectionBoundary || bindingBoundary || accessBoundary || effectBoundary {
         if spacing.blankLines.count != 1 {
           let reason = if longAccessor {
@@ -104,6 +110,7 @@ extension StyleVisitor {
     let bodyText = String(decoding: bytes[
       body.positionAfterSkippingLeadingTrivia.utf8Offset..<declaration.endPositionBeforeTrailingTrivia.utf8Offset
     ], as: UTF8.self)
+
     let firstLine = bodyText.split(whereSeparator: { $0.isNewline }).first.map(String.init) ?? ""
 
     let attributeText = attributes.map(\.trimmedDescription).joined(separator: " ")
@@ -193,10 +200,12 @@ extension StyleVisitor {
         guard let attribute = element.as(AttributeSyntax.self) else { return false }
         let name = attribute.attributeName.trimmedDescription
         let canBeInline = isStoredProperty || isProtocolMember || ["objc", "concurrent"].contains(name)
-        return name != "available" && canBeInline
+        return name != "available"
+          && canBeInline
           && layout.line(attribute) == layout.endLine(attribute)
       }
       .reversed()
+
     guard let first = candidates.first,
           let last = candidates.last?.lastToken(viewMode: .sourceAccurate),
           let body = last.nextToken(viewMode: .sourceAccurate),
@@ -208,6 +217,7 @@ extension StyleVisitor {
     let bodyText = String(decoding: bytes[
       body.positionAfterSkippingLeadingTrivia.utf8Offset..<declaration.endPositionBeforeTrailingTrivia.utf8Offset
     ], as: UTF8.self)
+
     let firstLine = bodyText.split(whereSeparator: { $0.isNewline }).first.map(String.init) ?? ""
 
     let attributeText = candidates.map(\.trimmedDescription).joined(separator: " ")
@@ -228,7 +238,7 @@ extension StyleVisitor {
         report(
           .propertyGrouping,
           slot.property.declaration.bindingSpecifier,
-          reason: "Group stored properties by visibility, kind, type and attribute; sort each block by length."
+          reason: "Put static properties first, then group by visibility, kind, type and attribute; sort each block by length."
         )
       }
       previous = max(previous, rank)

@@ -14,6 +14,7 @@ extension Ring {
       }
 
       public let containing: Containing
+
       let font: Font
       let text: String
       let type: ContentType
@@ -31,6 +32,7 @@ extension Ring {
     public let content: Content
 
     public var id: String
+
     public private(set) var color: Color
     public private(set) var start: Angle
     public private(set) var width: Angle

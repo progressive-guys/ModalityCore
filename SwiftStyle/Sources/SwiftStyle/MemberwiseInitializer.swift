@@ -9,7 +9,8 @@ struct MemberwiseInitializer {
   init?(members: MemberBlockItemListSyntax, preservingViewInputs: Bool = false) {
     guard members.parent?.parent?.is(StructDeclSyntax.self) == true,
           !members.contains(where: {
-            $0.decl.is(InitializerDeclSyntax.self) || $0.decl.is(IfConfigDeclSyntax.self)
+            $0.decl.is(InitializerDeclSyntax.self)
+              || $0.decl.is(IfConfigDeclSyntax.self)
               || $0.decl.is(MacroExpansionDeclSyntax.self)
           })
     else { return nil }
@@ -38,7 +39,9 @@ struct MemberwiseInitializer {
       let wrapper = attributes.first?.split(separator: ".").last.map(String.init)
       if preservingViewInputs, PropertyLayout(property).visibility == 3,
          attributes.count == 1, let wrapper, ["State", "Environment", "EnvironmentObject", "Namespace"].contains(wrapper),
-         binding.initializer != nil || wrapper != "State" || PropertyLayout(property).type?.hasPrefix("Optional<") == true
+         binding.initializer != nil
+           || wrapper != "State"
+           || PropertyLayout(property).type?.hasPrefix("Optional<") == true
       { continue }
       if preservingViewInputs, attributes.count == 1, wrapper == "Binding", binding.initializer == nil {
         switch (Syntax(binding.pattern).as(SyntaxEnum.self)) {
@@ -68,10 +71,12 @@ struct MemberwiseInitializer {
         return nil
       }
 
-      guard let type = binding.typeAnnotation?.type else { return nil }
+      guard let type = binding.typeAnnotation?.type
+        ?? layout.type.map({ TypeSyntax(IdentifierTypeSyntax(name: .identifier($0))) })
+      else { return nil }
+
       let storage = PropertyLayout.storage(of: type)
       guard storage != .unknown else { return nil }
-
       visibility = max(visibility, layout.visibility)
 
       let name = pattern.trimmedDescription
@@ -88,11 +93,16 @@ struct MemberwiseInitializer {
         let padding = bytes[..<lower].reversed().prefix {
           $0 == UInt8(ascii: " ") || $0 == UInt8(ascii: "\t")
         }.count
-        bytes.removeSubrange((lower - padding)..<upper)
+
+        let annotation = binding.typeAnnotation == nil ? ": " + type.trimmedDescription : ""
+
+        bytes.replaceSubrange((lower - padding)..<upper, with: annotation.utf8)
+
         replacements[member.id] = String(decoding: bytes, as: UTF8.self)
       } else if property.bindingSpecifier.text == "var",
-                type.is(OptionalTypeSyntax.self) || layout.type?.hasPrefix("Optional<") == true
-                || layout.type?.hasPrefix("Swift.Optional<") == true
+                type.is(OptionalTypeSyntax.self)
+                  || layout.type?.hasPrefix("Optional<") == true
+                  || layout.type?.hasPrefix("Swift.Optional<") == true
       {
         parameter += " = nil"
       }

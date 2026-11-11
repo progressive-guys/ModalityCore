@@ -85,6 +85,7 @@ final class ConditionVisitor: SyntaxVisitor {
       @unknown default: false
       }
     }
+
     if hasComplexCondition {
       report(keyword)
     }
@@ -200,8 +201,8 @@ enum SwiftStyle {
     }
 
     var operators = OperatorTable.standardOperators
-
     operators.addSourceFile(parsed, errorHandler: { _ in })
+
     let folded = operators.foldAll(parsed, errorHandler: { _ in })
     let visitor = ConditionVisitor(file: file, tree: parsed)
     visitor.walk(folded)

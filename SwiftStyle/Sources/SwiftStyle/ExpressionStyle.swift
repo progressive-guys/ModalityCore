@@ -93,6 +93,7 @@ extension StyleVisitor {
       guard let call = member.parent?.as(FunctionCallExprSyntax.self) else { return true }
       return !isMultilineListElementChain(call) && !joinsChainedClosure(call)
     }
+
     let leading = members.map { $0.base != nil && layout.startsLine($0.period) }
     guard let first = leading.firstIndex(of: true) else { return }
     let hasLaterInlineMember = leading.dropFirst(first).contains(false)
@@ -168,7 +169,8 @@ extension StyleVisitor {
 
     let indent = layout.indent(call) + 2
 
-    return layout.endLine(base) == layout.line(member.period) && layout.startsLine(closing)
+    return layout.endLine(base) == layout.line(member.period)
+      && layout.startsLine(closing)
       && layout.indent(closing) == indent
       && call.arguments.allSatisfy { argument in
         guard let token = argument.firstToken(viewMode: .sourceAccurate) else { return false }
@@ -205,6 +207,7 @@ extension StyleVisitor {
     case .dictionaryExpr(let dictionary): dictionary.leftSquare
     default: nil
     }
+
     guard let opening,
           layout.line(opening) != layout.line(token),
           let previous = token.previousToken(viewMode: .sourceAccurate),
@@ -251,24 +254,10 @@ extension StyleVisitor {
     guard layout.line(boundary) < line else { return false }
     var node: Syntax? = Syntax(boundary)
     while let current = node, current.id != expression.id {
-      if ({ () -> Bool in
-        switch (Syntax(current).as(SyntaxEnum.self)) {
-        case .infixOperatorExpr: return true
-        default: return false
-        }
-      }()) || ({ () -> Bool in
-        switch (Syntax(current).as(SyntaxEnum.self)) {
-        case .ternaryExpr: return true
-        default: return false
-        }
-      }())
-        || ({ () -> Bool in
-          switch (Syntax(current).as(SyntaxEnum.self)) {
-          case .sequenceExpr: return true
-          default: return false
-          }
-        }())
-      { return false }
+      switch current.as(SyntaxEnum.self) {
+      case .infixOperatorExpr, .ternaryExpr, .sequenceExpr: return false
+      default: break
+      }
 
       node = current.parent
     }
@@ -341,7 +330,8 @@ extension StyleVisitor {
 
   private func checkOperatorChain(_ node: InfixOperatorExprSyntax, rule: StyleRule, token: TokenSyntax) {
     switch (Syntax(node.parent)?.as(SyntaxEnum.self)) {
-    case .infixOperatorExpr(let parent)? where (chainRule(parent.operator.trimmedDescription) == rule):
+    case .infixOperatorExpr(let parent)? where chainRule(parent.operator.trimmedDescription) == rule
+      && (rule != .mixedBooleanConditionWrap || parent.operator.trimmedDescription == token.text):
       return
     default:
       break
@@ -350,9 +340,9 @@ extension StyleVisitor {
     let operations = chainOperations(node, rule: rule)
     let tokens = operations.compactMap { $0.operator.firstToken(viewMode: .sourceAccurate) }
 
-    let isArithmeticChain = Self.arithmetic.contains(token.text)
+    let checksOperatorLines = Self.arithmetic.contains(token.text) || rule == .mixedBooleanConditionWrap
 
-    let wrappedTokens = if isArithmeticChain {
+    let wrappedTokens = if checksOperatorLines {
       tokens.filter { token in
         guard let next = token.nextToken(viewMode: .sourceAccurate) else { return false }
         return layout.startsLine(token) || layout.line(token) != layout.line(next)
@@ -360,10 +350,25 @@ extension StyleVisitor {
     } else {
       tokens
     }
+
     let leading = wrappedTokens.map { layout.startsLine($0) }
-    let partialWrap = isArithmeticChain && !wrappedTokens.isEmpty && wrappedTokens.count != tokens.count
-    let trailingWrap = isArithmeticChain && wrappedTokens.contains { !layout.startsLine($0) }
-    if partialWrap || trailingWrap || (leading.contains(true) && leading.contains(false)) {
+    let partialWrap = checksOperatorLines && !wrappedTokens.isEmpty && wrappedTokens.count != tokens.count
+    let trailingWrap = checksOperatorLines && wrappedTokens.contains { !layout.startsLine($0) }
+
+    let longBooleanLine = rule == .mixedBooleanConditionWrap
+      && layout.line(node) == layout.endLine(node)
+      && layout.text(at: layout.line(node)).count > 120
+
+    let nestedBooleanWrap = rule == .mixedBooleanConditionWrap
+      && layout.headerBreaks(Syntax(node))
+      && wrappedTokens.count != tokens.count
+
+    if partialWrap
+      || trailingWrap
+      || longBooleanLine
+      || nestedBooleanWrap
+      || (leading.contains(true) && leading.contains(false))
+    {
       report(rule, token)
     }
   }
@@ -372,7 +377,9 @@ extension StyleVisitor {
     var result: [InfixOperatorExprSyntax] = []
 
     switch (Syntax(node.leftOperand).as(SyntaxEnum.self)) {
-    case .infixOperatorExpr(let left) where (chainRule(left.operator.trimmedDescription) == rule):
+    case .infixOperatorExpr(let left) where chainRule(left.operator.trimmedDescription) == rule
+      && (rule != .mixedBooleanConditionWrap
+        || left.operator.trimmedDescription == node.operator.trimmedDescription):
       result += chainOperations(left, rule: rule)
     default:
       break
@@ -381,7 +388,9 @@ extension StyleVisitor {
     result.append(node)
 
     switch (Syntax(node.rightOperand).as(SyntaxEnum.self)) {
-    case .infixOperatorExpr(let right) where (chainRule(right.operator.trimmedDescription) == rule):
+    case .infixOperatorExpr(let right) where chainRule(right.operator.trimmedDescription) == rule
+      && (rule != .mixedBooleanConditionWrap
+        || right.operator.trimmedDescription == node.operator.trimmedDescription):
       result += chainOperations(right, rule: rule)
     default:
       break
@@ -431,35 +440,12 @@ extension StyleVisitor {
       case .functionCallExpr(let call) where (call.calledExpression.id == current.id):
         current = parent
       default:
-        if ({ () -> Bool in
-          switch (Syntax(parent).as(SyntaxEnum.self)) {
-          case .optionalChainingExpr: return true
-          default: return false
-          }
-        }())
-        || ({ () -> Bool in
-          switch (Syntax(parent).as(SyntaxEnum.self)) {
-          case .forceUnwrapExpr: return true
-          default: return false
-          }
-        }())
-        || ({ () -> Bool in
-          switch (Syntax(parent).as(SyntaxEnum.self)) {
-          case .genericSpecializationExpr: return true
-          default: return false
-          }
-        }())
-        || ({ () -> Bool in
-          switch (Syntax(parent).as(SyntaxEnum.self)) {
-          case .subscriptCallExpr: return true
-          default: return false
-          }
-        }())
-      {
-        current = parent
-      } else {
-        return false
-      }
+        switch (Syntax(parent).as(SyntaxEnum.self)) {
+        case .optionalChainingExpr, .forceUnwrapExpr, .genericSpecializationExpr, .subscriptCallExpr:
+          current = parent
+        default:
+          return false
+        }
       }
     }
 

@@ -42,6 +42,7 @@ enum ExternalLayoutDiagnostics {
          let closure = call.trailingClosure, let first = closure.statements.first
       {
         joins.insert(checker.layout.line(member.period))
+
         if checker.layout.indent(first) == checker.layout.indent(call) + 4,
            checker.layout.indent(closure.rightBrace) == checker.layout.indent(call) + 2
         {

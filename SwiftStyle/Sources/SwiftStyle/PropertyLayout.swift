@@ -26,6 +26,7 @@ struct PropertyLayout {
     let names = declaration.attributes.compactMap { element in
       element.as(AttributeSyntax.self)?.attributeName.trimmedDescription
     }
+
     annotations = names.sorted()
 
     if declaration.modifiers.contains(where: { $0.name.text == "static" || $0.name.text == "class" }) {
@@ -54,13 +55,22 @@ struct PropertyLayout {
     }
   }
 
+  /// Type properties precede instance properties at every access level.
+  var staticOrder: Int { kind == 0 ? 0 : 1 }
+
+  /// Constants precede variables within each declaration kind.
+  var bindingOrder: Int { declaration.bindingSpecifier.text == "let" ? 0 : 1 }
+
   /// Counts each level of the property hierarchy, including groups with different data types.
   var groups: [[String]] {
-    let access = [String(visibility), String(setterVisibility)]
+    let scope = [String(staticOrder)]
+    let readAccess = scope + [String(visibility)]
+    let access = readAccess + [String(setterVisibility)]
     let kindGroup = access + [String(kind)]
-    let attributeGroup = kindGroup + ["attributes"] + annotations
+    let bindingGroup = kindGroup + [declaration.bindingSpecifier.text]
+    let attributeGroup = bindingGroup + ["attributes"] + annotations
     let typeGroups = type.map { [attributeGroup + ["type", $0]] } ?? []
-    return [[String(visibility)], access, kindGroup, attributeGroup] + typeGroups
+    return [scope, readAccess, access, kindGroup, bindingGroup, attributeGroup] + typeGroups
   }
 
   /// Observers keep a stored value. Getter and setter accessors describe a computed property.
@@ -81,19 +91,11 @@ struct PropertyLayout {
   /// Uses the longest declaration line, without its leading indentation.
   var lineLength: Int { SourceLayout.lineLength(declaration) }
 
-  /// Wrappers and initializers can run user code. Plain Swift literals have no side effects.
+  /// Keeps explicit computations in initializer order. Wrapper construction follows declaration grouping.
   var evaluatesInitializer: Bool {
-    !declaration.attributes.isEmpty || declaration.bindings.contains { binding in
+    declaration.bindings.contains { binding in
       guard let value = binding.initializer?.value else { return false }
-      return !Self.isStandardLiteral(value, type: binding.typeAnnotation?.type)
-    }
-  }
-
-  /// Destruction follows stored-property order. A closure or an opaque value can own an object.
-  var requiresStorageOrder: Bool {
-    let sharedType = type == nil ? nil : declaration.bindings.last?.typeAnnotation?.type
-    return evaluatesInitializer || declaration.bindings.contains {
-      Self.storage(of: $0.typeAnnotation?.type ?? sharedType) != .scalar
+      return !Self.isSimpleInitializer(value)
     }
   }
 
@@ -102,7 +104,7 @@ struct PropertyLayout {
     visibility != other.visibility || setterVisibility != other.setterVisibility
   }
 
-  /// Resolves syntax that determines both object lifetime and the escaping convention of a parameter.
+  /// Resolves syntax that determines the escaping convention of a parameter.
   /// An unresolved type alias can name a function, even when its declaration is in another file.
   static func storage(of type: TypeSyntax?) -> Storage {
     guard let type else { return .unknown }
@@ -132,21 +134,31 @@ struct PropertyLayout {
     }
   }
 
-  /// A literal in a user-defined type can call its ExpressibleBy... initializer.
-  /// Explicit scalar types use the Swift module name to rule out local types with the same name.
-  private static func isStandardLiteral(_ value: ExprSyntax, type: TypeSyntax?) -> Bool {
-    let isSwiftScalar = type?.as(MemberTypeSyntax.self)?.baseType.trimmedDescription == "Swift"
-      && storage(of: type) == .scalar
-
+  /// Literals, value paths and closure values can follow the property grouping order.
+  /// Calls, interpolation and other computations retain their evaluation order.
+  private static func isSimpleInitializer(_ value: ExprSyntax) -> Bool {
     switch value.as(ExprSyntaxEnum.self) {
-    case .integerLiteralExpr, .floatLiteralExpr, .booleanLiteralExpr: return isSwiftScalar
-    case .stringLiteralExpr(let literal):
-      return isSwiftScalar && literal.segments.allSatisfy { $0.is(StringSegmentSyntax.self) }
-    case .arrayExpr(let array):
-      return array.elements.isEmpty && type?.is(ArrayTypeSyntax.self) == true
+    case .integerLiteralExpr, .floatLiteralExpr, .booleanLiteralExpr, .nilLiteralExpr, .declReferenceExpr: return true
+    case .memberAccessExpr(let member): return member.base.map(isSimpleInitializer) ?? true
+    case .optionalChainingExpr(let optional): return isSimpleInitializer(optional.expression)
+    case .stringLiteralExpr(let literal): return literal.segments.allSatisfy { $0.is(StringSegmentSyntax.self) }
+    case .prefixOperatorExpr(let prefix):
+      return ["+", "-"].contains(prefix.operator.text) && isSimpleInitializer(prefix.expression)
+    case .arrayExpr(let array): return array.elements.allSatisfy { isSimpleInitializer($0.expression) }
     case .dictionaryExpr(let dictionary):
-      return dictionary.content.is(TokenSyntax.self) && type?.is(DictionaryTypeSyntax.self) == true
-    case .nilLiteralExpr: return type?.is(OptionalTypeSyntax.self) == true
+      switch dictionary.content {
+      case .colon: return true
+      case .elements(let elements):
+        return elements.allSatisfy { isSimpleInitializer($0.key) && isSimpleInitializer($0.value) }
+      @unknown default: return false
+      }
+
+    case .tupleExpr(let tuple): return tuple.elements.allSatisfy { isSimpleInitializer($0.expression) }
+    case .closureExpr(let closure):
+      return (closure.signature?.capture?.items ?? []).allSatisfy {
+        $0.initializer.map { isSimpleInitializer($0.value) } ?? true
+      }
+
     default: return false
     }
   }
@@ -162,6 +174,7 @@ struct PropertyLayout {
 
       @unknown default: false
       }
+
       return computed && layout.endLine(declaration) - layout.line(declaration) + 1 > 3
     }
   }

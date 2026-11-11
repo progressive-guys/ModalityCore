@@ -54,6 +54,7 @@ public enum NumericValidation {
       let words = field
         .replacingOccurrences( of: "([a-z0-9])([A-Z])", with: "$1 $2", options: .regularExpression )
         .lowercased()
+
       let name = words.prefix(1).uppercased() + words.dropFirst()
       guard
         let constraint = fields[field],
