@@ -39,8 +39,7 @@ public struct SettingsGearButton<Label: View, SettingsView: View>: View {
       Button(
         action: { isSettingsPresented = true },
         label: label
-      )
-      .sheet(isPresented: $isSettingsPresented) {
+      ).sheet(isPresented: $isSettingsPresented) {
         settingsView()
       }
       #endif
