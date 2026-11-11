@@ -77,6 +77,8 @@ extension StyleVisitor {
   /// Ordinary actions and related multiline pairs allow one manual separator.
   /// Consecutive single-line assignments stay together, at any group length.
   /// Multiline guards require one blank line before the next statement.
+  /// Local calls with more than three argument code lines also require this separator.
+  /// Shorter wrapped calls keep zero or one blank line before the next statement.
   /// Other bodies with at most three code lines stay compact. Leading group comments keep separation.
   func checkStatementGrouping(_ statements: CodeBlockItemListSyntax) {
     guard statements.ancestorIs(CodeBlockSyntax.self)
@@ -149,7 +151,11 @@ extension StyleVisitor {
         let multilineGuard = previous.item.is(GuardStmtSyntax.self)
           && layout.line(previous) != layout.endLine(previous)
 
-        let allowedBlankLines = if header || multilineGuard {
+        let argumentLines = wrappedCallArgumentLineCount(previous)
+        let largeCallDeclaration = argumentLines.map { $0 > 3 } ?? false
+        let rule: StyleRule = argumentLines != nil && !header ? .multilineCallDeclarationSpacing : .statementGrouping
+
+        let allowedBlankLines = if header || multilineGuard || largeCallDeclaration {
           1...1
         } else if compactScope || assignmentPair {
           0...0
@@ -170,12 +176,16 @@ extension StyleVisitor {
         } else {
           spacing.required...spacing.required
         }
-        if allowedBlankLines.contains(0) {
+
+        let maximumBlankLines = argumentLines == nil ? allowedBlankLines.upperBound : 1
+        let permittedBlankLines = allowedBlankLines.lowerBound...maximumBlankLines
+        if permittedBlankLines.contains(0) {
           compactStatementStarts.insert(token.positionAfterSkippingLeadingTrivia.utf8Offset)
         }
-        if !allowedBlankLines.contains(spacing.blankLines.count) {
-          fixSpacing(spacing.blankLines, required: allowedBlankLines.upperBound, rule: .statementGrouping)
-          report(.statementGrouping, token)
+
+        if !permittedBlankLines.contains(spacing.blankLines.count) {
+          fixSpacing(spacing.blankLines, required: permittedBlankLines.upperBound, rule: rule)
+          report(rule, token)
         }
       }
 
@@ -199,6 +209,34 @@ extension StyleVisitor {
       }
       knownNames.formUnion(dependencies.declarations)
       previousDependencies = dependencies
+    }
+  }
+
+  /// Finds the largest wrapped argument block in a local declaration.
+  private func wrappedCallArgumentLineCount(_ statement: CodeBlockItemSyntax) -> Int? {
+    guard case .decl(let declaration) = statement.item,
+          let variable = declaration.as(VariableDeclSyntax.self)
+    else { return nil }
+
+    let counts = variable.bindings.compactMap { binding in
+      binding.initializer.flatMap { wrappedCallArgumentLineCount($0.value) }
+    }
+    return counts.max()
+  }
+
+  /// Counts argument code lines without the call's outer parentheses, blank lines or comments.
+  private func wrappedCallArgumentLineCount(_ expression: ExprSyntax) -> Int? {
+    switch expression.as(ExprSyntaxEnum.self) {
+    case .tryExpr(let attempt): return wrappedCallArgumentLineCount(attempt.expression)
+    case .awaitExpr(let awaited): return wrappedCallArgumentLineCount(awaited.expression)
+    case .functionCallExpr(let call):
+      guard call.trailingClosure == nil, let opening = call.leftParen, let closing = call.rightParen,
+            layout.line(opening) < layout.line(closing)
+      else { return nil }
+
+      return layout.codeLineCount(call.arguments)
+
+    default: return nil
     }
   }
 

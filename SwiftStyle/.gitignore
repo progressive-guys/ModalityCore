@@ -5,3 +5,6 @@ __pycache__/
 *.xcodeproj/
 *.xcworkspace/
 Package.resolved
+# The call-layout fixtures use the complete build command.
+!Tests/Fixtures/FixingTests/Build/
+!Tests/Fixtures/FixingTests/Build/**

@@ -15,6 +15,7 @@ public extension AudioUnit {
         &sampleRate,
         &size
       )
+
       if result != noErr {
         throw "Couldn't get input device sample rate. Error code: \(result)".error
       }

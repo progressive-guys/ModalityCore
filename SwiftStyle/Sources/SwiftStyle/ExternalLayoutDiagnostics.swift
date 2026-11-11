@@ -2,7 +2,7 @@ import Foundation
 import SwiftParser
 import SwiftSyntax
 
-/// Keeps native checks and applies the accepted chained-list exception at exact syntax lines.
+/// Keeps native checks and accepts the list and closure layouts at their syntax lines.
 enum ExternalLayoutDiagnostics {
 
   private struct Diagnostic: Decodable {
@@ -36,9 +36,20 @@ enum ExternalLayoutDiagnostics {
     override func visit(_ call: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
       closureIndentation.formUnion(checker.checkChainedClosureIndent(call))
 
-      if checker.hasJoinedListLayout(call),
-         let member = call.calledExpression.as(MemberAccessExprSyntax.self), let closing = call.rightParen
+      guard let member = call.calledExpression.as(MemberAccessExprSyntax.self) else { return .visitChildren }
+      if checker.joinsChainedClosure(call), let base = member.base,
+         checker.layout.endLine(base) == checker.layout.line(member.period),
+         let closure = call.trailingClosure, let first = closure.statements.first
       {
+        joins.insert(checker.layout.line(member.period))
+        if checker.layout.indent(first) == checker.layout.indent(call) + 4,
+           checker.layout.indent(closure.rightBrace) == checker.layout.indent(call) + 2
+        {
+          closureIndentation.insert(checker.layout.line(first))
+        }
+      }
+
+      if checker.hasJoinedListLayout(call), let closing = call.rightParen {
         joins.insert(checker.layout.line(member.period))
 
         guard let opening = call.leftParen, checker.layout.line(opening) != checker.layout.line(closing)

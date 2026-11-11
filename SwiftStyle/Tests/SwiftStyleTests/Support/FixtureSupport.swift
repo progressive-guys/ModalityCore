@@ -16,11 +16,45 @@ enum FixtureSupport {
     #expect(result.status == 0, "\(name): \(result.text)")
   }
 
-  static func check(_ source: Data, fix: Bool = false) throws -> ProcessResult {
+  static func check(_ source: Data, fix: Bool = false, rules: [String] = []) throws -> ProcessResult {
     let executable = Bundle.module.bundleURL
       .deletingLastPathComponent()
       .appendingPathComponent("SwiftStyle")
-    return try run(executable.path, fix ? ["--fix", "--stdin"] : ["--json", "--stdin"], input: source)
+
+    let arguments = (fix ? ["--fix", "--stdin"] : ["--json", "--stdin"])
+      + (rules.isEmpty ? [] : ["--rules", rules.joined(separator: ",")])
+
+    return try run(executable.path, arguments, input: source)
+  }
+
+  /// Checks the joined closure and argument threshold through two complete build-format passes.
+  static func checkBuild(_ fixture: SwiftFixture, expected: String) throws {
+    let source = Data(fixture.source.utf8)
+    let target = Data(expected.utf8)
+    try typecheck(source, name: fixture.name)
+
+    let file = FileManager.default.temporaryDirectory.appendingPathComponent("SwiftStyle-\(UUID().uuidString).swift")
+
+    try source.write(to: file, options: .withoutOverwriting)
+    defer { _ = try? run("/usr/bin/trash", [file.path]) }
+
+    let kit = URL(fileURLWithPath: #filePath)
+      .deletingLastPathComponent()
+      .appendingPathComponent("../../..")
+      .standardizedFileURL
+
+    for _ in 0..<2 {
+      let result = try run(
+        "/usr/bin/env",
+        ["CI=false", "/bin/sh", kit.appendingPathComponent("Scripts/lint.sh").path, "--fix", file.path]
+      )
+
+      let actual = try Data(contentsOf: file)
+
+      #expect(result.status == 0, "\(result.text)")
+      #expect(actual == target, "\(fixture.name):\n\(String(decoding: actual, as: UTF8.self))")
+    }
+    try typecheck(target, name: fixture.name)
   }
 
   /// Drains both output streams while the child runs, including while stdin is written.

@@ -116,6 +116,9 @@ extension StyleVisitor {
         break
       }
 
+    case .chainedClosureSameLine:
+      before(token, with: "")
+
     case .multilineListElementChain:
       if let call = token.ancestor(FunctionCallExprSyntax.self), let closing = call.rightParen {
         let indent = layout.indent(call) + 2
@@ -136,7 +139,10 @@ extension StyleVisitor {
         let members = memberChain(expression)
         let leading = members.firstIndex { layout.startsLine($0.period) } ?? 1
         for part in members.dropFirst(min(leading, 1)) where part.base != nil {
-          if let call = part.parent?.as(FunctionCallExprSyntax.self), isMultilineListElementChain(call) { continue }
+          if let call = part.parent?.as(FunctionCallExprSyntax.self),
+             isMultilineListElementChain(call) || joinsChainedClosure(call)
+          { continue }
+
           before(part.period, with: lineBreak(indent: layout.indent(expression) + 2))
         }
       }

@@ -42,8 +42,7 @@ public struct BundledResource<Content>: Hashable, Sendable {
         at: folder,
         includingPropertiesForKeys: [.isDirectoryKey],
         options: .skipsHiddenFiles
-      )
-        .flatMap { url in
+      ).flatMap { url in
           if try url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true {
             return try collect(url)
           }

@@ -91,7 +91,7 @@ extension StyleVisitor {
 
     let members = memberChain(ExprSyntax(node)).filter { member in
       guard let call = member.parent?.as(FunctionCallExprSyntax.self) else { return true }
-      return !isMultilineListElementChain(call)
+      return !isMultilineListElementChain(call) && !joinsChainedClosure(call)
     }
     let leading = members.map { $0.base != nil && layout.startsLine($0.period) }
     guard let first = leading.firstIndex(of: true) else { return }
@@ -120,12 +120,15 @@ extension StyleVisitor {
       if !hasJoinedListLayout(node) {
         report(.multilineListElementChain, member.period)
       }
-    } else if let leftParen = node.leftParen,
+    } else if !joinsChainedClosure(node), let leftParen = node.leftParen,
        let rightParen = node.rightParen,
        layout.line(leftParen) != layout.line(rightParen),
        layout.endLine(previous) == layout.line(member.period)
     {
       report(.chainedCallArgumentsWrap, member.period)
+    }
+    if joinsChainedClosure(node), layout.endLine(base) != layout.line(member.period) {
+      report(.chainedClosureSameLine, member.period)
     }
     if let closure = node.trailingClosure,
        layout.line(closure.leftBrace) != layout.line(closure.rightBrace),
@@ -134,6 +137,22 @@ extension StyleVisitor {
     {
       report(.chainedClosureNewline, member.period)
     }
+  }
+
+  /// Joins a multiline trailing closure to a receiver with wrapped arguments and no trailing closure.
+  /// Comments between the receiver and the member keep their positions.
+  func joinsChainedClosure(_ call: FunctionCallExprSyntax) -> Bool {
+    guard let member = call.calledExpression.as(MemberAccessExprSyntax.self),
+          let base = member.base, let receiver = receiverCall(base),
+          let opening = receiver.leftParen, let closing = receiver.rightParen,
+          receiver.trailingClosure == nil,
+          layout.line(opening) < layout.line(closing), layout.startsLine(closing),
+          let closure = call.trailingClosure,
+          layout.line(closure.leftBrace) < layout.line(closure.rightBrace),
+          let previous = member.period.previousToken(viewMode: .sourceAccurate)
+    else { return false }
+
+    return (previous.trailingTrivia.description + member.period.leadingTrivia.description).allSatisfy(\.isWhitespace)
   }
 
   /// The receiver's closing parenthesis and the list comma delimit the final call.
