@@ -75,13 +75,17 @@ enum StyleRule: String, CaseIterable {
   /// Keep consecutive uses of local values together, including branches, captures and final exits.
   /// Keep declarations and assignments beside an immediate if or guard whose conditions read the value.
   /// Separate independent declarations, combined preparation groups and leading comments.
-  /// Require one blank line after a multiline guard before the next statement.
+  /// Require one blank line after a multiline guard.
   /// Other bodies with at most three code lines stay compact, except at leading group comments.
   /// Consecutive single-line assignments stay compact at any group length.
   /// Longer bodies allow manual separators between ordinary actions.
   /// Remove opening blank lines from executable bodies of any length, after the opening brace or closure signature.
   /// Keep compact independent checks together. Separate multiline independent checks.
   case statementGrouping = "statement_grouping"
+
+  /// Separate a local call from the next statement when its argument block has more than three code lines.
+  /// Shorter wrapped argument blocks allow zero or one blank line within a dependency group.
+  case multilineCallDeclarationSpacing = "multiline_call_declaration_spacing"
 
   /// Use a switch for two or more consecutive SwiftSyntax type checks of the same object.
   /// Keep single checks, wrapper calls and checks of different objects.
@@ -154,6 +158,9 @@ enum StyleRule: String, CaseIterable {
 
   /// Start a call with a multiline closure on a new line after the previous closure.
   case chainedClosureNewline = "chained_closure_newline"
+
+  /// Join a multiline trailing closure to the closing parenthesis of wrapped receiver arguments.
+  case chainedClosureSameLine = "chained_closure_same_line"
 
   /// Use a single-line string literal for interpolated text with one physical content line. Skip raw literals and
   /// literals with newline, carriage-return or Unicode escapes.
@@ -258,6 +265,7 @@ extension StyleRule {
     case .propertyGrouping: "Group stored properties by visibility, kind, type and attribute; sort each block by line length and separate groups larger than three."
     case .attributeNewline: "Put each declaration attribute on a separate line before the declaration."
     case .statementGrouping: "Separate statement groups and multiline checks with one blank line."
+    case .multilineCallDeclarationSpacing: "Use a blank line after more than three argument code lines; group shorter calls by dependency."
     case .preferTypeSwitch: "Use a switch for consecutive as? or is checks of the same object."
     case .preferSyntaxKindSwitch: "Use a syntax-kind switch for consecutive type checks of the same object."
 
@@ -304,6 +312,7 @@ extension StyleRule {
 
     case .chainedCallArgumentsWrap: "Start a chained call on a new line before wrapping its arguments."
     case .chainedClosureNewline: "Start a chained call with a multiline closure on a new line."
+    case .chainedClosureSameLine: "Place the chained closure call after the receiver's closing parenthesis."
     case .multilineStringIndent: "Align multiline string contents with standalone opening quotes; otherwise indent by two spaces."
     case .singleLineInterpolatedString: "Use a single-line literal when interpolated text has one content line."
     case .nilCoalescingMemberWrap: "Keep ?? and the fallback together; wrap before ??."

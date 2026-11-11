@@ -115,11 +115,15 @@ extension StyleVisitor {
         break
       }
 
+    case .chainedClosureSameLine:
+      before(token, with: "")
+
     case .mixedMemberChainWrap:
       if let expression = chainRoot(token) {
         let members = memberChain(expression)
         let leading = members.firstIndex { layout.startsLine($0.period) } ?? 1
         for part in members.dropFirst(min(leading, 1)) where part.base != nil {
+          if let call = part.parent?.as(FunctionCallExprSyntax.self), joinsChainedClosure(call) { continue }
           before(part.period, with: lineBreak(indent: layout.indent(expression) + 2))
         }
       }

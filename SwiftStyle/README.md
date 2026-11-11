@@ -42,7 +42,7 @@ sh Scripts/run.sh --fix Sources
 sh Scripts/run.sh --fix --stdin < Input.swift > Output.swift
 ```
 
-The script uses the configs shipped with this tool version. Set `SWIFT_STYLE_CONFIG_ROOT` to use consumer-owned configs. Without paths, the script checks the current directory. SwiftFormat, SwiftLint and the approved SwiftStyle rules run: `enum_case_blank_line`, `collapsible_nested_if`, `switch_case_pattern_indent`, `multiline_string_indent`, `arithmetic_call_arguments_wrap`, `comparison_operator_newline`, `mixed_additive_expression_wrap`, `mixed_multiplicative_expression_wrap`, `member_spacing`, `member_order`, `property_grouping`, `attribute_newline`, `private_view_properties`, `statement_grouping`, `prefer_syntax_kind_switch` and `prefer_type_switch`. Each failure returns a nonzero status. With `--fix`, SwiftFormat and SwiftLint apply their fixes first, then SwiftStyle applies fixes for the selected rules. A nonempty `CI` value other than `false` or `0` turns fixes off. Other structural rules are available through `Scripts/run.sh` for manual checks while they await approval.
+The script uses the configs shipped with this tool version. Set `SWIFT_STYLE_CONFIG_ROOT` to use consumer-owned configs. Without paths, the script checks the current directory. SwiftFormat, SwiftLint and the approved SwiftStyle rules run: `enum_case_blank_line`, `collapsible_nested_if`, `switch_case_pattern_indent`, `multiline_string_indent`, `arithmetic_call_arguments_wrap`, `comparison_operator_newline`, `chained_closure_same_line`, `multiline_call_declaration_spacing`, `mixed_additive_expression_wrap`, `mixed_multiplicative_expression_wrap`, `member_spacing`, `member_order`, `property_grouping`, `attribute_newline`, `private_view_properties`, `statement_grouping`, `prefer_syntax_kind_switch` and `prefer_type_switch`. Each failure returns a nonzero status. With `--fix`, SwiftFormat and SwiftLint apply their fixes first, then SwiftStyle applies fixes for the selected rules. A nonempty `CI` value other than `false` or `0` turns fixes off. Other structural rules are available through `Scripts/run.sh` for manual checks while they await approval.
 
 The build configuration comments out SwiftFormat `indent`, SwiftLint `line_length`, and SwiftStyle `arithmetic_precedence_wrap`, `binary_operator_wrap`, `multiline_expression_closing_delimiter` and `switch_case_spacing`. Existing library sources fail these checks. The comments beside the selections state why they are disabled.
 
@@ -66,11 +66,15 @@ Stored-property groups use one blank line on each side when they contain more th
 
 `member_spacing` keeps nested types one blank line from adjacent declarations. Single-line type aliases stay together; multiline aliases use one blank line on each side. Type and extension bodies with at most three code lines have no blank line after the opening brace. Longer bodies start with one blank line. `statement_grouping` removes opening blank lines from executable bodies of any length: functions, initializers, deinitializers, closures, accessors and control-flow bodies. A closure body starts after `in` when it has a signature. The count for type bodies includes nested code and excludes the outer braces, blank lines and comments.
 
+`chained_closure_same_line` places a call with a multiline trailing closure after the closing parenthesis of a receiver with wrapped arguments, as in `).flatMap {`. It keeps the closure indentation and comments between calls. Native chain and indentation checks accept this layout at the matching syntax lines.
+
 `multiline_string_indent` aligns contents and closing quotes with opening quotes that start a line, including raw literals. When opening quotes follow code on the same line, contents and closing quotes use two extra spaces from that line. It preserves raw text, escapes and string values. Multiline interpolation expressions keep their diagnostic. SwiftFormat `semicolons` with `--semicolons never` separates inline statements. `statement_grouping` keeps consecutive local uses together across multiline expressions, conditions, branches, loops and closure captures. Derived bindings and successful guard bindings extend the group. References respect lexical scope and shadowing. Consecutive single-line declarations start one preparation group. Independent declarations, leading comments and conditional compilation boundaries start another group. A call that combines values from separate preparation groups starts a shared use group. Statement order stays unchanged.
 
 `private_view_properties` requires private instance properties in structs that explicitly conform to `View` or `SwiftUI.View`, except `body`. It keeps explicit initializers and can generate a known memberwise signature, including `Binding` inputs. Private optional `State` values keep their implicit nil initialization. Unknown wrappers, conditional stored declarations and additional protocol conformances keep diagnostics when a safe initializer or access change cannot be determined.
 
 Groups use local declarations from the current body. Parameters and outer properties are inputs to that body. An independent operation ends the immediate declaration-use chain. Other pairs of ordinary actions, including calls on different receivers, allow zero or one blank line. Reuse of an older local value follows this spacing. A call that combines preparation groups still requires a separator. Other statements keep kind-based spacing. Except after multiline guards, bodies with at most three code lines keep statements together. This takes priority over dependency groups, statement kinds and manual separators. A leading group comment keeps its separator. The count includes nested code and excludes outer braces, blank lines and comments. Each nested body has its own count. `statement_grouping` requires one blank line after a multiline guard before the next statement, including a use of its bound value or another check. This takes priority over the three-line body rule. A guard is multiline when its tokens span more than one line, including its conditions or else body. `compact_else_blank_line` follows group boundaries for single-line guards.
+
+`multiline_call_declaration_spacing` checks the gap after a local call. A call with more than three argument code lines requires one blank line before the next statement. The count excludes the outer parentheses, blank lines and comments. Calls with one to three argument code lines keep zero or one blank line within a dependency group. Independent groups keep their required separator. This also applies to calls with `try` or `await`.
 
 A standalone `switch` connects to the preceding group through its subject. Values used only in its branches keep a blank line before the switch. A switch expression used to compute a value includes branch inputs. Closure captures include uses inside nested switches.
 
@@ -82,6 +86,12 @@ An assignment followed by an `if` or `guard` stays beside the check when its con
 
 A local declaration stays beside the next `if` or `guard` when its conditions read the declared value, including checks that use values from earlier preparation groups. Two multiline operations can keep one blank line. A leading group comment keeps its separator.
 
+For a review of only these two call rules, run from the Modality root:
+
+```sh
+sh Modules/Open-source/ModalityCore/SwiftStyle/Scripts/run.sh --fix --rules chained_closure_same_line,multiline_call_declaration_spacing Apps Modules Tuist Workspace.swift Tuist.swift
+```
+
 ## Tests
 
 ```sh
@@ -92,7 +102,7 @@ xcodebuild test -workspace SwiftStyle.xcworkspace -scheme SwiftStyleTests -desti
 
 The checker project loads its local `ModalityBuild` plugin. Its lint script path is relative to its own manifest, so cached helpers also use this checkout.
 
-The scheme runs three parameterized tests with all SwiftStyle rules:
+The scheme runs three parameterized tests with all SwiftStyle rules. Fixing cases under `Build/` also check the real lint command twice with LF input. Cases under `SelectedRules/` check that the two call rules keep other layouts unchanged:
 
 | Suite | Check | Fixture content |
 |---|---|---|
