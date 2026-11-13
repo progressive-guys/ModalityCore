@@ -1,8 +1,4 @@
 import Foundation
-import SwiftParser
-import SwiftSyntax
-import SwiftOperators
-import SwiftParserDiagnostics
 
 struct LintDiagnostic: Encodable {
 
@@ -36,70 +32,6 @@ extension LintDiagnostic {
 
   var output: String {
     "\(file):\(line):\(character): error: \(reason) [\(ruleID)]"
-  }
-}
-
-/// Checks if, guard and executable where clauses in for, case and catch, including bindings and patterns.
-/// Reports one error per construct at its keyword. Skips while, repeat and generic constraints.
-final class ConditionVisitor: SyntaxVisitor {
-
-  private(set) var diagnostics: [LintDiagnostic] = []
-
-  private let file: String
-  private let converter: SourceLocationConverter
-
-  init(file: String, tree: SourceFileSyntax) {
-    self.file = file
-    converter = SourceLocationConverter(fileName: file, tree: tree)
-    super.init(viewMode: .sourceAccurate)
-  }
-
-  override func visit(_ node: IfExprSyntax) -> SyntaxVisitorContinueKind {
-    check(node.conditions, at: node.ifKeyword)
-    return .visitChildren
-  }
-
-  override func visit(_ node: GuardStmtSyntax) -> SyntaxVisitorContinueKind {
-    check(node.conditions, at: node.guardKeyword)
-    return .visitChildren
-  }
-
-  override func visit(_ node: WhereClauseSyntax) -> SyntaxVisitorContinueKind {
-    if ExpressionPolicy.isComplex(node.condition) {
-      report(node.whereKeyword)
-    }
-
-    return .visitChildren
-  }
-
-  private func check(_ conditions: ConditionElementListSyntax, at keyword: TokenSyntax) {
-    let hasComplexCondition = conditions.contains { element in
-      switch element.condition {
-      case .expression(let expression): ExpressionPolicy.isComplex(expression)
-
-      case .optionalBinding(let binding):
-        binding.initializer.map { ExpressionPolicy.bindingIsComplex($0.value) } ?? false
-
-      case .matchingPattern(let pattern): ExpressionPolicy.bindingIsComplex(pattern.initializer.value)
-      case .availability: false
-      @unknown default: false
-      }
-    }
-
-    if hasComplexCondition {
-      report(keyword)
-    }
-  }
-
-  private func report(_ token: TokenSyntax) {
-    let location = converter.location(for: token.positionAfterSkippingLeadingTrivia)
-    diagnostics.append(LintDiagnostic(
-      file: file,
-      line: location.line,
-      character: location.column,
-      ruleID: LintDiagnostic.rule,
-      reason: LintDiagnostic.message
-    ))
   }
 }
 
@@ -141,7 +73,7 @@ enum SwiftStyle {
         if fix {
           guard !json else { throw CheckError.invalidArguments }
 
-          let formatted = SourceFormatter.format(source, file: "<stdin>", rules: selectedRules)
+          let formatted = try SourceFormatter.format(source, file: "<stdin>", rules: selectedRules)
           FileHandle.standardOutput.write(Data(formatted.utf8))
           diagnostics = check(formatted, file: "<stdin>")
         } else {
@@ -153,13 +85,13 @@ enum SwiftStyle {
         let inputs = arguments.isEmpty ? ["."] : arguments
         for file in try files(in: inputs) {
           let source = try String(contentsOf: file, encoding: .utf8)
-          let formatted = fix ? SourceFormatter.format(source, file: file.path, rules: selectedRules) : source
+          let formatted = fix ? try SourceFormatter.format(source, file: file.path, rules: selectedRules) : source
           if formatted != source { try formatted.write(to: file, atomically: true, encoding: .utf8) }
           diagnostics += check(formatted, file: file.path)
         }
       }
       if let selectedRules {
-        diagnostics = diagnostics.filter { selectedRules.contains($0.ruleID) || $0.ruleID == "swift_parser" }
+        diagnostics = diagnostics.filter { selectedRules.contains($0.ruleID) || $0.ruleID == "swift_parser" || $0.ruleID == "swiftstyle_unavailable" }
       }
       if json {
         let encoder = JSONEncoder()
@@ -181,36 +113,10 @@ enum SwiftStyle {
     }
   }
 
-  /// Parses the file once and stops with a swift_parser diagnostic if syntax errors occur.
-  /// Checks interpolated expressions as Swift code. Treats comments and literal text as data.
+  /// Reports that the rule engine must be implemented.
   private static func check(_ source: String, file: String) -> [LintDiagnostic] {
-    let parsed = Parser.parse(source: source)
-    let parserDiagnostics = ParseDiagnosticsGenerator.diagnostics(for: parsed)
-    let converter = SourceLocationConverter(fileName: file, tree: parsed)
-    if !parserDiagnostics.isEmpty {
-      return parserDiagnostics.map { diagnostic in
-        let location = converter.location(for: diagnostic.position)
-        return LintDiagnostic(
-          file: file,
-          line: location.line,
-          character: location.column,
-          ruleID: "swift_parser",
-          reason: diagnostic.message
-        )
-      }
-    }
-
-    var operators = OperatorTable.standardOperators
-    operators.addSourceFile(parsed, errorHandler: { _ in })
-
-    let folded = operators.foldAll(parsed, errorHandler: { _ in })
-    let visitor = ConditionVisitor(file: file, tree: parsed)
-    visitor.walk(folded)
-    let style = StyleVisitor(file: file, source: source, tree: parsed)
-    style.walk(folded)
-    return (visitor.diagnostics + style.diagnostics).sorted {
-      ($0.line, $0.character, $0.ruleID) < ($1.line, $1.character, $1.ruleID)
-    }
+    [LintDiagnostic(file: file, line: 1, character: 1,
+      ruleID: "swiftstyle_unavailable", reason: "SwiftStyle implementation is not available.")]
   }
 
   private static func excluded(_ url: URL) -> Bool {
@@ -281,6 +187,7 @@ enum SwiftStyle {
 }
 
 enum CheckError: Error {
+  case notImplemented
   case invalidUTF8
   case invalidArguments
   case missingInput(String)
@@ -290,6 +197,7 @@ extension CheckError: CustomStringConvertible {
 
   var description: String {
     switch self {
+    case .notImplemented: "SwiftStyle implementation is not available."
     case .invalidUTF8: "Input must use UTF-8."
     case .invalidArguments: "Use --fix, --json, --stdin, --rules name1,name2, or source paths. --fix --stdin outputs source; omit --json."
     case .missingInput(let path): "Cannot read input: \(path)"

@@ -29,5 +29,10 @@ let project = Project(
       testAction: .targets(["SwiftStyleTests"])
     )
   ],
+  additionalFiles: [
+    .folderReference(path: "Tests/confirmed"),
+    .folderReference(path: "Tests/discuss"),
+    .folderReference(path: "Tests/legacy")
+  ],
   resourceSynthesizers: [.files(plugin: "ModalityBuild", extensions: ["swift"])]
 )

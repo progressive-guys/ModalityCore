@@ -1,361 +1,58 @@
-/// Structural rules that report errors without automatic fixes.
-///
-/// Rule checks define their exceptions. SwiftLint disable directives apply to native SwiftLint rules.
+/// Identifies the rules accepted by the command-line interface.
 enum StyleRule: String, CaseIterable {
-
-  /// Keep ?? operands on one line, or put each continuation on a new line with a leading ??. Keep nested groups
-  /// together.
   case mixedNilCoalescingWrap = "mixed_nil_coalescing_wrap"
-
-  /// Keep let or var, the variable name, = and if on the same line. Conditions and call arguments can continue on
-  /// later lines.
   case ifExpressionBindingSameLine = "if_expression_binding_same_line"
-
-  /// Indent continued if-expression conditions two spaces from the variable declaration. Ignore line breaks
-  /// inside call arguments and parenthesized groups.
   case ifExpressionConditionIndent = "if_expression_condition_indent"
-
-  /// Put the opening brace on a separate line after wrapped conditions or operands. Ignore line breaks inside
-  /// call arguments.
   case multilineIfBrace = "multiline_if_brace"
-
-  /// Keep ) and { on the same line when only call arguments wrap in the condition.
   case ifArgumentBraceNewline = "if_argument_brace_newline"
-
-  /// Keep comma-separated if conditions on one line, or put each condition on a separate line.
   case mixedIfConditions = "mixed_if_conditions"
-
-  /// Combine nested if conditions when the outer body contains only the inner if and neither has else.
-  /// Keep the condition order. Statements before or after the inner if prevent this change.
   case collapsibleNestedIf = "collapsible_nested_if"
-
-  /// Keep compact switch cases together. Use one blank line if either adjacent case spans multiple lines.
-  /// Count attached comments as part of each case. Put separation before leading comments.
   case switchCaseSpacing = "switch_case_spacing"
-
-  /// Indent each continued case pattern two spaces from the case keyword.
   case switchCasePatternIndent = "switch_case_pattern_indent"
-
-  /// Keep adjacent single-line methods and protocol requirements of the same kind together.
-  /// Use one blank line if either member spans multiple lines, including comments and attributes.
-  /// Properties, methods, initializers, deinitializers, subscripts and associated types form separate groups.
-  /// Single-line type aliases stay together. Multiline aliases use one blank line on each side.
-  /// Separate nested types from adjacent declarations. Bodies with at most three code lines have no opening blank line.
-  /// Longer type and extension bodies start with one blank line. MARK comments start new groups.
-  /// Getter and function effect groups use one blank line between them.
   case memberSpacing = "member_spacing"
-
-  /// Order aliases, nested types, stored properties, initializers, deinitializers, subscripts, getters and functions.
-  /// Group getters and functions: plain, throwing, async, async throwing. Keep order within each group.
-  /// Conditional blocks with one section and effect group move as complete units.
-  /// Check each conditional branch on its own.
   case memberOrder = "member_order"
-
-  /// Put static properties first, then group by read and setter access, let/var/attribute kind and type.
-  /// Separate read and write access groups with one blank line at any group size.
-  /// Separate stored-property groups of more than three elements at each level, and computed-property effect groups.
-  /// Keep computed-property order. Keep single-line declarations together within each effect group.
-  /// Count attributes on separate lines as part of the declaration and put its separator before them.
-  /// Keep stored-property attributes inline through column 120, including indentation.
   case propertyGrouping = "property_grouping"
-
-  /// Put each declaration attribute on a separate line, except for imports and stored properties.
-  /// Keep import attributes on the import line.
-  /// Keep trailing objc and concurrent attributes with a declaration through column 120.
-  /// Keep protocol member attributes with their declaration through column 120.
-  /// Put available attributes on separate lines in all declarations.
-  /// Stored properties use the column limit in property_grouping.
-  /// Keep comments and attribute arguments in place.
   case attributeNewline = "attribute_newline"
-
-  /// Instance properties in structs that explicitly conform to View are private, except body.
-  /// Preserve explicit initializers or generate a known memberwise signature, including Binding inputs.
   case privateViewProperties = "private_view_properties"
-
-  /// Keep consecutive uses of local values together, including branches, captures and final exits.
-  /// Keep declarations and assignments beside an immediate if or guard whose conditions read the value.
-  /// Keep a declaration beside a return that reads it before entering a closure body.
-  /// Separate independent declarations, combined preparation groups and leading comments.
-  /// A directly derived declaration ends the initial preparation stage. Assertions and repeated calls form groups.
-  /// Keep manual separators within assertion groups. Keep a callback assignment beside its immediate uses.
-  /// Require one blank line after a multiline guard before the next statement.
-  /// Require one blank line after a multiline local declaration; wrapped calls use their argument rule.
-  /// Require one blank line between adjacent multiline assignments, including dependent assignments.
-  /// Other bodies with at most three code lines stay compact, except at leading group comments.
-  /// Consecutive single-line assignments stay compact at any group length.
-  /// Longer bodies allow manual separators between ordinary actions.
-  /// Remove opening blank lines from executable bodies of any length, after the opening brace or closure signature.
-  /// Keep compact independent checks together. Separate multiline independent checks.
   case statementGrouping = "statement_grouping"
-
-  /// Separate a local call from the next statement when its argument block has more than three code lines.
-  /// Shorter wrapped argument blocks allow zero or one blank line within a dependency group.
   case multilineCallDeclarationSpacing = "multiline_call_declaration_spacing"
-
-  /// Use a switch for two or more consecutive SwiftSyntax type checks of the same object.
-  /// Keep single checks, wrapper calls and checks of different objects.
   case preferSyntaxKindSwitch = "prefer_syntax_kind_switch"
-
-  /// Use a switch for two or more consecutive native as? or is checks of the same object.
-  /// Keep calls, property reads and extra conditions in their original evaluation order.
   case preferTypeSwitch = "prefer_type_switch"
-
-  /// Keep an operand and its member access together after an arithmetic, logical or comparison operator.
   case binaryOperandMemberWrap = "binary_operand_member_wrap"
-
-  /// Permit a single-line if body only for one return, throw, break or continue statement. Put other statements
-  /// in a multiline block.
   case singleLineIfExit = "single_line_if_exit"
-
-  /// Permit a single-line else body, including guard else, only for one return, throw, break or continue
-  /// statement.
   case singleLineElseExit = "single_line_else_exit"
-
-  /// Keep a comparison operator with its right operand when the expression wraps.
-  /// Start the operator on a continuation line when the right operand spans multiple lines.
   case comparisonOperatorNewline = "comparison_operator_newline"
-
-  /// Keep self and the following member on the same line.
   case selfMemberNewline = "self_member_newline"
-
-  /// Require a blank line after a single-line else block before the next statement. The enclosing closing brace
-  /// needs no blank line. Bodies with at most three code lines keep statements together.
-  /// Consecutive checks, connected local uses and multiline guards follow statement_grouping.
   case compactElseBlankLine = "compact_else_blank_line"
-
-  /// Start the assigned expression on the same line as =.
   case assignmentRhsSameLine = "assignment_rhs_same_line"
-
-  /// Keep an inline body on one line, or start the body on the next line. Check functions, properties and
-  /// closures. Skip closure headers and comments after {.
   case multilineInlineBlock = "multiline_inline_block"
-
-  /// Put guard and each condition on separate lines when the header exceeds 120 characters. Exclude else from the
-  /// length and count each wrapped gap as one space. Short headers can wrap freely. Review headers with comments
-  /// manually.
   case multilineGuardConditions = "multiline_guard_conditions"
-
-  /// Keep one simple return, throw, break or continue with else when the line fits within 120 characters. Count
-  /// the body indent as two spaces after SwiftFormat. Keep complex bodies multiline.
   case compactGuardExit = "compact_guard_exit"
-
-  /// Keep a *, / and % chain on one line, or put each operand on its own line. Use leading operators.
   case mixedMultiplicativeExpressionWrap = "mixed_multiplicative_expression_wrap"
-
-  /// Keep generic, tuple, array and dictionary return types on one line after ->. Wrap function parameters
-  /// instead. Check the return-type syntax node.
   case multilineReturnType = "multiline_return_type"
-
-  /// Keep a qualified return type together across member access. Check nested generic arguments recursively.
   case splitReturnTypeMember = "split_return_type_member"
-
-  /// Keep operands at the same Boolean precedence on one line, or put each continuation on a separate line.
-  /// Check &&, || and parenthesized groups separately.
   case mixedBooleanConditionWrap = "mixed_boolean_condition_wrap"
-
-  /// After two or more members on one line, put each further member on a new line. The base can include one
-  /// property, such as model.state. Check subscripts, generic calls, optional chaining and closures.
   case mixedMemberChainWrap = "mixed_member_chain_wrap"
-
-  /// Start a call after a previous call on a new line if its arguments wrap after (. Check generic arguments,
-  /// optional chaining and closures.
   case chainedCallArgumentsWrap = "chained_call_arguments_wrap"
-
-  /// Join a final multiline list call to its receiver. Its arguments and closing comma use continuation lines.
   case multilineListElementChain = "multiline_list_element_chain"
-
-  /// Start a call with a multiline closure on a new line after the previous closure.
   case chainedClosureNewline = "chained_closure_newline"
-
-  /// In a stored call chain, indent the first multiline closure body four spaces from the binding.
-  /// Align its closing brace and the following calls two spaces from the binding.
   case chainedClosureIndent = "chained_closure_indent"
-
-  /// Join a multiline trailing closure to the closing parenthesis of wrapped receiver arguments.
   case chainedClosureSameLine = "chained_closure_same_line"
-
-  /// Use a single-line string literal for interpolated text with one physical content line. Skip raw literals and
-  /// literals with newline, carriage-return or Unicode escapes.
   case singleLineInterpolatedString = "single_line_interpolated_string"
-
-  /// Align contents and closing quotes with standalone opening quotes.
-  /// Use two extra spaces when opening quotes follow other code on the same line.
-  /// Keep literal values, escapes and interpolation expressions unchanged.
   case multilineStringIndent = "multiline_string_indent"
-
-  /// Keep ?? with its fallback, and keep the fallback member chain together. Wrap before ?? when necessary.
-  /// SwiftFormat does not select this break automatically.
   case nilCoalescingMemberWrap = "nil_coalescing_member_wrap"
-
-  /// Declare file-level functions, including functions in #if blocks, in a type or extension. Permit global
-  /// debugFatalError overloads. Identify methods and local functions by their parent syntax nodes.
   case noGlobalFunctions = "no_global_functions"
-
-  /// Start enum case declarations on a new line after {. Permit multiple values separated by commas in one
-  /// declaration.
   case enumCaseNewline = "enum_case_newline"
-
-  /// Keep single-line enum case declarations together. Use one blank line if either declaration spans multiple lines.
-  /// Count attached comments as part of each declaration. Put separation before leading comments.
   case enumCaseBlankLine = "enum_case_blank_line"
-
-  /// Keep member access within an arithmetic operand together, such as components.blue or measure(...).height.
   case arithmeticMemberWrap = "arithmetic_member_wrap"
-
-  /// Move the first ?? and its fallback to a new line when the source line exceeds 120 characters. Include any
-  /// preceding string literal in the length.
   case longNilCoalescing = "long_nil_coalescing"
-
-  /// Combine adjacent string literals into one. Use a multiline literal with line continuations for long text.
   case concatenatedStringLiterals = "concatenated_string_literals"
-
-  /// Keep as, as? and as! on the expression line or with its closing parenthesis. SwiftLint checks the ban on as!
-  /// separately.
   case castOperatorNewline = "cast_operator_newline"
-
-  /// Keep -> after the closing parameter parenthesis. Wrap long declarations inside the parameter list.
   case returnArrowNewline = "return_arrow_newline"
-
-  /// Keep a + and - chain on one line, or put each operand on its own line. Use leading operators.
-  /// Check parenthesized groups separately.
   case mixedAdditiveExpressionWrap = "mixed_additive_expression_wrap"
-
-  /// Put a wrapped +, -, *, / or % at the start of the continuation with its right operand.
   case arithmeticOperatorEndOfLine = "arithmetic_operator_end_of_line"
-
-  /// Keep short single-argument calls with name, member or arithmetic arguments whole on either side.
-  /// Move the outer operator before splitting a short right call. Keep each source line within 120 columns.
   case arithmeticCallArgumentsWrap = "arithmetic_call_arguments_wrap"
-
-  /// Keep arithmetic on one line when the full source line fits within 120 characters. Otherwise, prefer
-  /// breaks in the outer expression before call arguments or parenthesized groups. At the same nesting level,
-  /// wrap + or - before *, / or %. Split a nested group only when its segment still exceeds the limit.
-  /// Indent continuations two spaces.
-  /// Skip comments, multiline tokens and breaks outside arithmetic boundaries. Preserve all expression syntax.
   case arithmeticPrecedenceWrap = "arithmetic_precedence_wrap"
-
-  /// Put each wrapped binary operator with its right operand, including custom operators.
-  /// Standard assignment operators use assignment layout. Check operations in their right operands separately.
-  /// Unary operators are separate syntax nodes and do not enter this check.
   case binaryOperatorWrap = "binary_operator_wrap"
-
-  /// After multiline call arguments, tuples, subscript arguments or collection elements, put the closing
-  /// parenthesis or bracket on a separate line. Nested closing delimiters can share that line.
-  /// An outer operator can follow the delimiter on the same line. A nested closing delimiter or multiline
-  /// string closing quote can start a compact tail with arguments, casts, member access or calls.
-  /// Arithmetic and ternary expressions still require their own closing line.
   case multilineExpressionClosingDelimiter = "multiline_expression_closing_delimiter"
-}
-
-extension StyleRule {
-
-  var message: String {
-    switch self {
-    case .chainedClosureIndent: "Indent the closure body and align its closing brace with the following call chain."
-    case .mixedNilCoalescingWrap: "Put ?? operands on one line or each continuation on its own line."
-    case .ifExpressionBindingSameLine: "Keep let or var and the if expression binding on the same line."
-
-    case .ifExpressionConditionIndent:
-      """
-      Indent each continued if expression condition by two spaces from the \
-      declaration.
-      """
-
-    case .multilineIfBrace:
-      """
-      Put the opening brace on its own line after wrapped conditions; argument \
-      wrapping does not count.
-      """
-
-    case .ifArgumentBraceNewline: "Keep the opening brace with the condition when only call arguments wrap."
-    case .mixedIfConditions: "Put if conditions on one line or each condition on its own line."
-    case .collapsibleNestedIf: "Combine these nested if conditions in their current evaluation order."
-    case .switchCasePatternIndent: "Indent continued case patterns by two spaces."
-    case .switchCaseSpacing: "Keep compact switch cases together; separate multiline cases with one blank line."
-    case .memberOrder: "Order member sections, then group getters and functions: plain, throwing, async, async throwing."
-    case .privateViewProperties: "Make View instance properties private, except body; pass inputs through an initializer."
-    case .memberSpacing: "Separate type openings, member kinds and multiline members with one blank line."
-    case .propertyGrouping: "Put static properties first, then group by visibility, kind, type and attribute; sort each block by line length and separate groups larger than three."
-    case .attributeNewline: "Put each declaration attribute on a separate line before the declaration."
-    case .statementGrouping: "Separate statement groups and multiline checks with one blank line."
-    case .multilineCallDeclarationSpacing: "Use a blank line after more than three argument code lines; group shorter calls by dependency."
-    case .preferTypeSwitch: "Use a switch for consecutive as? or is checks of the same object."
-    case .preferSyntaxKindSwitch: "Use a syntax-kind switch for consecutive type checks of the same object."
-
-    case .binaryOperandMemberWrap:
-      """
-      Keep a member access with its operand; wrap between operands or within \
-      call arguments.
-      """
-
-    case .singleLineIfExit: "Use a single-line if body only for return, throw, break or continue."
-    case .singleLineElseExit: "Use a single-line else body only for return, throw, break or continue."
-    case .comparisonOperatorNewline: "Keep the comparison operator with its right operand on the continuation line."
-    case .selfMemberNewline: "Keep self and its member on the same line."
-    case .compactElseBlankLine: "Add a blank line after a compact else block before the next statement."
-    case .assignmentRhsSameLine: "Start the assigned expression on the same line as =."
-    case .multilineInlineBlock: "Keep an inline block on one line, or start its body on the next line."
-
-    case .multilineGuardConditions:
-      """
-      When a guard header exceeds 120 characters, put guard and each condition \
-      on separate lines.
-      """
-
-    case .compactGuardExit:
-      """
-      Put a single return, throw, break or continue on the else line when it \
-      fits within 120 characters.
-      """
-
-    case .mixedMultiplicativeExpressionWrap:
-      """
-      Put product operands on one line or one per line; use leading operators.
-      """
-
-    case .multilineReturnType: "Keep the return type on one line; wrap function parameters instead."
-    case .splitReturnTypeMember: "Keep qualified return type names on one line."
-    case .mixedBooleanConditionWrap: "Put boolean operands on one line or each continuation on its own line."
-
-    case .mixedMemberChainWrap:
-      """
-      Put each continuation on a new line; the base may include one property, \
-      such as model.state.
-      """
-
-    case .chainedCallArgumentsWrap: "Start a chained call on a new line before wrapping its arguments."
-    case .multilineListElementChain: "Wrap the final chained call and place its arguments before a separate closing comma."
-    case .chainedClosureNewline: "Start a chained call with a multiline closure on a new line."
-    case .chainedClosureSameLine: "Place the chained closure call after the receiver's closing parenthesis."
-    case .multilineStringIndent: "Align multiline string contents with standalone opening quotes; otherwise indent by two spaces."
-    case .singleLineInterpolatedString: "Use a single-line literal when interpolated text has one content line."
-    case .nilCoalescingMemberWrap: "Keep ?? and the fallback together; wrap before ??."
-    case .noGlobalFunctions: "Declare the function in its owning type or extension; debugFatalError may be global."
-    case .enumCaseNewline: "Start enum cases on a new line after the opening brace."
-    case .enumCaseBlankLine: "Keep compact enum cases together; separate multiline cases with one blank line."
-    case .arithmeticMemberWrap: "Keep member access within an operand; split additive terms between lines."
-    case .longNilCoalescing: "Move ?? and the fallback to the next line when the line exceeds 120 characters."
-
-    case .concatenatedStringLiterals:
-      """
-      Use one string literal; wrap long text with triple quotes and line \
-      continuations.
-      """
-
-    case .castOperatorNewline: "Keep as, as? and as! with the expression being cast."
-    case .returnArrowNewline: "Keep the return arrow and type with the closing parenthesis; wrap parameters instead."
-
-    case .mixedAdditiveExpressionWrap:
-      "Put additive terms on one line or one per line; use leading operators."
-
-    case .arithmeticOperatorEndOfLine: "Move the arithmetic operator to the continuation with its right operand."
-
-    case .arithmeticPrecedenceWrap:
-      "Keep short arithmetic on one line; wrap outer operations before nested groups, with + or - before *, / or %."
-
-    case .binaryOperatorWrap: "Put the binary operator with its right operand on the continuation line."
-    case .multilineExpressionClosingDelimiter: "Put the closing delimiter on a separate line after multiline content."
-    case .arithmeticCallArgumentsWrap: "Keep a short single-argument call whole and wrap at the outer operator."
-    }
-  }
 }
