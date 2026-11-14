@@ -38,8 +38,8 @@ extension BundledResource where Content == SwiftFixture {
 
   func loadFixing() throws -> FixingSwiftFixture {
     let fixture = try load()
-    let header = "// MARK: - Input\n"
-    let parts = fixture.source.components(separatedBy: "\n// MARK: - Output\n")
+    let header = "// MARK: Input\n"
+    let parts = fixture.source.components(separatedBy: "\n// MARK: Output\n")
     guard fixture.source.hasPrefix(header), parts.count == 2 else {
       throw CocoaError(.fileReadCorruptFile, userInfo: [NSFilePathErrorKey: path])
     }

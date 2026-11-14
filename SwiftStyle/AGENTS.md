@@ -10,7 +10,7 @@ Read [[README]] and comments in the affected configs or checker source files bef
 - Explain SwiftFormat and SwiftLint settings with comments in their configs.
 - Keep one named Swift fixture per scenario in `Tests/Fixtures/<Suite>/`. Group accepting fixtures in rule folders; name each file for the behavior it checks.
 - Keep the three checker suites AcceptingTests, FixingTests and DecliningTests. Run SwiftStyle with all rules. PipelineTests runs the real lint script on disposable files and checks exact output, status and a stable second pass.
-- Fixing fixtures start with `// MARK: - Input`. One blank line and `// MARK: - Output` separate the independent expected output. Compare the fixed input with the expected output and typecheck both. Check that Output has no diagnostics and stays unchanged after fixes.
+- Fixing fixtures start with `// MARK: Input`. One blank line and `// MARK: Output` separate the independent expected output. Compare the fixed input with the expected output and typecheck both. Check that Output has no diagnostics and stays unchanged after fixes.
 - Declining fixtures contain source and expect the rule IDs declared in the suite. Fixes preserve the input and its diagnostics. Parser-error inputs may be invalid Swift.
 - Accepting fixtures contain source that compiles without diagnostics and stays unchanged after fixes.
 - Tuist generates typed Files.<Suite>.files properties from the shared Files template. The SwiftStyleFixtures resource target copies fixtures with their relative paths; the test target embeds its bundle. BundledResource<SwiftFixture> lists and reads bundled files with their relative paths; formatting loading removes section markers and preserves source whitespace. Fixture files use LF; tests also check CRLF.
