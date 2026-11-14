@@ -10,6 +10,7 @@ enum Instrument {
 
 // MARK: Output
 enum Instrument {
+
   typealias Fret = Int
   typealias String = Int
   typealias Tuning = [Int]
@@ -65,6 +66,7 @@ struct Methods {
 
 // MARK: Output
 struct Methods {
+
   func first() -> Int { 1 }
   func second() -> Int { 2 }
 }
@@ -79,6 +81,7 @@ protocol Worker {
 
 // MARK: Output
 protocol Worker {
+
   func start()
   func stop()
 }

@@ -79,14 +79,6 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case NoManualGap
-func run(input: Int, sink: (Int) -> Void) {
-  let value = input
-  sink(value)
-  let next = value + 1
-  sink(next)
-}
-
 // MARK: - Case OuterScopeLocal
 func run(input: Int, sink: @escaping (Int) -> Void) {
   let value = input

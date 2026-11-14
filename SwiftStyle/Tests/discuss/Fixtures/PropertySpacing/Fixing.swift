@@ -58,6 +58,7 @@ struct MissingBindingGapBeforeComment {
 
 // MARK: Output
 struct MissingBindingGapBeforeComment {
+
   let a = 1
 
   // Mutable value.
@@ -91,6 +92,7 @@ struct ExtraComputedGap {
 
 // MARK: Output
 struct ExtraComputedGap {
+
   var a: Int { 1 }
   var b: Int { 2 }
 }
@@ -106,6 +108,7 @@ struct ExtraGapBetweenTwoTypes {
 
 // MARK: Output
 struct ExtraGapBetweenTwoTypes {
+
   var w: Double = 1
   var s: String = "value"
 }
@@ -147,6 +150,7 @@ enum Wrappers {
 }
 
 struct ExtraGapBetweenTwoWrappers {
+
   @Wrappers.F var a: Int = 1
   @Wrappers.G var b: Int = 2
 }
@@ -161,6 +165,7 @@ protocol Values {
 
 // MARK: Output
 protocol Values {
+
   var a: Int { get }
   var b: Int { get set }
 }
@@ -176,6 +181,7 @@ struct BlankLineWithinSameType {
 
 // MARK: Output
 struct BlankLineWithinSameType {
+
   var a = 1
   var b = 2
 }
@@ -221,6 +227,7 @@ struct ExtraBindingGap {
 
 // MARK: Output
 struct ExtraBindingGap {
+
   let a = 1
 
   var b = 2
@@ -235,6 +242,7 @@ struct MissingSmallBindingGap {
 
 // MARK: Output
 struct MissingSmallBindingGap {
+
   let a = 1
 
   var b = 2
@@ -265,6 +273,7 @@ enum Wrappers {
 }
 
 struct MissingWrapperBindingGap {
+
   let a = 1
 
   @Wrappers.F var b = 2

@@ -1,5 +1,6 @@
 // MARK: - Case DocCommentBelongsToProperty
 struct DocCommentBelongsToProperty {
+
   var a = 1
 
   /// The second value.

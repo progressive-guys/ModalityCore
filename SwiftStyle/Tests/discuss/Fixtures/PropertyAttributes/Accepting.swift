@@ -5,6 +5,7 @@ struct Injected<Value> {
 }
 
 struct Settings {
+
   @Injected // An attached attribute comment.
   var value = 1
 }

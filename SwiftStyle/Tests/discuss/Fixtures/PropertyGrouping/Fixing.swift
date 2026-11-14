@@ -33,6 +33,7 @@ struct RepeatedConstructorTypeGroup {
 
 // MARK: Output
 struct RepeatedConstructorTypeGroup {
+
   let m = 1
   let a = String("one")
   let z = String("two")
@@ -48,6 +49,7 @@ struct MultipleBindingsCountTowardGroupSize {
 
 // MARK: Output
 struct MultipleBindingsCountTowardGroupSize {
+
   static let a = 1, b = 2, c = 3, cc = 4
 
   let d = 4
@@ -106,6 +108,7 @@ final class Values {
 
 // MARK: Output
 final class Values {
+
   let b = 2
 
   var a = 1
@@ -136,6 +139,7 @@ enum Wrappers {
 }
 
 final class Values {
+
   var b = 2
   @Wrappers.F var a: Int = 1
 }
@@ -149,6 +153,7 @@ final class Values {
 
 // MARK: Output
 final class Values {
+
   private var b = 2
   fileprivate var a = 1
 }
@@ -162,6 +167,7 @@ final class Values {
 
 // MARK: Output
 final class Values {
+
   public var b = 2
   private var a = 1
 }
@@ -178,6 +184,7 @@ final class Model {
 // MARK: Output
 
 final class Model {
+
   @Published var isReady = false
 
   @Published private(set) var value = 0
@@ -193,6 +200,7 @@ final class Values {
 
 // MARK: Output
 final class Values {
+
   var a: Int = 1
   var z: Int = 2
   var m: String = "value"
@@ -208,6 +216,7 @@ final class Values {
 
 // MARK: Output
 final class Values {
+
   var a = 1
   var z = -2
   var m = "value"
@@ -294,6 +303,7 @@ final class Values {
 
 // MARK: Output
 final class Values {
+
   static let b = 2
   let a = 1
 }

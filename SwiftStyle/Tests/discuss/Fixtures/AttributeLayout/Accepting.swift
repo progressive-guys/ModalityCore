@@ -1,5 +1,6 @@
 // MARK: - Case CommentBetweenAttributeAndProperty
 class Comments {
+
   @available(*, deprecated)
   // Keep this comment with the property.
   var value: Int = 0
@@ -27,6 +28,7 @@ final class Example {
 
 // MARK: - Case ProtocolFunctionAttributeStack
 protocol Example {
+
   @MainActor
   @available(*, deprecated)
   func read() -> Int
@@ -34,6 +36,7 @@ protocol Example {
 
 // MARK: - Case ProtocolInitializerAttributeStack
 protocol Example {
+
   @MainActor
   @available(*, deprecated)
   init()
@@ -41,6 +44,7 @@ protocol Example {
 
 // MARK: - Case ProtocolPropertyAttributeStack
 protocol Example {
+  
   @MainActor
   @available(*, deprecated)
   var value: Int { get }
@@ -48,6 +52,7 @@ protocol Example {
 
 // MARK: - Case ProtocolSubscriptAttributeStack
 protocol Example {
+  
   @MainActor
   @available(*, deprecated)
   subscript(index: Int) -> Int { get }
@@ -55,6 +60,7 @@ protocol Example {
 
 // MARK: - Case StoredAvailabilityAlreadySeparate
 class Width120 {
+
   @available(*, deprecated, message: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
   var value: Int = 0
 }

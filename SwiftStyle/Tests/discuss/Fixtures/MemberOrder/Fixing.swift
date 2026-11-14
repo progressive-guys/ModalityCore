@@ -7,6 +7,7 @@ protocol Requirements {
 
 // MARK: Output
 protocol Requirements {
+
   typealias Number = Int
 
   associatedtype Value
@@ -21,6 +22,7 @@ struct AliasAfterStorage {
 
 // MARK: Output
 struct AliasAfterStorage {
+
   typealias Value = Int
 
   var value = 0
@@ -35,6 +37,7 @@ protocol Requirements {
 
 // MARK: Output
 protocol Requirements {
+
   associatedtype Value
 
   subscript(index: Int) -> Int { get }
@@ -49,6 +52,7 @@ struct FunctionBeforeComputed {
 
 // MARK: Output
 struct FunctionBeforeComputed {
+
   var value: Int { 1 }
 
   func read() -> Int { value }
@@ -63,6 +67,7 @@ final class SubscriptBeforeDeinit {
 
 // MARK: Output
 final class SubscriptBeforeDeinit {
+
   deinit {}
 
   subscript(index: Int) -> Int { index }
@@ -77,6 +82,7 @@ struct ComputedBeforeInitializer {
 
 // MARK: Output
 struct ComputedBeforeInitializer {
+
   init() {}
 
   var value: Int { 1 }
@@ -91,6 +97,7 @@ final class DeinitBeforeInit {
 
 // MARK: Output
 final class DeinitBeforeInit {
+
   init() {}
 
   deinit {}
@@ -105,6 +112,7 @@ protocol Values {
 
 // MARK: Output
 protocol Values {
+
   init()
 
   subscript(index: Int) -> Int { get }
@@ -137,6 +145,7 @@ struct TypeAfterFunction {
 
 // MARK: Output
 struct TypeAfterFunction {
+
   struct Value {}
 
   func read() {}
@@ -151,6 +160,7 @@ struct Values {
 
 // MARK: Output
 struct Values {
+
   struct Nested {}
 
   var stored = 0
@@ -169,6 +179,7 @@ extension Value {
 struct Value {}
 
 extension Value {
+
   struct Nested {}
 
   func read() {}
@@ -183,6 +194,7 @@ struct ObserverIsStored {
 
 // MARK: Output
 struct ObserverIsStored {
+
   var value = 0 { didSet {} }
 
   init() {}
@@ -197,6 +209,7 @@ protocol Values {
 
 // MARK: Output
 protocol Values {
+
   var value: Int { get }
 
   func read()
@@ -211,6 +224,7 @@ struct InitializerBeforeStorage {
 
 // MARK: Output
 struct InitializerBeforeStorage {
+
   var value = 1
 
   init() {}
@@ -225,6 +239,7 @@ struct ComputedBeforeSubscript {
 
 // MARK: Output
 struct ComputedBeforeSubscript {
+
   subscript(index: Int) -> Int { index }
 
   var value: Int { 1 }
@@ -239,6 +254,7 @@ protocol Values {
 
 // MARK: Output
 protocol Values {
+
   subscript(index: Int) -> Int { get }
 
   var value: Int { get }

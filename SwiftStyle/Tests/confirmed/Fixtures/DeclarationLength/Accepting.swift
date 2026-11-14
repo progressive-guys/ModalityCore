@@ -1,5 +1,6 @@
 // MARK: - Case AlreadyOrderedMemberwiseStruct
 struct Pair {
+
   let x: Int
   let longerName: Int
 }
@@ -10,6 +11,7 @@ func makePair() -> Pair {
 
 // MARK: - Case EnumCasesKeepTheirOrder
 enum Code: Int, CaseIterable {
+
   case longerName
   case x
 }
@@ -28,6 +30,7 @@ func sum(longerName: Int, x: Int) -> Int {
 
 // MARK: - Case StableEqualLengths
 private protocol Values {
+
   var z: Int { get }
   var a: Int { get }
 }

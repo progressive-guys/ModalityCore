@@ -18,6 +18,7 @@ struct Box<Value> {
 }
 
 struct Values {
+
   @Box var x = 2
   @Box var longerName = 1
   init() {}

@@ -28,6 +28,7 @@ enum Examples {
 
 // MARK: Output
 enum Examples {
+
   static func value(_ source: Any) -> Int? {
     source as? Int
   }

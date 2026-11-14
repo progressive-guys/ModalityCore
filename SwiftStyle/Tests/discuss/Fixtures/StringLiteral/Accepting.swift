@@ -34,6 +34,7 @@ enum Examples {
 
 // MARK: - Case RawLiteralInterpolationLikeText
 enum Examples {
+
   static let raw = #"""
     Hello \(text)
     """#

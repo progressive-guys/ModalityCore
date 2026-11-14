@@ -1,5 +1,6 @@
 // MARK: - Case ThreeCodeLines
 enum Triple {
+
   case first
   case second
   case third
@@ -7,6 +8,7 @@ enum Triple {
 
 // MARK: - Case ThreeCodeLinesWithDocComment
 struct Triple {
+
   let first: Int
 
   /// A label for the second value.

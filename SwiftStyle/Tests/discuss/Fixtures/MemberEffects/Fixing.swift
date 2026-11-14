@@ -7,6 +7,7 @@ struct FunctionEffects {
 
 // MARK: Output
 struct FunctionEffects {
+
   func delayed() async {}
 
   func combined() async throws {}
@@ -25,6 +26,7 @@ extension Calls {
 struct Calls {}
 
 extension Calls {
+
   func plain() {}
 
   func delayed() async {}
@@ -97,6 +99,7 @@ struct RethrowingEffects {
 
 // MARK: Output
 struct RethrowingEffects {
+
   func plain() {}
 
   func fallible(_ action: () throws -> Void) rethrows { try action() }
@@ -155,6 +158,7 @@ struct GetterEffects {
 
 // MARK: Output
 struct GetterEffects {
+
   var fallible: Int { get throws { 2 } }
 
   var delayed: Int { get async { 1 } }

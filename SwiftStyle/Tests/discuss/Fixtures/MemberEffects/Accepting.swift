@@ -9,6 +9,7 @@ struct Calls {
 
 // MARK: - Case TypedNeverStaysThrowingCategory
 struct Calls {
+
   func fallible() throws {}
   func typed() throws(Never) {}
 }

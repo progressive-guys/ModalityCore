@@ -8,6 +8,7 @@ enum Examples {
 
 // MARK: Output
 enum Examples {
+
   struct Result {}
 
   static func value() -> Examples.Result { .init() }

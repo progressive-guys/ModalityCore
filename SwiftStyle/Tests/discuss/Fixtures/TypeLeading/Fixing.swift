@@ -31,6 +31,7 @@ extension Int {
 
 // MARK: Output
 extension Int {
+
   func incremented() -> Int {
     self + 1
   }

@@ -7,6 +7,7 @@ enum Windows {
 
 // MARK: Output
 enum Windows {
+
   static let longerName = "x"
   static let a = "a substantially longer literal"
 }
@@ -20,6 +21,7 @@ private protocol Actions {
 
 // MARK: Output
 private protocol Actions {
+
   func reset()
   func value(for index: Int) -> Int
 }
@@ -33,6 +35,7 @@ private protocol Values {
 
 // MARK: Output
 private protocol Values {
+
   var x: Int { get }
   var longerName: Int { get }
 }

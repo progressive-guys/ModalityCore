@@ -11,6 +11,7 @@ struct Methods {
 
 // MARK: - Case DifferentMemberKinds
 struct DifferentKinds {
+
   var a = 1
 
   init() {}
@@ -20,6 +21,7 @@ struct DifferentKinds {
 
 // MARK: - Case InlineNestedTypes
 struct SeparatedTypes {
+
   struct First {}
 
   struct Second {}

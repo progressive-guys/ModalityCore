@@ -8,6 +8,7 @@ struct Example {
 
 // MARK: Output
 struct Example {
+
   @MainActor
   static func value() -> Int {
     1
@@ -44,6 +45,7 @@ extension Int {
 
 // MARK: Output
 extension Int {
+
   func requirePositive() {
     guard self > 0 else { return }
   }

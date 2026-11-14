@@ -95,6 +95,7 @@ enum Examples {
 
 // MARK: Output
 enum Examples {
+
   static func values() -> [Int] {
     let text = String(
       repeating: "a",

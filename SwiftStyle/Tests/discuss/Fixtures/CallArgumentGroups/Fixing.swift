@@ -21,7 +21,6 @@ func run(input: Int, sink: (Int) -> Void) {
 func run(input: Int, visit: (() -> Int) -> Void, sink: (Int) -> Void) {
   let value = input
   visit { value }
-
   let next = value + 1
   sink(next)
 }
@@ -30,6 +29,7 @@ func run(input: Int, visit: (() -> Int) -> Void, sink: (Int) -> Void) {
 func run(input: Int, visit: (() -> Int) -> Void, sink: (Int) -> Void) {
   let value = input
   visit { value }
+  
   let next = value + 1
   sink(next)
 }

@@ -3,6 +3,7 @@
 enum Examples {
 
   struct NestedModel: View {
+
     struct Model {
       let title: String }
 
@@ -12,6 +13,7 @@ enum Examples {
 
 // MARK: - Case OrdinaryModelProperty
 enum Examples {
+
   struct Model {
     let title: String
   }

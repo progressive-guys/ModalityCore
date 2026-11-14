@@ -137,6 +137,7 @@ func combine(_ first: Value, _ second: Value) -> Value {
 infix operator <+>: AdditionPrecedence
 
 struct Value {
+
   let value: Int
 
   static func <+> (_ lhs: Self, _ rhs: Self) -> Self {
@@ -172,6 +173,7 @@ enum Examples {
 
 // MARK: Output
 enum Operands {
+
   struct Item {
     let value: Int
   }
@@ -214,6 +216,7 @@ enum Examples {
 
 // MARK: Output
 enum Operands {
+
   struct Item {
     let value: Int
   }

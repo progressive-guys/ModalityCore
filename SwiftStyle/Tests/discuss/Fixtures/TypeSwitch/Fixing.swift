@@ -436,6 +436,7 @@ enum Example {
 enum Example {
 
   struct Box {
+
     var read: () -> Any
     var value: Any { read() }
   }

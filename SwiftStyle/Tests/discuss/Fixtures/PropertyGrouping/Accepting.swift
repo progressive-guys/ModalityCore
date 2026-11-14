@@ -33,6 +33,7 @@ public enum Examples {
 public enum Examples {}
 
 public extension Examples {
+
   var a1: Int { 1 }
   internal var b1: Int { 2 }
 }
@@ -92,6 +93,7 @@ open class ReadVisibilityOrder {
 
 // MARK: - Case SharedTypeAnnotationAccepted
 struct SharedTypeAnnotation {
+
   var c = 3
   var a, b: Int
   var s = "value"
@@ -123,6 +125,7 @@ struct ThreeElementsStayTogether {
 private func makeNumber() -> Int { 1 }
 
 struct Values {
+
   let a = makeNumber()
   let z = makeNumber()
   let m = "value"
@@ -135,6 +138,7 @@ struct Wrapped<Value> {
 }
 
 struct Values {
+
   @Wrapped(wrappedValue: 1) var a: Int
   @Wrapped(wrappedValue: 2) var b: Int
 }

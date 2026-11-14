@@ -59,6 +59,7 @@ enum Examples {
 
 // MARK: - Case ExplicitGroupedOperand
 enum Examples {
+
   static func grouped(_ first: Int, _ second: Int, _ third: Int) -> Int {
     (first + second) - third
   }
@@ -66,6 +67,7 @@ enum Examples {
 
 // MARK: - Case InlineComparisonStaysInline
 enum Examples {
+
   static func value(_ first: Int, _ second: Int) -> Bool {
     first == second
   }
@@ -73,6 +75,7 @@ enum Examples {
 
 // MARK: - Case InlineRightConversion
 enum Examples {
+
   static func rightConversion(_ first: Int, _ second: Int) -> Double {
     12 / Double(first - second)
   }
@@ -90,6 +93,7 @@ enum Examples {
 
 // MARK: - Case ShortMixedPrecedence
 enum Examples {
+
   static func short(_ first: Double, _ second: Double) -> Double {
     first + second * 2
   }

@@ -80,6 +80,7 @@ enum Examples {
 
 // MARK: Output
 enum Examples {
+
   static func value() -> String {
     "firstsecond"
   }
@@ -152,6 +153,7 @@ enum Examples {
 
 // MARK: Output
 enum Examples {
+
   static func value(_ text: String) -> String {
     "Hello \(text)"
   }

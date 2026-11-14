@@ -109,6 +109,7 @@ final class Owner {
 
 // MARK: Output
 final class Owner {
+
   deinit {
     print("released")
   }
@@ -233,6 +234,7 @@ final class Owner {
 
 // MARK: Output
 final class Owner {
+
   init() {
     print("created")
   }

@@ -8,6 +8,7 @@ enum Value {
 
 // MARK: Output
 enum Value {
+
   case first
   case second
 }

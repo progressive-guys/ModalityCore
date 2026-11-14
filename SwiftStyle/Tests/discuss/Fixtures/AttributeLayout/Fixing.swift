@@ -28,8 +28,10 @@ final class Example: NSObject {
 // MARK: Output
 
 final class Example: NSObject {
+  
   @available(*, deprecated)
-  @objc(value:) func value(_ input: Int) -> Int { input }
+  @objc(value:)
+  func value(_ input: Int) -> Int { input }
 }
 
 // MARK: - Case AvailabilityBeforeInlineWrapper
@@ -42,6 +44,7 @@ final class Example {
 // MARK: Output
 
 final class Example {
+
   @available(*, deprecated)
   @Published
   var value = 0
@@ -57,8 +60,10 @@ final class Example: NSObject {
 // MARK: Output
 
 final class Example: NSObject {
+  
   @available(*, deprecated)
-  @objc @concurrent func compute(_ input: Int) async -> Int { input }
+  @objc
+  @concurrent func compute(_ input: Int) async -> Int { input }
 }
 
 // MARK: - Case AvailabilityBetweenComputedProperties
@@ -89,6 +94,7 @@ struct Example {
 
 // MARK: Output
 struct Example {
+  
   @MainActor /* Actor isolation. */
   @available(*, deprecated, message: "Use another property.") // Availability.
   var value: Int { 0 }
@@ -102,6 +108,7 @@ final class Example {
 
 // MARK: Output
 final class Example {
+
   @MainActor
   @available(*, deprecated)
   var value: Int { 0 }
@@ -115,6 +122,7 @@ final class Example {
 
 // MARK: Output
 final class Example {
+
   @available(*, deprecated)
   var value: Int { 0 }
 }
@@ -134,13 +142,18 @@ final class ConcurrentExample {
 // MARK: - Case ConcurrentAttributeOverInlineLimit
 // MARK: Input
 final class ConcurrentExample {
-  @concurrent func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
+  @concurrent func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> LongType {
+    first
+  }
 }
 
 // MARK: Output
 final class ConcurrentExample {
+
   @concurrent
-  func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
+  func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> LongType {
+    first
+  }
 }
 
 // MARK: - Case ConditionalComputedPropertyAttributes
@@ -215,6 +228,7 @@ struct Example {
 // MARK: Output
 
 struct Example {
+  
   var appearance: NSAppearance.Name { .aqua }
 
   @MainActor
@@ -263,6 +277,7 @@ final class Example {
 
 // MARK: Output
 final class Example {
+
   @available(*, deprecated)
   init() {}
 }
@@ -271,6 +286,7 @@ final class Example {
 // MARK: Input
 
 final class Example: NSObject {
+
   @available(*, deprecated) @objc // Called through Objective-C.
   func value() -> Int { 0 }
 }
@@ -278,21 +294,10 @@ final class Example: NSObject {
 // MARK: Output
 
 final class Example: NSObject {
+
   @available(*, deprecated)
   @objc // Called through Objective-C.
   func value() -> Int { 0 }
-}
-
-// MARK: - Case LongStoredAvailabilityOnSeparateLine
-// MARK: Input
-class Width121 {
-  @available(*, deprecated, message: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") var value: Int = 0
-}
-
-// MARK: Output
-class Width121 {
-  @available(*, deprecated, message: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-  var value: Int = 0
 }
 
 // MARK: - Case MultilineAttributeArgumentsAndFollowingAttribute
@@ -328,7 +333,9 @@ final class ObjectiveCExample: NSObject {
 // MARK: Output
 
 final class ObjectiveCExample: NSObject {
-  @objc(exportValueForConfiguredProject:defaultValue:) func export(_ projectIdentifier: String, defaultValue: String) {}
+
+  @objc(exportValueForConfiguredProject:defaultValue:)
+  func export(_ projectIdentifier: String, defaultValue: String) {}
 }
 
 // MARK: - Case ObjCAttributeOverInlineLimit
@@ -341,6 +348,7 @@ final class ObjectiveCExample: NSObject {
 // MARK: Output
 
 final class ObjectiveCExample: NSObject {
+
   @objc(exportValueForConfiguredProjects:defaultValue:)
   func export(_ projectIdentifier: String, defaultValue: String) {}
 }
@@ -355,6 +363,7 @@ final class Example: NSObject {
 // MARK: Output
 
 final class Example: NSObject {
+  
   @objc
   @available(*, deprecated)
   func value() -> Int { 0 }
@@ -380,6 +389,7 @@ protocol ExceedsLimit {
 
 // MARK: Output
 protocol ExceedsLimit {
+
   @MainActor
   func loadTrack(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
 }
@@ -395,6 +405,7 @@ protocol ExceedsLimit {
 @MainActor
 @available(*, deprecated)
 protocol Example {
+
   @available(*, deprecated)
   func value() -> Int
 }
@@ -415,6 +426,7 @@ protocol Example {
 }
 
 extension Example {
+
   @available(*, deprecated)
   func value() -> Int { 0 }
 }

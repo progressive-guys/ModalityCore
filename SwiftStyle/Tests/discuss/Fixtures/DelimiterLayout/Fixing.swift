@@ -81,6 +81,7 @@ enum Examples {
 
 // MARK: Output
 enum Examples {
+
   static var value: Int {
     1
   }
