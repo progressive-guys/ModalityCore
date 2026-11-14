@@ -20,14 +20,12 @@ struct Example {
 
 // MARK: - Case AvailabilityBeforeInlineObjC
 // MARK: Input
-import Foundation
 
 final class Example: NSObject {
   @available(*, deprecated) @objc(value:) func value(_ input: Int) -> Int { input }
 }
 
 // MARK: Output
-import Foundation
 
 final class Example: NSObject {
   @available(*, deprecated)
@@ -36,14 +34,12 @@ final class Example: NSObject {
 
 // MARK: - Case AvailabilityBeforeInlineWrapper
 // MARK: Input
-import Combine
 
 final class Example {
   @available(*, deprecated) @Published var value = 0
 }
 
 // MARK: Output
-import Combine
 
 final class Example {
   @available(*, deprecated)
@@ -53,14 +49,12 @@ final class Example {
 
 // MARK: - Case AvailabilityBeforeMultipleInlineAttributes
 // MARK: Input
-import Foundation
 
 final class Example: NSObject {
   @available(*, deprecated) @objc @concurrent func compute(_ input: Int) async -> Int { input }
 }
 
 // MARK: Output
-import Foundation
 
 final class Example: NSObject {
   @available(*, deprecated)
@@ -211,7 +205,6 @@ final class Example {
 
 // MARK: - Case GapBeforeStandalonePropertyAttribute
 // MARK: Input
-import AppKit
 
 struct Example {
   var appearance: NSAppearance.Name { .aqua }
@@ -220,7 +213,6 @@ struct Example {
 }
 
 // MARK: Output
-import AppKit
 
 struct Example {
   var appearance: NSAppearance.Name { .aqua }
@@ -231,7 +223,6 @@ struct Example {
 
 // MARK: - Case GroupStoredAttributeKinds
 // MARK: Input
-import Combine
 
 class Example {
   @Published private var settingsTitle: String = "Settings"
@@ -242,7 +233,6 @@ class Example {
 }
 
 // MARK: Output
-import Combine
 
 class Example {
 
@@ -279,7 +269,6 @@ final class Example {
 
 // MARK: - Case InlineAttributeLineComment
 // MARK: Input
-import Foundation
 
 final class Example: NSObject {
   @available(*, deprecated) @objc // Called through Objective-C.
@@ -287,7 +276,6 @@ final class Example: NSObject {
 }
 
 // MARK: Output
-import Foundation
 
 final class Example: NSObject {
   @available(*, deprecated)
@@ -331,7 +319,6 @@ struct Example {
 
 // MARK: - Case ObjCAttributeAtInlineLimit
 // MARK: Input
-import Foundation
 
 final class ObjectiveCExample: NSObject {
   @objc(exportValueForConfiguredProject:defaultValue:)
@@ -339,7 +326,6 @@ final class ObjectiveCExample: NSObject {
 }
 
 // MARK: Output
-import Foundation
 
 final class ObjectiveCExample: NSObject {
   @objc(exportValueForConfiguredProject:defaultValue:) func export(_ projectIdentifier: String, defaultValue: String) {}
@@ -347,14 +333,12 @@ final class ObjectiveCExample: NSObject {
 
 // MARK: - Case ObjCAttributeOverInlineLimit
 // MARK: Input
-import Foundation
 
 final class ObjectiveCExample: NSObject {
   @objc(exportValueForConfiguredProjects:defaultValue:) func export(_ projectIdentifier: String, defaultValue: String) {}
 }
 
 // MARK: Output
-import Foundation
 
 final class ObjectiveCExample: NSObject {
   @objc(exportValueForConfiguredProjects:defaultValue:)
@@ -363,14 +347,12 @@ final class ObjectiveCExample: NSObject {
 
 // MARK: - Case PreserveAttributeOrder
 // MARK: Input
-import Foundation
 
 final class Example: NSObject {
   @objc @available(*, deprecated) func value() -> Int { 0 }
 }
 
 // MARK: Output
-import Foundation
 
 final class Example: NSObject {
   @objc
@@ -471,7 +453,6 @@ final class Example {
 
 // MARK: - Case ViewBuilderComputedPropertyStack
 // MARK: Input
-import SwiftUI
 
 struct Example {
   @MainActor @ViewBuilder var rootView: some View {
@@ -480,7 +461,6 @@ struct Example {
 }
 
 // MARK: Output
-import SwiftUI
 
 struct Example {
 

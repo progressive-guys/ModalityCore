@@ -21,7 +21,6 @@ enum Examples {
 
 // MARK: - Case ClosureSuffixJoinsWrappedReceiver
 // MARK: Input
-import Foundation
 
 enum Library {
 
@@ -38,7 +37,6 @@ enum Library {
 }
 
 // MARK: Output
-import Foundation
 
 enum Library {
 

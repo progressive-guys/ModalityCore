@@ -47,7 +47,6 @@ enum Examples {
 }
 
 // MARK: - Case LaterConditionWithSyntaxCalls
-import SwiftSyntax
 
 enum Examples {
 

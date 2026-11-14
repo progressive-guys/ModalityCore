@@ -168,7 +168,6 @@ final class Values {
 
 // MARK: - Case PublishedPrivateSetter
 // MARK: Input
-import Combine
 
 final class Model {
 
@@ -177,7 +176,6 @@ final class Model {
 }
 
 // MARK: Output
-import Combine
 
 final class Model {
   @Published var isReady = false

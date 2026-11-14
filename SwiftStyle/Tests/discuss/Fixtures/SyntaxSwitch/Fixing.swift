@@ -1,6 +1,5 @@
 // MARK: - Case CaseWhere
 // MARK: Input
-import SwiftSyntax
 
 enum Example {
 
@@ -12,7 +11,6 @@ enum Example {
 }
 
 // MARK: Output
-import SwiftSyntax
 
 enum Example {
 
@@ -39,7 +37,6 @@ enum Example {
 
 // MARK: - Case LeadingComment
 // MARK: Input
-import SwiftSyntax
 
 enum Example {
 
@@ -52,7 +49,6 @@ enum Example {
 }
 
 // MARK: Output
-import SwiftSyntax
 
 enum Example {
 
@@ -80,7 +76,6 @@ enum Example {
 
 // MARK: - Case MixedSyntaxFamilies
 // MARK: Input
-import SwiftSyntax
 
 enum Example {
 
@@ -92,7 +87,6 @@ enum Example {
 }
 
 // MARK: Output
-import SwiftSyntax
 
 enum Example {
 
@@ -119,7 +113,6 @@ enum Example {
 
 // MARK: - Case ProjectedPayload
 // MARK: Input
-import SwiftSyntax
 
 enum Example {
 
@@ -132,7 +125,6 @@ enum Example {
 }
 
 // MARK: Output
-import SwiftSyntax
 
 enum Example {
 
@@ -167,7 +159,6 @@ enum Example {
 
 // MARK: - Case ThrowingPayloadBranch
 // MARK: Input
-import SwiftSyntax
 
 enum Example {
 
@@ -183,7 +174,6 @@ enum Example {
 }
 
 // MARK: Output
-import SwiftSyntax
 
 enum Example {
 
@@ -214,7 +204,6 @@ enum Example {
 
 // MARK: - Case TwoCasts
 // MARK: Input
-import SwiftSyntax
 
 enum Example {
 
@@ -226,7 +215,6 @@ enum Example {
 }
 
 // MARK: Output
-import SwiftSyntax
 
 enum Example {
 

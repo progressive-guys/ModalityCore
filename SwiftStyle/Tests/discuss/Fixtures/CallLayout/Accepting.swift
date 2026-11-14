@@ -1,5 +1,4 @@
 // MARK: - Case ThreeArgumentCallWithGap
-import Foundation
 
 enum Examples {
 

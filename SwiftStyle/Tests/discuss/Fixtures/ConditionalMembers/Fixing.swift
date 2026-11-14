@@ -123,7 +123,6 @@ struct StoredAfterConditionalGetter {
 
 // MARK: - Case WrappedStorageBeforeRegion
 // MARK: Input
-import SwiftUI
 
 struct Content: View {
 
@@ -138,7 +137,6 @@ struct Content: View {
 }
 
 // MARK: Output
-import SwiftUI
 
 struct Content: View {
 

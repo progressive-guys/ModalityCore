@@ -1,6 +1,5 @@
 // MARK: - Case ConstantGetsEmptyInitializer
 // MARK: Input
-import SwiftUI
 
 struct InitializedConstant: View {
   let title = "value"
@@ -8,7 +7,6 @@ struct InitializedConstant: View {
 }
 
 // MARK: Output
-import SwiftUI
 
 struct InitializedConstant: View {
 
@@ -22,7 +20,6 @@ struct InitializedConstant: View {
 
 // MARK: - Case DefaultInputInitializer
 // MARK: Input
-import SwiftUI
 
 struct Defaults: View {
   var value: Int = 1
@@ -30,7 +27,6 @@ struct Defaults: View {
 }
 
 // MARK: Output
-import SwiftUI
 
 struct Defaults: View {
 
@@ -45,7 +41,6 @@ struct Defaults: View {
 
 // MARK: - Case EscapingClosureInitializer
 // MARK: Input
-import SwiftUI
 
 struct Content: View {
   let action: () -> Int
@@ -56,7 +51,6 @@ struct Content: View {
 func makeContent() -> Content { Content(action: { 3 }) }
 
 // MARK: Output
-import SwiftUI
 
 struct Content: View {
 
@@ -74,7 +68,6 @@ func makeContent() -> Content { Content(action: { 3 }) }
 
 // MARK: - Case ExistingInitializer
 // MARK: Input
-import SwiftUI
 
 struct ExplicitInitializer: View {
   let title: String
@@ -89,7 +82,6 @@ struct ExplicitInitializer: View {
 }
 
 // MARK: Output
-import SwiftUI
 
 struct ExplicitInitializer: View {
 
@@ -108,7 +100,6 @@ struct ExplicitInitializer: View {
 
 // MARK: - Case GeneratedBindingInitializer
 // MARK: Input
-import SwiftUI
 
 struct GeneratedInitializer: SwiftUI.View {
   let title: String
@@ -119,7 +110,6 @@ struct GeneratedInitializer: SwiftUI.View {
 }
 
 // MARK: Output
-import SwiftUI
 
 struct GeneratedInitializer: SwiftUI.View {
 

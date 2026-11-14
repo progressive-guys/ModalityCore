@@ -1,5 +1,4 @@
 // MARK: - Case ManualAssertionSubgroups
-import XCTest
 
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let first = input
@@ -11,7 +10,6 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
 }
 
 // MARK: - Case MultilineLayoutZeroGap
-import XCTest
 
 enum LayoutTest {
 

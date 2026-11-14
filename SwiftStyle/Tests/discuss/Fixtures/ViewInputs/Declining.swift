@@ -1,5 +1,4 @@
 // MARK: - Case UnknownViewWrapper
-import SwiftUI
 
 @propertyWrapper
 struct Input<Value> {

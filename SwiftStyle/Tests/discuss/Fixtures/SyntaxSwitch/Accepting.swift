@@ -1,5 +1,4 @@
 // MARK: - Case ConditionsAroundBinding
-import SwiftSyntax
 
 enum Examples {
 
@@ -13,7 +12,6 @@ enum Examples {
 }
 
 // MARK: - Case FamilyProjection
-import SwiftSyntax
 
 enum Examples {
 
@@ -24,7 +22,6 @@ enum Examples {
 }
 
 // MARK: - Case OptionalReceiver
-import SwiftSyntax
 
 enum Examples {
 
@@ -44,7 +41,6 @@ enum Examples {
 }
 
 // MARK: - Case QualifiedTypeName
-import SwiftSyntax
 
 enum Examples {
 
@@ -55,7 +51,6 @@ enum Examples {
 }
 
 // MARK: - Case SingleCast
-import SwiftSyntax
 
 enum Examples {
 
@@ -66,7 +61,6 @@ enum Examples {
 }
 
 // MARK: - Case SingleTest
-import SwiftSyntax
 
 enum Examples {
 
@@ -77,7 +71,6 @@ enum Examples {
 }
 
 // MARK: - Case UserConversionMethod
-import SwiftSyntax
 
 private extension ExprSyntax {
   func convert<Node: ExprSyntaxProtocol>(_ type: Node.Type) -> Node? { self.as(type) }

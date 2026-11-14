@@ -92,7 +92,6 @@ func check(_ enabled: Bool, _ values: [Int]) {
 }
 
 // MARK: - Case ImplicitCatchShadowsError
-import Foundation
 
 func process(_ input: Int) {
   let error = input

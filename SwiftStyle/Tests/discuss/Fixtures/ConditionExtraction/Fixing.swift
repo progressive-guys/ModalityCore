@@ -214,7 +214,6 @@ enum Example {
 
 // MARK: - Case RepeatedSyntaxReceivers
 // MARK: Input
-import SwiftSyntax
 
 enum Example {
 
@@ -225,7 +224,6 @@ enum Example {
 }
 
 // MARK: Output
-import SwiftSyntax
 
 enum Example {
 

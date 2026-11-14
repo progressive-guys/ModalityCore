@@ -419,7 +419,6 @@ func process(_ input: Int) {
 
 // MARK: - Case NamedCatchReadsOuterError
 // MARK: Input
-import Foundation
 
 func process(_ input: Int) {
   let error = input
@@ -432,7 +431,6 @@ func process(_ input: Int) {
 }
 
 // MARK: Output
-import Foundation
 
 func process(_ input: Int) {
   let error = input
@@ -575,7 +573,6 @@ func process(_ input: Int) {
 
 // MARK: - Case TallCallBeforeReturn
 // MARK: Input
-import Foundation
 
 func value() -> String {
   let value = "a".replacingOccurrences(
@@ -588,7 +585,6 @@ func value() -> String {
 }
 
 // MARK: Output
-import Foundation
 
 func value() -> String {
   let value = "a".replacingOccurrences(
@@ -638,7 +634,6 @@ func process(_ input: (Int, Int)) {
 
 // MARK: - Case WeakCaptureWithShorthandBinding
 // MARK: Input
-import Foundation
 
 enum Examples {
 
@@ -654,7 +649,6 @@ enum Examples {
 }
 
 // MARK: Output
-import Foundation
 
 enum Examples {
 

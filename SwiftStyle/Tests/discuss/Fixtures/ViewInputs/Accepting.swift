@@ -1,5 +1,4 @@
 // MARK: - Case ModelNestedInView
-import SwiftUI
 
 enum Examples {
 
@@ -19,7 +18,6 @@ enum Examples {
 }
 
 // MARK: - Case PrivateViewInputsWithExplicitInitializer
-import SwiftUI
 
 enum Examples {
 
