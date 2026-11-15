@@ -1,5 +1,5 @@
-// MARK: - Комментарий и объединение подготовленных значений начинают отдельные группы
-func run(input: Int, other: Int, sink: (Int) -> Void) {
+// MARK: - Группы подготовки и использования значений (1)
+func commentBoundary(input: Int, other: Int, sink: (Int) -> Void) {
   let value = input
   // Prepare another value.
   let next = other
@@ -7,19 +7,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(sum)
 }
 
-/// Output
-func run(input: Int, other: Int, sink: (Int) -> Void) {
-  let value = input
-
-  // Prepare another value.
-  let next = other
-
-  let sum = value + next
-  sink(sum)
-}
-
-// MARK: - Вызов с данными двух подготовленных групп отделяется пустой строкой
-func run(input: Int, other: Int, sink: (Int) -> Void) {
+func joinedArguments(input: Int, other: Int, sink: (Int) -> Void) {
   var first = [input]
   first.append(1)
 
@@ -29,7 +17,17 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
 }
 
 /// Output
-func run(input: Int, other: Int, sink: (Int) -> Void) {
+func commentBoundary(input: Int, other: Int, sink: (Int) -> Void) {
+  let value = input
+
+  // Prepare another value.
+  let next = other
+
+  let sum = value + next
+  sink(sum)
+}
+
+func joinedArguments(input: Int, other: Int, sink: (Int) -> Void) {
   var first = [input]
   first.append(1)
 
@@ -39,8 +37,8 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(first.count + second.count)
 }
 
-// MARK: - Обращение к раннему значению сохраняет группу объявлений; итоговый вызов отделяется
-func run(input: Int, other: Int, sink: (Int) -> Void) {
+// MARK: - Группы подготовки и использования значений (2)
+func earlierValue(input: Int, other: Int, sink: (Int) -> Void) {
   let base = input
   let count = other
   let scaled = base * 2
@@ -49,19 +47,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(scaled + count + width)
 }
 
-/// Output
-func run(input: Int, other: Int, sink: (Int) -> Void) {
-  let base = input
-  let count = other
-  let scaled = base * 2
-
-  let width = other + 1
-
-  sink(scaled + count + width)
-}
-
-// MARK: - Независимое объявление отделяется от предыдущего и следующего этапов
-func run(input: Int, other: Int, sink: (Int) -> Void) {
+func independentValue(input: Int, other: Int, sink: (Int) -> Void) {
   let base = input
   let scaled = base * 2
   let count = other
@@ -69,19 +55,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(spacing)
 }
 
-/// Output
-func run(input: Int, other: Int, sink: (Int) -> Void) {
-  let base = input
-  let scaled = base * 2
-
-  let count = other
-
-  let spacing = scaled / max(count, 1)
-  sink(spacing)
-}
-
-// MARK: - Независимые объявления объединяются общим использованием
-func run(input: Int, other: Int, sink: (Int) -> Void) {
+func joinedDeclarations(input: Int, other: Int, sink: (Int) -> Void) {
   let first = input
 
   let second = other
@@ -90,7 +64,27 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
 }
 
 /// Output
-func run(input: Int, other: Int, sink: (Int) -> Void) {
+func earlierValue(input: Int, other: Int, sink: (Int) -> Void) {
+  let base = input
+  let count = other
+  let scaled = base * 2
+
+  let width = other + 1
+
+  sink(scaled + count + width)
+}
+
+func independentValue(input: Int, other: Int, sink: (Int) -> Void) {
+  let base = input
+  let scaled = base * 2
+
+  let count = other
+
+  let spacing = scaled / max(count, 1)
+  sink(spacing)
+}
+
+func joinedDeclarations(input: Int, other: Int, sink: (Int) -> Void) {
   let first = input
   let second = other
   let sum = first + second
@@ -98,7 +92,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
 }
 
 // MARK: - Объявление и return, объединяющий разные группы, отделяются пустыми строками
-func run(input: Int, other: Int) -> Int {
+func joinedReturn(input: Int, other: Int) -> Int {
   let value = input
   let scaled = value * 2
   let count = other
@@ -106,7 +100,7 @@ func run(input: Int, other: Int) -> Int {
 }
 
 /// Output
-func run(input: Int, other: Int) -> Int {
+func joinedReturn(input: Int, other: Int) -> Int {
   let value = input
   let scaled = value * 2
 

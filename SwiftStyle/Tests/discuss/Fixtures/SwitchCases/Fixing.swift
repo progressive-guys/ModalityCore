@@ -1,4 +1,4 @@
-// MARK: - Пустая строка между короткими case внутри условной компиляции удаляется
+// MARK: - Интервалы вариантов switch при комментариях и условной компиляции
 func conditionalGap(_ value: Int) -> Int {
   switch value {
   #if os(macOS)
@@ -10,18 +10,6 @@ func conditionalGap(_ value: Int) -> Int {
   }
 }
 
-/// Output
-func conditionalGap(_ value: Int) -> Int {
-  switch value {
-  #if os(macOS)
-  case 0: 0
-  case 1: 1
-  #endif
-  default: 2
-  }
-}
-
-// MARK: - Вариант switch с ведущим комментарием отделяется с обеих сторон
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"
@@ -32,6 +20,16 @@ func category(_ value: Int) -> String {
 }
 
 /// Output
+func conditionalGap(_ value: Int) -> Int {
+  switch value {
+  #if os(macOS)
+  case 0: 0
+  case 1: 1
+  #endif
+  default: 2
+  }
+}
+
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"

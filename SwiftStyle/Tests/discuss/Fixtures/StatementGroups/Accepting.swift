@@ -1,4 +1,5 @@
-// MARK: - Действие и его отложенная отмена остаются вместе
+// MARK: - Группировка действий с учётом границ и области видимости (1)
+// Действие и его отложенная отмена остаются вместе
 func update(_ active: inout Bool) {
   active = true
   defer { active = false }
@@ -7,7 +8,7 @@ func update(_ active: inout Bool) {
   print(value)
 }
 
-// MARK: - Вызов разделяет группы присваиваний
+// Вызов разделяет группы присваиваний
 func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)) {
   state.first = 1
   state.second = 2
@@ -18,8 +19,8 @@ func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)
   state.fourth = 4
 }
 
-// MARK: - Параметр замыкания затеняет локальное значение
-func process(_ input: Int) {
+// Параметр замыкания затеняет локальное значение
+func closureShadowing(_ input: Int) {
   let value = input
 
   [1].forEach { value in
@@ -29,8 +30,9 @@ func process(_ input: Int) {
   print(value)
 }
 
-// MARK: - Комментарий разделяет группы присваиваний
-func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)) {
+// MARK: - Группировка действий с учётом границ и области видимости (2)
+// Комментарий разделяет группы присваиваний
+func commentBoundary(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)) {
   state.first = 1
   state.second = 2
 
@@ -39,8 +41,8 @@ func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)
   state.fourth = 4
 }
 
-// MARK: - Условная компиляция разделяет группы инструкций
-func process(_ input: Int) {
+// Условная компиляция разделяет группы инструкций
+func conditionalBoundary(_ input: Int) {
   let value = input
 
   #if os(macOS)
@@ -51,16 +53,17 @@ func process(_ input: Int) {
   print(value + 1)
 }
 
-// MARK: - Вызовы разных объектов идут подряд
-func update(_ input: Int, first: inout [Int], second: inout [Int]) {
+// Вызовы разных объектов идут подряд
+func differentReceivers(_ input: Int, first: inout [Int], second: inout [Int]) {
   let value = input
   first.append(value)
   second.removeAll()
   first.sort()
 }
 
-// MARK: - Первое действие не читает подготовленное значение
-func update(_ input: Int, values: inout [Int]) {
+// MARK: - Группировка действий с учётом границ и области видимости (3)
+// Первое действие не читает подготовленное значение
+func unrelatedFirstAction(_ input: Int, values: inout [Int]) {
   let value = input
 
   values.removeAll()
@@ -68,8 +71,8 @@ func update(_ input: Int, values: inout [Int]) {
   values.sort()
 }
 
-// MARK: - Переменная цикла for затеняет локальное значение
-func process(_ input: Int, values: [Int]) {
+// Переменная цикла for затеняет локальное значение
+func loopShadowing(_ input: Int, values: [Int]) {
   let value = input
 
   for value in values {
@@ -79,7 +82,8 @@ func process(_ input: Int, values: [Int]) {
   print(value)
 }
 
-// MARK: - Тело if читает значения двух подготовленных групп
+// MARK: - Группировка действий с учётом границ и области видимости (4)
+// Тело if читает значения двух подготовленных групп
 func check(_ enabled: Bool, _ values: [Int]) {
   let first = values.first ?? 0
   print(first)
@@ -91,9 +95,8 @@ func check(_ enabled: Bool, _ values: [Int]) {
   }
 }
 
-// MARK: - Неявная ошибка catch затеняет внешнее значение
-
-func process(_ input: Int) {
+// Неявная ошибка catch затеняет внешнее значение
+func catchShadowing(_ input: Int) {
   let error = input
 
   do {
@@ -168,8 +171,9 @@ enum Examples {
   }
 }
 
-// MARK: - Условие repeat читает внешнее значение, а тело объявляет одноимённое локальное
-func process(_ input: Int) {
+// MARK: - Области видимости в цикле, выражении switch и шаблоне (1)
+// Условие repeat читает внешнее значение, а тело объявляет одноимённое локальное
+func repeatShadowing(_ input: Int) {
   let value = input
 
   repeat {
@@ -180,7 +184,7 @@ func process(_ input: Int) {
   print(value)
 }
 
-// MARK: - Выражение switch читает подготовленное значение
+// Выражение switch читает подготовленное значение
 func label(_ kind: Int, center: Int) -> String {
   let angle = center + 90
   let text = switch kind {
@@ -191,7 +195,7 @@ func label(_ kind: Int, center: Int) -> String {
 }
 
 // MARK: - Шаблон switch затеняет локальное значение
-func process(_ input: Int, alternative: Int?) {
+func patternShadowing(_ input: Int, alternative: Int?) {
   let value = input
 
   switch alternative {

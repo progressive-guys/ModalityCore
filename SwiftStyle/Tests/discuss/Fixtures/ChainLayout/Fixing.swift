@@ -13,13 +13,12 @@ enum Examples {
   static func value(_ values: [Int]) -> [Int] {
     values.map { $0 + 1 }
       .filter { value in
-      value > 0
-    }
+        value > 0
+      }
   }
 }
 
 // MARK: - Вызов с замыканием примыкает к многострочному основанию
-
 enum Library {
 
   static func files(in folder: URL) throws -> [URL] {
@@ -35,7 +34,6 @@ enum Library {
 }
 
 /// Output
-
 enum Library {
 
   static func files(in folder: URL) throws -> [URL] {
@@ -49,29 +47,16 @@ enum Library {
   }
 }
 
-// MARK: - Цепочка вызовов разделяется перед вызовом с многострочными аргументами
+// MARK: - Переносы цепочек вызовов и обращений к свойствам (1)
 enum Examples {
+
   static func value(_ values: [Int], _ value: Int) -> Bool {
     values.sorted().contains(
       value
     )
   }
-}
 
-/// Output
-enum Examples {
-
-  static func value(_ values: [Int], _ value: Int) -> Bool {
-    values.sorted()
-      .contains(
-      value
-    )
-  }
-}
-
-// MARK: - Вызов после return соединяется с замыканием
-enum Examples {
-  static func values() -> [Int] {
+  static func returnedValues() -> [Int] {
     let text = String(
       repeating: "a",
       count: 2
@@ -92,7 +77,14 @@ enum Examples {
 /// Output
 enum Examples {
 
-  static func values() -> [Int] {
+  static func value(_ values: [Int], _ value: Int) -> Bool {
+    values.sorted()
+      .contains(
+        value
+      )
+  }
+
+  static func returnedValues() -> [Int] {
     let text = String(
       repeating: "a",
       count: 2
@@ -109,32 +101,22 @@ enum Examples {
   }
 }
 
-// MARK: - Частично перенесённая цепочка обращений к членам типа
+// MARK: - Переносы цепочек вызовов и обращений к свойствам (2)
 enum Examples {
+
   static func value(_ values: [Int]) -> Int {
     values.sorted().dropFirst()
       .count
   }
-}
 
-/// Output
-enum Examples {
-
-  static func value(_ values: [Int]) -> Int {
-    values.sorted()
-      .dropFirst()
-      .count
-  }
-}
-
-// MARK: - Аргументы продолжения примыкают к многострочному основанию
-enum Examples {
-
-  static func values() -> [Int] {
+  static func reducedValues() -> [Int] {
     Array(
       repeating: 1,
       count: 2
     )
+      .filter {
+        true
+      }
       .reduce(
         into: []
       ) { values, value in
@@ -146,11 +128,19 @@ enum Examples {
 /// Output
 enum Examples {
 
-  static func values() -> [Int] {
+  static func value(_ values: [Int]) -> Int {
+    values.sorted()
+      .dropFirst()
+      .count
+  }
+
+  static func reducedValues() -> [Int] {
     Array(
       repeating: 1,
       count: 2
-    ).reduce(
+    ).filter {
+        true
+      }.reduce(
         into: []
       ) { values, value in
         values.append(value)

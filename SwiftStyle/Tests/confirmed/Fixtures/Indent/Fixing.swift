@@ -1,14 +1,8 @@
-// MARK: - Отступ выражения в теле функции уменьшается с четырёх до двух пробелов
+// MARK: - Отступы инструкций и условной компиляции
 func increment(_ value: Int) -> Int {
     value + 1
 }
 
-/// Output
-func increment(_ value: Int) -> Int {
-  value + 1
-}
-
-// MARK: - Директива условной компиляции следует отступу блока
 func enabled() -> Bool {
 #if DEBUG
   return true
@@ -18,6 +12,10 @@ func enabled() -> Bool {
 }
 
 /// Output
+func increment(_ value: Int) -> Int {
+  value + 1
+}
+
 func enabled() -> Bool {
   #if DEBUG
   return true

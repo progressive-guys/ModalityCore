@@ -1,5 +1,4 @@
 // MARK: - Проверки SwiftSyntax превращаются в отдельные switch с условием where
-
 enum Example {
 
   static func extraCondition(_ input: ExprSyntax, _ condition: Bool) -> Int {
@@ -10,7 +9,6 @@ enum Example {
 }
 
 /// Output
-
 enum Example {
 
   static func extraCondition(_ input: ExprSyntax, _ condition: Bool) -> Int {
@@ -35,7 +33,6 @@ enum Example {
 }
 
 // MARK: - Проверки SwiftSyntax превращаются в отдельные switch, комментарий остаётся между ними
-
 enum Example {
 
   static func comments(_ input: ExprSyntax) -> Int {
@@ -47,7 +44,6 @@ enum Example {
 }
 
 /// Output
-
 enum Example {
 
   static func comments(_ input: ExprSyntax) -> Int {
@@ -73,7 +69,6 @@ enum Example {
 }
 
 // MARK: - Проверки разных семейств SwiftSyntax превращаются в отдельные switch
-
 enum Example {
 
   static func mixedFamilies(_ input: Syntax) -> Int {
@@ -84,7 +79,6 @@ enum Example {
 }
 
 /// Output
-
 enum Example {
 
   static func mixedFamilies(_ input: Syntax) -> Int {
@@ -109,7 +103,6 @@ enum Example {
 }
 
 // MARK: - Отдельные switch сохраняют связанные значения SwiftSyntax и чтение их свойств
-
 enum Example {
 
   static func syntaxProjection(_ input: ExprSyntax) -> Int {
@@ -121,7 +114,6 @@ enum Example {
 }
 
 /// Output
-
 enum Example {
 
   static func syntaxProjection(_ input: ExprSyntax) -> Int {
@@ -154,7 +146,6 @@ enum Example {
 }
 
 // MARK: - Отдельные switch сохраняют throw при успешном приведении узла SwiftSyntax
-
 enum Example {
 
   enum Failure: Error {
@@ -169,7 +160,6 @@ enum Example {
 }
 
 /// Output
-
 enum Example {
 
   enum Failure: Error {
@@ -198,7 +188,6 @@ enum Example {
 }
 
 // MARK: - Два приведения SwiftSyntax превращаются в два отдельных switch
-
 enum Example {
 
   static func select(_ input: ExprSyntax) -> Int {
@@ -209,7 +198,6 @@ enum Example {
 }
 
 /// Output
-
 enum Example {
 
   static func select(_ input: ExprSyntax) -> Int {

@@ -11,28 +11,22 @@ enum Windows {
   static let a = "a substantially longer literal"
 }
 
-// MARK: - Сортировка требований к методам протокола
-private protocol Actions {
+// MARK: - Сортировка требований свойств и методов протокола
+private protocol Requirements {
+
+  var longerName: Int { get }
+  var x: Int { get }
+
   func value(for index: Int) -> Int
   func reset()
 }
 
 /// Output
-private protocol Actions {
+private protocol Requirements {
+
+  var x: Int { get }
+  var longerName: Int { get }
 
   func reset()
   func value(for index: Int) -> Int
-}
-
-// MARK: - Сортировка требований протокола
-private protocol Values {
-  var longerName: Int { get }
-  var x: Int { get }
-}
-
-/// Output
-private protocol Values {
-
-  var x: Int { get }
-  var longerName: Int { get }
 }

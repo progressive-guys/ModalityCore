@@ -1,4 +1,5 @@
-// MARK: - Многострочный шаблон варианта switch
+// MARK: - Многострочные шаблоны и комментарии вариантов switch
+// Многострочный шаблон варианта switch
 func header(_ value: Int) -> Int {
   switch value {
   case 0,
@@ -8,7 +9,7 @@ func header(_ value: Int) -> Int {
   }
 }
 
-// MARK: - Строчный комментарий после варианта switch
+// Строчный комментарий после варианта switch
 func inlineComment(_ value: Int) -> Int {
   switch value {
   case 0: 0 // First value.
@@ -16,7 +17,7 @@ func inlineComment(_ value: Int) -> Int {
   }
 }
 
-// MARK: - Многострочный комментарий после варианта
+// Многострочный комментарий после варианта
 func blockComment(_ value: Int) -> Int {
   switch value {
   case 0: 0 /* First

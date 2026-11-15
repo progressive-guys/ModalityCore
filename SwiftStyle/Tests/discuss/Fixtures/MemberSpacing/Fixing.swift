@@ -15,23 +15,28 @@ enum Instrument {
   typealias Tuning = [Int]
 }
 
-// MARK: - Пустая строка после многострочной функции
-struct MultilineMethod {
+// MARK: - Интервалы после многострочной функции и между однострочными функциями
+struct Methods {
 
   func a() -> Int {
     1
   }
   func b() -> Int { 2 }
+  func first() -> Int { 1 }
+
+  func second() -> Int { 2 }
 }
 
 /// Output
-struct MultilineMethod {
+struct Methods {
 
   func a() -> Int {
     1
   }
 
   func b() -> Int { 2 }
+  func first() -> Int { 1 }
+  func second() -> Int { 2 }
 }
 
 // MARK: - Многострочный getter отделяется от следующего метода
@@ -53,36 +58,12 @@ struct GetterBeforeMethod {
   func read() -> Int { x }
 }
 
-// MARK: - Пустая строка между однострочными функциями удаляется
-struct Methods {
-  func first() -> Int { 1 }
-
-  func second() -> Int { 2 }
-}
-
-/// Output
-struct Methods {
-
-  func first() -> Int { 1 }
-  func second() -> Int { 2 }
-}
-
-// MARK: - Пустая строка между однострочными требованиями методов удаляется
-protocol Worker {
-  func start()
-
-  func stop()
-}
-
-/// Output
+// MARK: - Интервалы между однострочными и многострочными требованиями методов
 protocol Worker {
 
   func start()
-  func stop()
-}
 
-// MARK: - Многострочное требование метода отделяется от следующего
-protocol Worker {
+  func stop()
 
   func first(
     value: Int
@@ -92,6 +73,9 @@ protocol Worker {
 
 /// Output
 protocol Worker {
+
+  func start()
+  func stop()
 
   func first(
     value: Int

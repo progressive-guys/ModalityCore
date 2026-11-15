@@ -1,22 +1,12 @@
-// MARK: - Пустая строка после многострочного guard
-func process(_ input: Int?) {
+// MARK: - Интервалы после guard в коротких и многострочных телах (1)
+func multilineGuard(_ input: Int?) {
   guard
     let value = input
   else { return }
   print(value)
 }
 
-/// Output
-func process(_ input: Int?) {
-  guard
-    let value = input
-  else { return }
-
-  print(value)
-}
-
-// MARK: - В теле из четырёх инструкций guard отделяется пустой строкой
-func value(_ first: Bool) -> Int {
+func fourStatements(_ first: Bool) -> Int {
   guard first else { return 0 }
   print(first)
   print("ready")
@@ -24,18 +14,7 @@ func value(_ first: Bool) -> Int {
   return 1
 }
 
-/// Output
-func value(_ first: Bool) -> Int {
-  guard first else { return 0 }
-
-  print(first)
-  print("ready")
-
-  return 1
-}
-
-// MARK: - Между многострочным и однострочным guard добавляется пустая строка
-func process(_ input: Int?) {
+func consecutiveGuards(_ input: Int?) {
   guard
     let value = input
   else { return }
@@ -44,7 +23,24 @@ func process(_ input: Int?) {
 }
 
 /// Output
-func process(_ input: Int?) {
+func multilineGuard(_ input: Int?) {
+  guard
+    let value = input
+  else { return }
+
+  print(value)
+}
+
+func fourStatements(_ first: Bool) -> Int {
+  guard first else { return 0 }
+
+  print(first)
+  print("ready")
+
+  return 1
+}
+
+func consecutiveGuards(_ input: Int?) {
   guard
     let value = input
   else { return }
@@ -54,7 +50,7 @@ func process(_ input: Int?) {
 }
 
 // MARK: - В теле из трёх инструкций пустая строка после guard удаляется
-func value(_ ready: Bool) -> Int {
+func threeStatements(_ ready: Bool) -> Int {
   guard ready else { return 0 }
 
   print(ready)
@@ -62,7 +58,7 @@ func value(_ ready: Bool) -> Int {
 }
 
 /// Output
-func value(_ ready: Bool) -> Int {
+func threeStatements(_ ready: Bool) -> Int {
   guard ready else { return 0 }
   print(ready)
   return 1

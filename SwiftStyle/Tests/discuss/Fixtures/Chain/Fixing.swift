@@ -1,9 +1,14 @@
-// MARK: - Обращение к свойству в левом операнде соединяется с основанием
+// MARK: - Обращения к свойствам в левом и правом операндах соединяются с основанием
 enum Example {
 
   static func firstOperand(_ input: (first: Int, second: Int)) -> Int {
     input
       .first + input.second
+  }
+
+  static func secondOperand(_ input: (first: Int, second: Int)) -> Int {
+    input.first + input
+      .second
   }
 }
 
@@ -11,6 +16,10 @@ enum Example {
 enum Example {
 
   static func firstOperand(_ input: (first: Int, second: Int)) -> Int {
+    input.first + input.second
+  }
+
+  static func secondOperand(_ input: (first: Int, second: Int)) -> Int {
     input.first + input.second
   }
 }
@@ -29,21 +38,4 @@ func adjusted(_ values: [Int]) -> [Int] {
     $0 + 1
   }
   .filter { $0 > 0 }
-}
-
-// MARK: - Обращение к свойству в правом операнде соединяется с основанием
-enum Example {
-
-  static func secondOperand(_ input: (first: Int, second: Int)) -> Int {
-    input.first + input
-      .second
-  }
-}
-
-/// Output
-enum Example {
-
-  static func secondOperand(_ input: (first: Int, second: Int)) -> Int {
-    input.first + input.second
-  }
 }

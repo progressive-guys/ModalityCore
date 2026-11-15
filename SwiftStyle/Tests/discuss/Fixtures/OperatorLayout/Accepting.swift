@@ -1,27 +1,22 @@
-// MARK: - Комментарий перед оператором
+// MARK: - Допустимые переносы операторов и их операндов (1)
 enum Examples {
 
+  // Комментарий перед оператором
   static func commented(_ first: Double, _ second: Double) -> Double {
     first
       // Keep the documented boundary.
       * second
   }
-}
 
-// MARK: - Оператор составного присваивания остаётся после изменяемого значения
-enum Examples {
-
+  // Оператор составного присваивания остаётся после изменяемого значения
   static func value(_ input: Int) -> Int {
     var value = input
     value +=
       input
     return value
   }
-}
 
-// MARK: - Составное присваивание многострочной строки
-enum Examples {
-
+  // Составное присваивание многострочной строки
   static func multilineStringAssignment() -> String {
     var value = ""
     value +=
@@ -33,9 +28,10 @@ enum Examples {
   }
 }
 
-// MARK: - Деление после длинного выражения в аргументе
+// MARK: - Допустимые переносы операторов и их операндов (2)
 enum Examples {
 
+  // Деление после длинного выражения в аргументе
   static func longCall(_ first: Double, _ second: Double) -> Double {
     let result = Double(abs(max(abs(first), abs(second)))
       + abs(min(abs(first), abs(second)))
@@ -44,64 +40,47 @@ enum Examples {
     ) / max(abs(first), abs(second))
     return result
   }
-}
 
-// MARK: - Деление после многострочного вызова
-enum Examples {
-
+  // Деление после многострочного вызова
   static func multipleArguments(_ first: Double, _ second: Double) -> Double {
     max(
       first,
       second
     ) / 2
   }
-}
 
-// MARK: - Операнд с явными группирующими скобками
-enum Examples {
-
+  // Операнд с явными группирующими скобками
   static func grouped(_ first: Int, _ second: Int, _ third: Int) -> Int {
     (first + second) - third
   }
-}
 
-// MARK: - Короткое сравнение остаётся на одной строке
-enum Examples {
-
+  // Короткое сравнение остаётся на одной строке
   static func value(_ first: Int, _ second: Int) -> Bool {
     first == second
   }
 }
 
-// MARK: - Короткое преобразование правого операнда
+// MARK: - Допустимые переносы операторов и их операндов (3)
 enum Examples {
 
+  // Короткое преобразование правого операнда
   static func rightConversion(_ first: Int, _ second: Int) -> Double {
     12 / Double(first - second)
   }
-}
 
-// MARK: - Группа с отрицанием перед делением
-enum Examples {
-
+  // Группа с отрицанием перед делением
   static func unary(_ first: Double, _ second: Double) -> Double {
     let result = -(max(first.magnitude, second.magnitude) - min(first.magnitude, second.magnitude))
       / max(first.magnitude, second.magnitude)
     return result
   }
-}
 
-// MARK: - Короткое выражение с разным приоритетом операторов
-enum Examples {
-
+  // Короткое выражение с разным приоритетом операторов
   static func short(_ first: Double, _ second: Double) -> Double {
     first + second * 2
   }
-}
 
-// MARK: - Многострочная цепочка умножения и деления
-enum Examples {
-
+  // Многострочная цепочка умножения и деления
   static func longProduct(_ first: Double, _ second: Double) -> Double {
     let result = max(first.magnitude, second.magnitude)
       * min(first.magnitude, second.magnitude)

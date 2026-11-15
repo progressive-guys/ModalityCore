@@ -1,4 +1,5 @@
-// MARK: - Многострочный guard в конце тела
+// MARK: - Проверки в конце и в коротком теле
+// Многострочный guard в конце тела
 func process(_ input: Int?) {
   guard
     let value = input,
@@ -6,7 +7,7 @@ func process(_ input: Int?) {
   else { return }
 }
 
-// MARK: - Разные однострочные проверки в коротком теле
+// Разные однострочные проверки в коротком теле
 func consecutiveChecks(_ first: Bool, _ second: Bool) -> Int {
   guard first else { return 0 }
   if second { return 1 }

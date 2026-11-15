@@ -23,13 +23,10 @@ value: \(
 end
 """
 
-// MARK: - Текст if внутри регулярного выражения с решётками сохраняется
+// MARK: - Сохранение регулярного выражения и идентификатора Unicode
 enum Examples {
-  static var regex: Regex<(Substring, Substring)> { #/if check(value)/# }
-}
 
-// MARK: - Идентификатор Unicode в выражении
-enum Examples {
+  static var regex: Regex<(Substring, Substring)> { #/if check(value)/# }
 
   static func unicode(_ значение: Int) -> Bool {
     if значение > 0 { return true }

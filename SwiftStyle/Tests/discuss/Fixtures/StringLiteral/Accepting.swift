@@ -1,6 +1,7 @@
-// MARK: - Пустая строка внутри литерала без отступа
+// MARK: - Пустые строки, явные переводы и return в многострочном литерале
 enum Examples {
 
+  // Пустая строка внутри литерала без отступа
   static func blankLinesAndIndentation() -> String {
     """
     first
@@ -9,21 +10,15 @@ enum Examples {
     last
     """
   }
-}
 
-// MARK: - Явный перевод строки препятствует сокращению литерала
-enum Examples {
-
+  // Явный перевод строки препятствует сокращению литерала
   static func explicitNewline(_ text: String) -> String {
     """
     Hello \(text)\n
     """
   }
-}
 
-// MARK: - Строковый литерал после явного return
-enum Examples {
-
+  // Строковый литерал после явного return
   static func inlineReturn() -> String {
     return """
       first
@@ -32,16 +27,12 @@ enum Examples {
   }
 }
 
-// MARK: - Текст, похожий на интерполяцию, в строке с решётками
+// MARK: - Литеральные символы интерполяции и точки с запятой в строках
 enum Examples {
 
   static let raw = #"""
     Hello \(text)
     """#
-}
-
-// MARK: - Точка с запятой внутри строкового литерала
-enum Examples {
 
   static func status(_ failure: String?) -> String {
     var value = "a; return"

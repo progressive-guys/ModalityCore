@@ -1,6 +1,7 @@
-// MARK: - Условие с вызовом у массива сохраняет скобку тела на отдельной строке
+// MARK: - Размещение условий и ветвей выражения if (1)
 enum Examples {
 
+  // Условие с вызовом у массива сохраняет скобку тела на отдельной строке
   static func arrayLiteral(_ value: String) -> Bool {
     if [
       "first", "second"
@@ -9,11 +10,8 @@ enum Examples {
 
     return false
   }
-}
 
-// MARK: - Тело выражения if выровнено по объявлению
-enum Examples {
-
+  // Тело выражения if выровнено по объявлению
   static func value(_ first: Bool) -> Int {
     let result = if first {
       1

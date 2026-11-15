@@ -1,7 +1,7 @@
-// MARK: - Модель, вложенная в View
-
+// MARK: - Области действия ограничений входных свойств View (1)
 enum Examples {
 
+  // Модель, вложенная в View
   struct NestedModel: View {
 
     struct Model {
@@ -9,18 +9,14 @@ enum Examples {
 
     var body: some View { EmptyView() }
   }
-}
 
-// MARK: - Обычное свойство модели
-enum Examples {
-
+  // Обычное свойство модели
   struct Model {
     let title: String
   }
 }
 
 // MARK: - Закрытые входные свойства View с явным инициализатором
-
 enum Examples {
 
   struct Content: View {

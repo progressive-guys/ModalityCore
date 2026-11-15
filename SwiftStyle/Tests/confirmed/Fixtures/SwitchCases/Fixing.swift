@@ -1,4 +1,4 @@
-// MARK: - Компоновка вариантов switch: текст литерала во входе и выходе различается
+// MARK: - Интервалы между многострочными вариантами switch
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"
@@ -10,6 +10,15 @@ func category(_ value: Int) -> String {
   case 4:
     return "four"
   default: return "other"
+  }
+}
+
+func flagValue(_ flag: Bool) -> Int {
+  switch flag {
+  case false:
+    return 0
+  case true:
+    return 1
   }
 }
 
@@ -29,17 +38,6 @@ func category(_ value: Int) -> String {
   }
 }
 
-// MARK: - Многострочные варианты switch разделяются пустой строкой
-func flagValue(_ flag: Bool) -> Int {
-  switch flag {
-  case false:
-    return 0
-  case true:
-    return 1
-  }
-}
-
-/// Output
 func flagValue(_ flag: Bool) -> Int {
   switch flag {
   case false:

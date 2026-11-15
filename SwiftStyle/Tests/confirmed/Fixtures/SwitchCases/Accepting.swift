@@ -1,4 +1,5 @@
-// MARK: - Условная компиляция разделяет варианты switch
+// MARK: - Компактные варианты switch и условная компиляция
+// Условная компиляция разделяет варианты switch
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"
@@ -11,7 +12,7 @@ func category(_ value: Int) -> String {
   }
 }
 
-// MARK: - Однострочные варианты switch остаются компактными
+// Однострочные варианты switch остаются компактными
 func flagValue(_ flag: Bool) -> Int {
   switch flag {
   case false: return 0

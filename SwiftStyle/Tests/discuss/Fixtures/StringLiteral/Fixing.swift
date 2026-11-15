@@ -1,4 +1,4 @@
-// MARK: - Отступ многострочной строки в аргументе уменьшается до двух пробелов
+// MARK: - Отступы строк в аргументе, свойстве и результате функции
 func argument() {
   print(
     """
@@ -8,6 +8,20 @@ func argument() {
   )
 }
 
+var value: String {
+  """
+    first
+      second
+    """
+}
+
+func returnedText() -> String {
+  """
+    first
+    second
+    """
+}
+
 /// Output
 func argument() {
   print(
@@ -18,15 +32,6 @@ func argument() {
   )
 }
 
-// MARK: - Отступ строки в вычисляемом свойстве уменьшается с сохранением вложенного отступа
-var value: String {
-  """
-    first
-      second
-    """
-}
-
-/// Output
 var value: String {
   """
   first
@@ -34,16 +39,7 @@ var value: String {
   """
 }
 
-// MARK: - Отступ многострочного результата функции уменьшается до двух пробелов
-func value() -> String {
-  """
-    first
-    second
-    """
-}
-
-/// Output
-func value() -> String {
+func returnedText() -> String {
   """
   first
   second
@@ -67,7 +63,7 @@ let escaped = "a\\b\n\"quoted\""
 
 // MARK: - Объединение сцепленных строк с решётками
 enum Examples {
-  static func value() -> String {
+  static func returnedText() -> String {
     #"first"# + #"second"#
   }
 }
@@ -75,16 +71,32 @@ enum Examples {
 /// Output
 enum Examples {
 
-  static func value() -> String {
+  static func returnedText() -> String {
     "firstsecond"
   }
 }
 
-// MARK: - Отступы строки с продолжением уменьшаются с сохранением обратной косой черты
+// MARK: - Отступы строк с продолжением, интерполяцией и пустой строкой
 func lineContinuation(_ number: Int) -> String {
   """
     \(number) · rows: 2 · \
     scale: 3
+    """
+}
+
+func rawInterpolation(_ number: Int) -> String {
+  #"""
+    \path
+    \#(number)
+    """#
+}
+
+func blankLinesAndIndentation() -> String {
+  """
+    first
+      second
+
+    last
     """
 }
 
@@ -96,15 +108,6 @@ func lineContinuation(_ number: Int) -> String {
   """
 }
 
-// MARK: - Отступ строки с решётками и интерполяцией уменьшается до двух пробелов
-func rawInterpolation(_ number: Int) -> String {
-  #"""
-    \path
-    \#(number)
-    """#
-}
-
-/// Output
 func rawInterpolation(_ number: Int) -> String {
   #"""
   \path
@@ -112,17 +115,6 @@ func rawInterpolation(_ number: Int) -> String {
   """#
 }
 
-// MARK: - Отступы многострочного литерала уменьшаются, пустая строка получает отступ
-func blankLinesAndIndentation() -> String {
-  """
-    first
-      second
-
-    last
-    """
-}
-
-/// Output
 func blankLinesAndIndentation() -> String {
   """
   first
@@ -149,23 +141,21 @@ enum Examples {
   }
 }
 
-// MARK: - Отступ многострочной строки в глобальной константе уменьшается до двух пробелов
+// MARK: - Переносы многострочных глобальных строковых констант
 let overIndented = """
     first
     """
 
-/// Output
-let overIndented = """
-  first
-  """
-
-// MARK: - Строка с решётками соединяется с объявлением глобальной константы
 let standaloneRaw =
   #"""
     first
     """#
 
 /// Output
+let overIndented = """
+  first
+  """
+
 let standaloneRaw = #"""
   first
   """#

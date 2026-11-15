@@ -19,8 +19,8 @@ struct MissingGapAfterLongGetter {
   func read() -> Int { x }
 }
 
-// MARK: - Пустая строка между свойствами с многострочными аксессорами
-struct MissingGapBetweenAccessors {
+// MARK: - Добавление и сокращение пустых строк между многострочными аксессорами
+struct Accessors {
 
   var a: Int {
     get { 1 }
@@ -30,10 +30,21 @@ struct MissingGapBetweenAccessors {
     get { 2 }
     set {}
   }
+
+  var c: Int {
+    get { 1 }
+    set {}
+  }
+
+
+  var d: Int {
+    get { 2 }
+    set {}
+  }
 }
 
 /// Output
-struct MissingGapBetweenAccessors {
+struct Accessors {
 
   var a: Int {
     get { 1 }
@@ -41,6 +52,16 @@ struct MissingGapBetweenAccessors {
   }
 
   var b: Int {
+    get { 2 }
+    set {}
+  }
+
+  var c: Int {
+    get { 1 }
+    set {}
+  }
+
+  var d: Int {
     get { 2 }
     set {}
   }
@@ -175,35 +196,6 @@ struct BlankLineWithinSameType {
 
   var a = 1
   var b = 2
-}
-
-// MARK: - Две пустые строки между свойствами с аксессорами сокращаются до одной
-struct ExtraGapBetweenAccessors {
-
-  var a: Int {
-    get { 1 }
-    set {}
-  }
-
-
-  var b: Int {
-    get { 2 }
-    set {}
-  }
-}
-
-/// Output
-struct ExtraGapBetweenAccessors {
-
-  var a: Int {
-    get { 1 }
-    set {}
-  }
-
-  var b: Int {
-    get { 2 }
-    set {}
-  }
 }
 
 // MARK: - Две пустые строки между let и var сокращаются до одной

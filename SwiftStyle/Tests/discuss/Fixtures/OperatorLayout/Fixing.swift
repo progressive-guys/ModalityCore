@@ -1,9 +1,15 @@
-// MARK: - Деление соединяется на одной строке, следующее сложение переносится
+// MARK: - Сложение отделяется от целого произведения или остатка
 enum Examples {
 
   static func laterAdditiveTerm(_ first: Double, _ second: Double) -> Double {
     let result = max(first.magnitude, second.magnitude)
       / min(first.magnitude, second.magnitude) + max(first.magnitude, second.magnitude)
+    return result
+  }
+
+  static func splitRemainder(_ first: Int, _ second: Int) -> Int {
+    let result = max(abs(first), abs(second), 1_000)
+      % min(abs(first), abs(second), 1_000) + max(abs(first), abs(second), 1_000)
     return result
   }
 }
@@ -16,20 +22,6 @@ enum Examples {
       + max(first.magnitude, second.magnitude)
     return result
   }
-}
-
-// MARK: - Вычисление остатка соединяется на одной строке, следующее сложение переносится
-enum Examples {
-
-  static func splitRemainder(_ first: Int, _ second: Int) -> Int {
-    let result = max(abs(first), abs(second), 1_000)
-      % min(abs(first), abs(second), 1_000) + max(abs(first), abs(second), 1_000)
-    return result
-  }
-}
-
-/// Output
-enum Examples {
 
   static func splitRemainder(_ first: Int, _ second: Int) -> Int {
     let result = max(abs(first), abs(second), 1_000) % min(abs(first), abs(second), 1_000)
@@ -143,7 +135,7 @@ func combine(_ first: Value, _ second: Value) -> Value {
     <+> second
 }
 
-// MARK: - Деление после сокращённого аргумента вызова
+// MARK: - Сокращение аргумента и многострочного преобразования перед делением
 enum Operands {
   struct Item {
     let value: Int
@@ -159,6 +151,13 @@ enum Examples {
   static func computedValue(_ input: Operands.Input, _ second: Operands.Input, _ divisor: Int) -> Double {
     let result = Double(abs(input.item.value) -
       abs(second.item.value)) / Double(max(abs(divisor), abs(input.item.value)))
+    return result
+  }
+
+  static func expandedConversion(_ input: Operands.Input, _ second: Operands.Input, _ divisor: Int) -> Double {
+    let result = Double(
+      abs(input.item.value) - abs(second.item.value)
+    ) / Double(max(abs(divisor), abs(input.item.value)))
     return result
   }
 }
@@ -182,42 +181,6 @@ enum Examples {
       / Double(max(abs(divisor), abs(input.item.value)))
     return result
   }
-}
-
-// MARK: - Многострочное преобразование сокращается до одной строки
-enum Operands {
-  struct Item {
-    let value: Int
-  }
-
-  struct Input {
-    let item: Item
-  }
-}
-
-enum Examples {
-
-  static func expandedConversion(_ input: Operands.Input, _ second: Operands.Input, _ divisor: Int) -> Double {
-    let result = Double(
-      abs(input.item.value) - abs(second.item.value)
-    ) / Double(max(abs(divisor), abs(input.item.value)))
-    return result
-  }
-}
-
-/// Output
-enum Operands {
-
-  struct Item {
-    let value: Int
-  }
-
-  struct Input {
-    let item: Item
-  }
-}
-
-enum Examples {
 
   static func expandedConversion(_ input: Operands.Input, _ second: Operands.Input, _ divisor: Int) -> Double {
     let result = Double(abs(input.item.value) - abs(second.item.value)) / Double(max(abs(divisor), abs(input.item.value)))
@@ -245,27 +208,60 @@ enum Examples {
   }
 }
 
-// MARK: - Отдельное сложение сокращается до одной строки
-func value(_ first: Int, _ second: Int) -> Int {
-  first
-    +
-    second
+// MARK: - Короткие суммы, разности, произведения и деления остаются на одной строке
+enum Expressions {
+
+  static func sum(_ first: Int, _ second: Int) -> Int {
+    first
+      +
+      second
+  }
+
+  static func shortSum(_ first: Double, _ second: Double) -> Double {
+    first
+      + second
+  }
+
+  static func additive(_ first: Int, _ second: Int, _ third: Int) -> Int {
+    first +
+      second
+      - third
+  }
+
+  static func multiplicative(_ first: Int, _ second: Int, _ third: Int) -> Int {
+    first *
+      second
+      / third
+  }
+
+  static func partialLeading(_ first: Int, _ second: Int, _ third: Int) -> Int {
+    first + second
+      - third
+  }
 }
 
 /// Output
-func value(_ first: Int, _ second: Int) -> Int {
-  first + second
-}
+enum Expressions {
 
-// MARK: - Сложение с оператором в начале продолжения сокращается до одной строки
-func shortExpression(_ first: Double, _ second: Double) -> Double {
-  first
-    + second
-}
+  static func sum(_ first: Int, _ second: Int) -> Int {
+    first + second
+  }
 
-/// Output
-func shortExpression(_ first: Double, _ second: Double) -> Double {
-  first + second
+  static func shortSum(_ first: Double, _ second: Double) -> Double {
+    first + second
+  }
+
+  static func additive(_ first: Int, _ second: Int, _ third: Int) -> Int {
+    first + second - third
+  }
+
+  static func multiplicative(_ first: Int, _ second: Int, _ third: Int) -> Int {
+    first * second / third
+  }
+
+  static func partialLeading(_ first: Int, _ second: Int, _ third: Int) -> Int {
+    first + second - third
+  }
 }
 
 // MARK: - Длинное выражение с оператором ?? переносится
@@ -288,37 +284,18 @@ enum Examples {
   }
 }
 
-// MARK: - Лишние переносы сложения и вычитания удаляются
-func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
-  first +
-    second
-    - third
-}
-
-/// Output
-func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
-  first + second - third
-}
-
-// MARK: - Лишние переносы умножения и деления удаляются
-func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
-  first *
-    second
-    / third
-}
-
-/// Output
-func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
-  first * second / third
-}
-
-// MARK: - Переносы проходят по сложению и вычитанию, сохраняя произведение целиком
+// MARK: - Согласованные переносы цепочек операторов
 enum Examples {
 
   static func splitProduct(_ first: Double, _ second: Double, _ third: Double, _ fourth: Double) -> Double {
     let result = max(abs(first), abs(second)) + min(abs(second), abs(third))
       * max(abs(third), abs(fourth)) - min(abs(first), abs(fourth))
     return result
+  }
+
+  static func value(_ first: Int?, _ second: Int?, _ third: Int) -> Int {
+    first ?? second
+      ?? third
   }
 }
 
@@ -331,18 +308,6 @@ enum Examples {
       - min(abs(first), abs(fourth))
     return result
   }
-}
-
-// MARK: - Все части цепочки ?? переносятся вместе
-enum Examples {
-  static func value(_ first: Int?, _ second: Int?, _ third: Int) -> Int {
-    first ?? second
-      ?? third
-  }
-}
-
-/// Output
-enum Examples {
 
   static func value(_ first: Int?, _ second: Int?, _ third: Int) -> Int {
     first
@@ -378,17 +343,6 @@ enum Examples {
     first
       ?? second.value
   }
-}
-
-// MARK: - Частично перенесённая сумма сокращается до одной строки
-func partialLeading(_ first: Int, _ second: Int, _ third: Int) -> Int {
-  first + second
-    - third
-}
-
-/// Output
-func partialLeading(_ first: Int, _ second: Int, _ third: Int) -> Int {
-  first + second - third
 }
 
 // MARK: - Оператор диапазона начинает строку продолжения

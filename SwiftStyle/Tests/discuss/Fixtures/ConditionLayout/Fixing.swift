@@ -1,9 +1,24 @@
-// MARK: - Объявление соединяется с выражением if
+// MARK: - Переносы объявления и условий if
 enum Examples {
+
   static func value(_ first: Bool) -> Int {
     let
       result = if first { 1 } else { 0 }
     return result
+  }
+
+  static func value(_ first: Bool, _ second: Bool) -> Bool {
+    if first,
+      second { return true }
+    return false
+  }
+
+  static func value(_ values: [Int], _ value: Int) -> Bool {
+    if values.contains(
+      value
+    )
+    { return true }
+    return false
   }
 }
 
@@ -18,19 +33,6 @@ enum Examples {
       }
     return result
   }
-}
-
-// MARK: - Открывающая скобка перед однострочным return
-enum Examples {
-  static func value(_ first: Bool, _ second: Bool) -> Bool {
-    if first,
-      second { return true }
-    return false
-  }
-}
-
-/// Output
-enum Examples {
 
   static func value(_ first: Bool, _ second: Bool) -> Bool {
     if first,
@@ -39,21 +41,6 @@ enum Examples {
 
     return false
   }
-}
-
-// MARK: - Скобка тела на строке закрытия вызова в условии
-enum Examples {
-  static func value(_ values: [Int], _ value: Int) -> Bool {
-    if values.contains(
-      value
-    )
-    { return true }
-    return false
-  }
-}
-
-/// Output
-enum Examples {
 
   static func value(_ values: [Int], _ value: Int) -> Bool {
     if values.contains(

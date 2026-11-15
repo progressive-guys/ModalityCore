@@ -1,8 +1,7 @@
-// MARK: - Вызов с тремя аргументами и пустой строкой после него
-
+// MARK: - Пустая строка после вызова с двумя и тремя аргументами
 enum Examples {
 
-  static func value() -> String {
+  static func threeArguments() -> String {
     let value = "a".replacingOccurrences(
       of: "a",
       with: "b",
@@ -11,12 +10,8 @@ enum Examples {
 
     return value
   }
-}
 
-// MARK: - Вызов с двумя аргументами и пустой строкой после него
-enum Examples {
-
-  static func value() -> String {
+  static func twoArgumentsWithGap() -> String {
     let value = String(
       repeating: "a",
       count: 2
@@ -24,12 +19,8 @@ enum Examples {
 
     return value
   }
-}
 
-// MARK: - Вызов с двумя аргументами без пустой строки после него
-enum Examples {
-
-  static func value() -> String {
+  static func twoArgumentsWithoutGap() -> String {
     let value = String(
       repeating: "a",
       count: 2

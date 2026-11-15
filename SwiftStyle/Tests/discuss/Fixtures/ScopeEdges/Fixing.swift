@@ -1,4 +1,4 @@
-// MARK: - Удаление пустой строки в конце замыкания
+// MARK: - Удаление пустой строки в конце функции и замыкания
 func example() {
   let action = {
     print("value")
@@ -7,21 +7,19 @@ func example() {
   action()
 }
 
-/// Output
-func example() {
-  let action = {
-    print("value")
-  }
-  action()
-}
-
-// MARK: - Удаление пустой строки в конце функции
 func value() -> Int {
   return 1
 
 }
 
 /// Output
+func example() {
+  let action = {
+    print("value")
+  }
+  action()
+}
+
 func value() -> Int {
   return 1
 }

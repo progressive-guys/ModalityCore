@@ -1,7 +1,7 @@
-// MARK: - Дополнительные условия вокруг привязки типа
-
+// MARK: - Контексты отдельных проверок и преобразований SwiftSyntax (1)
 enum Examples {
 
+  // Дополнительные условия вокруг привязки типа
   static func singleCheckWithConditions(_ next: () -> ExprSyntax, flag: (String) -> Bool) -> Int {
     if flag("prefix"), let item = next().as(IntegerLiteralExprSyntax.self), flag("suffix") {
       return item.literal.text.count
@@ -9,61 +9,42 @@ enum Examples {
 
     return 0
   }
-}
 
-// MARK: - Проекция семейства типов SwiftSyntax
-
-enum Examples {
-
+  // Проекция семейства типов SwiftSyntax
   static func familyProjection(_ input: Syntax) -> Int {
     if let expression = input.as(ExprSyntax.self) { return expression.description.count }
     return 0
   }
-}
 
-// MARK: - Необязательный объект проверки типа
-
-enum Examples {
-
+  // Необязательный объект проверки типа
   static func optionalReceiver(_ input: ExprSyntax?) -> Bool {
     if input?.is(IntegerLiteralExprSyntax.self) == nil { return true }
     return false
   }
-}
 
-// MARK: - Обычная привязка значения
-enum Examples {
-
+  // Обычная привязка значения
   static func optionalBinding(_ input: Int?) -> Int {
     if let item = input { return item }
     return 0
   }
 }
 
-// MARK: - Полное имя проверяемого типа
-
+// MARK: - Контексты отдельных проверок и преобразований SwiftSyntax (2)
 enum Examples {
 
+  // Полное имя проверяемого типа
   static func qualifiedType(_ input: ExprSyntax) -> Int {
     if let item = input.as(SwiftSyntax.FunctionCallExprSyntax.self) { return 1 }
     return 0
   }
-}
 
-// MARK: - Одиночное приведение типа
-
-enum Examples {
-
+  // Одиночное приведение типа
   static func singleCheck(_ input: ExprSyntax) -> Int {
     if let item = input.as(FunctionCallExprSyntax.self) { return 1 }
     return 0
   }
-}
 
-// MARK: - Одиночная проверка типа
-
-enum Examples {
-
+  // Одиночная проверка типа
   static func typeTest(_ input: ExprSyntax) -> Int {
     if input.is(FunctionCallExprSyntax.self) { return 1 }
     return 0
@@ -71,7 +52,6 @@ enum Examples {
 }
 
 // MARK: - Пользовательский метод преобразования
-
 private extension ExprSyntax {
   func convert<Node: ExprSyntaxProtocol>(_ type: Node.Type) -> Node? { self.as(type) }
 }

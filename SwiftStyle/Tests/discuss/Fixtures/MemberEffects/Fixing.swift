@@ -1,11 +1,17 @@
-// MARK: - Функции async перед функциями async throws
-struct FunctionEffects {
+// MARK: - Порядок функций без эффектов, rethrows, async и async throws
+struct Calls {
   func combined() async throws {}
   func delayed() async {}
+  func fallible(_ action: () throws -> Void) rethrows { try action() }
+  func plain() {}
 }
 
 /// Output
-struct FunctionEffects {
+struct Calls {
+
+  func plain() {}
+
+  func fallible(_ action: () throws -> Void) rethrows { try action() }
 
   func delayed() async {}
 
@@ -86,43 +92,13 @@ struct MixedConditionalEffects {
   func after() {}
 }
 
-// MARK: - Обычные функции перед функциями rethrows
-struct RethrowingEffects {
-  func fallible(_ action: () throws -> Void) rethrows { try action() }
-  func plain() {}
-}
-
-/// Output
-struct RethrowingEffects {
-
-  func plain() {}
-
-  func fallible(_ action: () throws -> Void) rethrows { try action() }
-}
-
-// MARK: - Требования getter сортируются и разделяются по async и throws
-protocol Values {
+// MARK: - Требования свойств и методов сортируются по async и throws
+protocol Requirements {
 
   var combined: Int { get async throws }
   var delayed: Int { get async }
   var fallible: Int { get throws }
   var plain: Int { get }
-}
-
-/// Output
-protocol Values {
-
-  var plain: Int { get }
-
-  var fallible: Int { get throws }
-
-  var delayed: Int { get async }
-
-  var combined: Int { get async throws }
-}
-
-// MARK: - Требования методов сортируются и разделяются по async и throws
-protocol Calls {
 
   func combinedCall() async throws
   func delayedCall() async
@@ -131,7 +107,15 @@ protocol Calls {
 }
 
 /// Output
-protocol Calls {
+protocol Requirements {
+
+  var plain: Int { get }
+
+  var fallible: Int { get throws }
+
+  var delayed: Int { get async }
+
+  var combined: Int { get async throws }
 
   func plainCall()
 

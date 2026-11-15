@@ -21,25 +21,44 @@ struct Values {
   var stored = 0
 }
 
-// MARK: - Условное объявление индексатора перед функцией
-struct FunctionBeforeConditionalSubscript {
+// MARK: - Условные индексатор и вычисляемые свойства перед функциями
+struct ConditionalMembers {
   func read() {}
   #if MEMBER_BRANCH
   subscript(index: Int) -> Int { index }
   #else
   subscript(index: Int) -> Int { index + 1 }
+  #endif
+
+  func readValue() -> Int { 0 }
+  #if MEMBER_BRANCH
+  #if DEBUG
+  var displayed: Int { 1 }
+  #else
+  var displayed: Int { 2 }
+  #endif
   #endif
 }
 
 /// Output
-struct FunctionBeforeConditionalSubscript {
+struct ConditionalMembers {
 
   #if MEMBER_BRANCH
   subscript(index: Int) -> Int { index }
   #else
   subscript(index: Int) -> Int { index + 1 }
   #endif
+
+  #if MEMBER_BRANCH
+  #if DEBUG
+  var displayed: Int { 1 }
+  #else
+  var displayed: Int { 2 }
+  #endif
+  #endif
+
   func read() {}
+  func readValue() -> Int { 0 }
 }
 
 // MARK: - Независимая сортировка веток условной компиляции
@@ -67,31 +86,6 @@ struct ConditionalBranch {
   #endif
 }
 
-// MARK: - Условные вычисляемые свойства перемещаются перед функцией
-struct FunctionBeforeConditionalGetter {
-  func read() -> Int { 0 }
-  #if MEMBER_BRANCH
-  #if DEBUG
-  var displayed: Int { 1 }
-  #else
-  var displayed: Int { 2 }
-  #endif
-  #endif
-}
-
-/// Output
-struct FunctionBeforeConditionalGetter {
-
-  #if MEMBER_BRANCH
-  #if DEBUG
-  var displayed: Int { 1 }
-  #else
-  var displayed: Int { 2 }
-  #endif
-  #endif
-  func read() -> Int { 0 }
-}
-
 // MARK: - Хранимое свойство перемещается перед init и условными вычисляемыми свойствами
 struct StoredAfterConditionalGetter {
   init() {}
@@ -117,7 +111,6 @@ struct StoredAfterConditionalGetter {
 }
 
 // MARK: - Свойство с обёрткой перед блоком условной компиляции
-
 struct Content: View {
 
   #if os(macOS)
@@ -131,7 +124,6 @@ struct Content: View {
 }
 
 /// Output
-
 struct Content: View {
 
   @State private var importing = false

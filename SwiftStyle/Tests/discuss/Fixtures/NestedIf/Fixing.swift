@@ -38,13 +38,29 @@ func run(_ first: Bool, _ second: Bool, body: () -> Void) {
   } // Keep this closing comment.
 }
 
-// MARK: - При объединении if комментарий переносится между условиями
+// MARK: - Объединение двух и трёх вложенных if с сохранением комментария
 enum Example {
 
   static func comments(_ first: Bool, _ second: Bool) {
     if first {
       // Check the next condition only after the first one succeeds.
       if second { print("ready") }
+    }
+  }
+
+  static func threeLevels(_ first: Bool, _ second: Bool, _ third: Bool) {
+    if first {
+      if second {
+        if third { print("ready") }
+      }
+    }
+  }
+
+  static func nested(_ first: Bool, _ second: Bool) {
+    if first {
+      if second {
+        print("ready")
+      }
     }
   }
 }
@@ -60,22 +76,6 @@ enum Example {
       print("ready")
     }
   }
-}
-
-// MARK: - Три вложенных if объединяются в список условий
-enum Example {
-
-  static func threeLevels(_ first: Bool, _ second: Bool, _ third: Bool) {
-    if first {
-      if second {
-        if third { print("ready") }
-      }
-    }
-  }
-}
-
-/// Output
-enum Example {
 
   static func threeLevels(_ first: Bool, _ second: Bool, _ third: Bool) {
     if first,
@@ -85,22 +85,6 @@ enum Example {
       print("ready")
     }
   }
-}
-
-// MARK: - Два вложенных if объединяются в список условий
-enum Example {
-
-  static func nested(_ first: Bool, _ second: Bool) {
-    if first {
-      if second {
-        print("ready")
-      }
-    }
-  }
-}
-
-/// Output
-enum Example {
 
   static func nested(_ first: Bool, _ second: Bool) {
     if first,

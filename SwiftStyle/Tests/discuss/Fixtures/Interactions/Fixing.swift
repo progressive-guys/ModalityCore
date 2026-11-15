@@ -30,7 +30,7 @@ func adjusted(_ values: [Int]) -> [Int] {
   .filter { $0 > 0 }
 }
 
-// MARK: - Guard сокращается, пустая строка в начале расширения сохраняется
+// MARK: - Перенос параметров и сокращение guard в расширении
 extension Int {
 
   func requirePositive() {
@@ -38,6 +38,9 @@ extension Int {
       return
     }
   }
+
+  func sum(_ first: Int,
+    _ second: Int) -> Int { first + second }
 }
 
 /// Output
@@ -46,16 +49,6 @@ extension Int {
   func requirePositive() {
     guard self > 0 else { return }
   }
-}
-
-// MARK: - Перенос списка увеличивает число строк тела типа
-extension Int {
-  func sum(_ first: Int,
-    _ second: Int) -> Int { first + second }
-}
-
-/// Output
-extension Int {
 
   func sum(
     _ first: Int,

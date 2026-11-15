@@ -1,8 +1,13 @@
-// MARK: - Пустая строка между соседними вариантами перечисления удаляется
+// MARK: - Интервалы между однострочными и многострочными вариантами перечисления
 enum Value {
   case first
 
   case second
+  case third(
+    Int,
+    String
+  )
+  case fourth
 }
 
 /// Output
@@ -10,25 +15,10 @@ enum Value {
 
   case first
   case second
-}
-
-// MARK: - После варианта с многострочными связанными значениями добавляется пустая строка
-enum Value {
-
-  case first(
-    Int,
-    String
-  )
-  case second
-}
-
-/// Output
-enum Value {
-
-  case first(
+  case third(
     Int,
     String
   )
 
-  case second
+  case fourth
 }

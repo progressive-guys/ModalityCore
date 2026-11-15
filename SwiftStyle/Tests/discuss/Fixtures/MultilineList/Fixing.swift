@@ -1,4 +1,4 @@
-// MARK: - Первый аргумент вложенного вызова переносится на новую строку
+// MARK: - Первый элемент и параметры многострочных списков
 func value() -> String {
   let value = String(
     repeating: "a",
@@ -8,6 +8,12 @@ func value() -> String {
   )
 
   return value
+}
+
+func total(
+  first: Int, second: Int
+) -> Int {
+  first + second
 }
 
 /// Output
@@ -24,14 +30,6 @@ func value() -> String {
   return value
 }
 
-// MARK: - Параметры многострочной сигнатуры размещаются по одному на строке
-func total(
-  first: Int, second: Int
-) -> Int {
-  first + second
-}
-
-/// Output
 func total(
   first: Int,
   second: Int

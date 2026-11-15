@@ -1,5 +1,5 @@
-// MARK: - Удаление пустой строки в начале catch
-func visit(_ action: () throws -> Void) {
+// MARK: - Пустая строка в начале catch и замыканий удаляется
+func catchBody(_ action: () throws -> Void) {
   do {
     try action()
   } catch {
@@ -8,17 +8,7 @@ func visit(_ action: () throws -> Void) {
   }
 }
 
-/// Output
-func visit(_ action: () throws -> Void) {
-  do {
-    try action()
-  } catch {
-    print(error)
-  }
-}
-
-// MARK: - Удаление пустой строки после параметров замыкания
-func visit() {
+func closureParameters() {
   let action = { (value: Int) in
 
     print(value)
@@ -27,17 +17,7 @@ func visit() {
   action(1)
 }
 
-/// Output
-func visit() {
-  let action = { (value: Int) in
-    print(value)
-    print("done")
-  }
-  action(1)
-}
-
-// MARK: - Удаление пустой строки в начале замыкания без параметров
-func visit() {
+func closureBody() {
   let action = {
 
     print("first")
@@ -47,7 +27,23 @@ func visit() {
 }
 
 /// Output
-func visit() {
+func catchBody(_ action: () throws -> Void) {
+  do {
+    try action()
+  } catch {
+    print(error)
+  }
+}
+
+func closureParameters() {
+  let action = { (value: Int) in
+    print(value)
+    print("done")
+  }
+  action(1)
+}
+
+func closureBody() {
   let action = {
     print("first")
     print("second")
@@ -66,15 +62,49 @@ func empty() {
   // Empty body.
 }
 
-// MARK: - Удаление пустой строки в начале вычисляемого свойства
-var value: Int {
+// MARK: - Удаление пустых строк в начале вычисляемого свойства и аксессоров
+enum Accessors {
 
-  1
+  static var implicit: Int {
+
+    1
+  }
+
+  static var explicit: Int {
+    get {
+
+      return 1
+    }
+  }
+
+  static var mutable: Int {
+    get { 0 }
+    set {
+
+      print(newValue)
+    }
+  }
 }
 
 /// Output
-var value: Int {
-  1
+enum Accessors {
+
+  static var implicit: Int {
+    1
+  }
+
+  static var explicit: Int {
+    get {
+      return 1
+    }
+  }
+
+  static var mutable: Int {
+    get { 0 }
+    set {
+      print(newValue)
+    }
+  }
 }
 
 // MARK: - Удаление пустой строки в начале defer
@@ -92,8 +122,14 @@ func visit() {
   }
 }
 
-// MARK: - Удаление пустой строки в начале деинициализатора
+// MARK: - Удаление пустых строк в начале init и deinit
 final class Owner {
+
+  init() {
+
+    print("created")
+  }
+
   deinit {
 
     print("released")
@@ -103,13 +139,17 @@ final class Owner {
 /// Output
 final class Owner {
 
+  init() {
+    print("created")
+  }
+
   deinit {
     print("released")
   }
 }
 
-// MARK: - Удаление пустой строки в начале do
-func visit(_ action: () throws -> Void) {
+// MARK: - Пустая строка в начале do, else и for удаляется
+func doBody(_ action: () throws -> Void) {
   do {
 
     try action()
@@ -118,8 +158,24 @@ func visit(_ action: () throws -> Void) {
   }
 }
 
+func elseBody(_ value: Int) {
+  if value > 0 {
+    print(value)
+  } else {
+
+    print("other")
+  }
+}
+
+func forBody(_ values: [Int]) {
+  for value in values {
+
+    print(value)
+  }
+}
+
 /// Output
-func visit(_ action: () throws -> Void) {
+func doBody(_ action: () throws -> Void) {
   do {
     try action()
   } catch {
@@ -127,18 +183,7 @@ func visit(_ action: () throws -> Void) {
   }
 }
 
-// MARK: - Удаление пустой строки в начале else
-func visit(_ value: Int) {
-  if value > 0 {
-    print(value)
-  } else {
-
-    print("other")
-  }
-}
-
-/// Output
-func visit(_ value: Int) {
+func elseBody(_ value: Int) {
   if value > 0 {
     print(value)
   } else {
@@ -146,33 +191,9 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: - Удаление пустой строки в начале цикла for
-func visit(_ values: [Int]) {
-  for value in values {
-
-    print(value)
-  }
-}
-
-/// Output
-func visit(_ values: [Int]) {
+func forBody(_ values: [Int]) {
   for value in values {
     print(value)
-  }
-}
-
-// MARK: - Удаление пустой строки в начале getter
-var value: Int {
-  get {
-
-    return 1
-  }
-}
-
-/// Output
-var value: Int {
-  get {
-    return 1
   }
 }
 
@@ -210,51 +231,37 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: - Удаление пустой строки в начале инициализатора
-final class Owner {
-  init() {
+// MARK: - Удаление пустых строк в начале repeat и while
+enum Loops {
 
-    print("created")
+  static func repeatBody(_ values: inout [Int]) {
+    repeat {
+
+      print(values.popLast() as Any)
+    } while !values.isEmpty
+  }
+
+  static func whileBody(_ values: inout [Int]) {
+    while !values.isEmpty {
+
+      print(values.removeLast())
+    }
   }
 }
 
 /// Output
-final class Owner {
+enum Loops {
 
-  init() {
-    print("created")
+  static func repeatBody(_ values: inout [Int]) {
+    repeat {
+      print(values.popLast() as Any)
+    } while !values.isEmpty
   }
-}
 
-// MARK: - Удаление пустой строки в начале repeat
-func visit(_ values: inout [Int]) {
-  repeat {
-
-    print(values.popLast() as Any)
-  } while !values.isEmpty
-}
-
-/// Output
-func visit(_ values: inout [Int]) {
-  repeat {
-    print(values.popLast() as Any)
-  } while !values.isEmpty
-}
-
-// MARK: - Удаление пустой строки в начале setter
-var value: Int {
-  get { 0 }
-  set {
-
-    print(newValue)
-  }
-}
-
-/// Output
-var value: Int {
-  get { 0 }
-  set {
-    print(newValue)
+  static func whileBody(_ values: inout [Int]) {
+    while !values.isEmpty {
+      print(values.removeLast())
+    }
   }
 }
 
@@ -272,20 +279,5 @@ func value(_ input: Int) -> Int {
   switch input {
   case 0: return 0
   default: return 1
-  }
-}
-
-// MARK: - Удаление пустой строки в начале while
-func visit(_ values: inout [Int]) {
-  while !values.isEmpty {
-
-    print(values.removeLast())
-  }
-}
-
-/// Output
-func visit(_ values: inout [Int]) {
-  while !values.isEmpty {
-    print(values.removeLast())
   }
 }

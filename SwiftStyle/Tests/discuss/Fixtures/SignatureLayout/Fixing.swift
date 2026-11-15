@@ -1,37 +1,26 @@
-// MARK: - Полное имя возвращаемого типа помещается на одной строке
+// MARK: - Компоновка полного имени, стрелки и кортежа возвращаемого типа
 enum Examples {
+
   struct Result {}
-  static func value() -> Examples
+  static func qualifiedResult() -> Examples
     .Result { .init() }
-}
 
-/// Output
-enum Examples {
-
-  struct Result {}
-
-  static func value() -> Examples.Result { .init() }
-}
-
-// MARK: - Стрелка возвращаемого типа соединяется с сигнатурой
-enum Examples {
-  static func value()
+  static func scalarResult()
     -> Int { 1 }
-}
 
-/// Output
-enum Examples {
-  static func value() -> Int { 1 }
-}
-
-// MARK: - Кортеж возвращаемого типа помещается на одной строке
-enum Examples {
-  static func value() -> (
+  static func tupleResult() -> (
     Int, Int
   ) { (1, 2) }
 }
 
 /// Output
 enum Examples {
-  static func value() -> (Int, Int) { (1, 2) }
+
+  struct Result {}
+
+  static func qualifiedResult() -> Examples.Result { .init() }
+
+  static func scalarResult() -> Int { 1 }
+
+  static func tupleResult() -> (Int, Int) { (1, 2) }
 }

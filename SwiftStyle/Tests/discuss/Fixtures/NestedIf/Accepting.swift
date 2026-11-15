@@ -1,6 +1,7 @@
-// MARK: - У вложенного if есть ветка else
+// MARK: - Ветви и соседние инструкции препятствуют объединению if (1)
 enum Examples {
 
+  // У вложенного if есть ветка else
   static func innerElse(_ first: Bool, _ second: Bool) {
     if first {
       if second {
@@ -10,11 +11,8 @@ enum Examples {
       }
     }
   }
-}
 
-// MARK: - У внешнего if есть ветка else
-enum Examples {
-
+  // У внешнего if есть ветка else
   static func outerElse(_ first: Bool, _ second: Bool) {
     if first {
       if second {
@@ -26,9 +24,10 @@ enum Examples {
   }
 }
 
-// MARK: - Инструкция после вложенного if
+// MARK: - Ветви и соседние инструкции препятствуют объединению if (2)
 enum Examples {
 
+  // Инструкция после вложенного if
   static func after(_ first: Bool, _ second: Bool) {
     if first {
       if second {
@@ -38,11 +37,8 @@ enum Examples {
       print("end")
     }
   }
-}
 
-// MARK: - Инструкция перед вложенным if
-enum Examples {
-
+  // Инструкция перед вложенным if
   static func before(_ first: Bool, _ second: Bool) {
     if first {
       print("start")

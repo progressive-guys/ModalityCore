@@ -1,5 +1,5 @@
-// MARK: - Присваивание свойства соединяется с guard, читающим это свойство
-func update(_ state: inout (count: Int, enabled: Bool), value: Int) {
+// MARK: - Присваивание соединяется с проверкой изменённого значения
+func assignedProperty(_ state: inout (count: Int, enabled: Bool), value: Int) {
   state.count = value
 
   guard state.count > 0 else { return }
@@ -8,17 +8,7 @@ func update(_ state: inout (count: Int, enabled: Bool), value: Int) {
   print("ready")
 }
 
-/// Output
-func update(_ state: inout (count: Int, enabled: Bool), value: Int) {
-  state.count = value
-  guard state.count > 0 else { return }
-
-  print("started")
-  print("ready")
-}
-
-// MARK: - Составное присваивание соединяется с guard, читающим изменённое значение
-func update(_ value: inout Int) {
+func compoundAssignment(_ value: inout Int) {
   value *= 2
 
   guard value > 0 else { return }
@@ -27,17 +17,7 @@ func update(_ value: inout Int) {
   print("ready")
 }
 
-/// Output
-func update(_ value: inout Int) {
-  value *= 2
-  guard value > 0 else { return }
-
-  print("started")
-  print("ready")
-}
-
-// MARK: - Изменение значения соединяется с guard, читающим его в замыкании
-func update(_ value: inout Int, values: [Int]) {
+func closureCondition(_ value: inout Int, values: [Int]) {
   value += 1
 
   guard values.contains(where: { $0 == value }) else { return }
@@ -47,7 +27,23 @@ func update(_ value: inout Int, values: [Int]) {
 }
 
 /// Output
-func update(_ value: inout Int, values: [Int]) {
+func assignedProperty(_ state: inout (count: Int, enabled: Bool), value: Int) {
+  state.count = value
+  guard state.count > 0 else { return }
+
+  print("started")
+  print("ready")
+}
+
+func compoundAssignment(_ value: inout Int) {
+  value *= 2
+  guard value > 0 else { return }
+
+  print("started")
+  print("ready")
+}
+
+func closureCondition(_ value: inout Int, values: [Int]) {
   value += 1
   guard values.contains(where: { $0 == value }) else { return }
 
@@ -55,10 +51,11 @@ func update(_ value: inout Int, values: [Int]) {
   print("ready")
 }
 
-// MARK: - Изменение свойства с явным self соединяется с проверкой if
+// MARK: - Изменение свойств с явным и неявным self перед проверкой
 final class Example {
 
   private var activeConsumers = 1
+  private var startedConsumers = 0
 
   func stop() {
     self.activeConsumers -= 1
@@ -69,32 +66,11 @@ final class Example {
 
     print("ready")
   }
-}
-
-/// Output
-final class Example {
-
-  private var activeConsumers = 1
-
-  func stop() {
-    self.activeConsumers -= 1
-    if self.activeConsumers == 0 {
-      print("stopped")
-    }
-
-    print("ready")
-  }
-}
-
-// MARK: - Изменение свойства с неявным self соединяется с guard
-final class Example {
-
-  private var activeConsumers = 0
 
   func start() {
-    activeConsumers += 1
+    startedConsumers += 1
 
-    guard activeConsumers == 1 else { return }
+    guard startedConsumers == 1 else { return }
 
     print("started")
     print("ready")
@@ -104,11 +80,21 @@ final class Example {
 /// Output
 final class Example {
 
-  private var activeConsumers = 0
+  private var activeConsumers = 1
+  private var startedConsumers = 0
+
+  func stop() {
+    self.activeConsumers -= 1
+    if self.activeConsumers == 0 {
+      print("stopped")
+    }
+
+    print("ready")
+  }
 
   func start() {
-    activeConsumers += 1
-    guard activeConsumers == 1 else { return }
+    startedConsumers += 1
+    guard startedConsumers == 1 else { return }
 
     print("started")
     print("ready")

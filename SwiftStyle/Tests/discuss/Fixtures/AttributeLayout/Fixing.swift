@@ -1,8 +1,19 @@
-// MARK: - Аннотации свойства с get и set переносятся на отдельные строки
+// MARK: - Переносы аннотаций свойств с аксессорами, аргументами и ViewBuilder
 struct Example {
+
   @MainActor @available(*, deprecated) var value: Int {
     get { 0 }
     set { _ = newValue }
+  }
+
+  @available(
+    *,
+    deprecated,
+    message: "Use another property."
+  ) @MainActor var other: Int { 0 }
+
+  @MainActor @ViewBuilder var rootView: some View {
+    Text("Example")
   }
 }
 
@@ -15,51 +26,66 @@ struct Example {
     get { 0 }
     set { _ = newValue }
   }
+
+  @available(
+    *,
+    deprecated,
+    message: "Use another property."
+  )
+  @MainActor
+  var other: Int { 0 }
+
+  @MainActor
+  @ViewBuilder
+  var rootView: some View {
+    Text("Example")
+  }
 }
 
-// MARK: - Available и objc перед функцией переносятся на отдельные строки
-
+// MARK: - Порядок и переносы аннотаций методов Objective-C
 final class Example: NSObject {
+
   @available(*, deprecated) @objc(value:) func value(_ input: Int) -> Int { input }
+
+  @available(*, deprecated) @objc @concurrent func compute(_ input: Int) async -> Int { input }
+
+  @available(*, deprecated) @objc // Called through Objective-C.
+  func value() -> Int { 0 }
+
+  @objc @available(*, deprecated) func orderedValue() -> Int { 0 }
 }
 
 /// Output
-
 final class Example: NSObject {
-  
+
   @available(*, deprecated)
   @objc(value:)
   func value(_ input: Int) -> Int { input }
+
+  @available(*, deprecated)
+  @objc
+  @concurrent func compute(_ input: Int) async -> Int { input }
+
+  @available(*, deprecated)
+  @objc // Called through Objective-C.
+  func value() -> Int { 0 }
+
+  @objc
+  @available(*, deprecated)
+  func orderedValue() -> Int { 0 }
 }
 
 // MARK: - Available и Published перед свойством переносятся на отдельные строки
-
 final class Example {
   @available(*, deprecated) @Published var value = 0
 }
 
 /// Output
-
 final class Example {
 
   @available(*, deprecated)
   @Published
   var value = 0
-}
-
-// MARK: - Available и objc переносятся, concurrent остаётся на строке функции
-
-final class Example: NSObject {
-  @available(*, deprecated) @objc @concurrent func compute(_ input: Int) async -> Int { input }
-}
-
-/// Output
-
-final class Example: NSObject {
-  
-  @available(*, deprecated)
-  @objc
-  @concurrent func compute(_ input: Int) async -> Int { input }
 }
 
 // MARK: - Длинная аннотация available переносится над вычисляемым свойством
@@ -94,9 +120,12 @@ struct Example {
   var value: Int { 0 }
 }
 
-// MARK: - Аннотации вычисляемого свойства переносятся на отдельные строки
+// MARK: - Аннотации вычисляемых свойств переносятся на отдельные строки
 final class Example {
+
   @MainActor @available(*, deprecated) var value: Int { 0 }
+
+  @available(*, deprecated) var availableValue: Int { 0 }
 }
 
 /// Output
@@ -105,40 +134,26 @@ final class Example {
   @MainActor
   @available(*, deprecated)
   var value: Int { 0 }
-}
-
-// MARK: - Аннотация available над вычисляемым свойством
-final class Example {
-  @available(*, deprecated) var value: Int { 0 }
-}
-
-/// Output
-final class Example {
 
   @available(*, deprecated)
-  var value: Int { 0 }
+  var availableValue: Int { 0 }
 }
 
-// MARK: - Concurrent соединяется с функцией, пока строка помещается в лимит
+// MARK: - Аннотация concurrent у однострочной и многострочной функций
 final class ConcurrentExample {
+
   @concurrent
   func calculateValue(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
-}
 
-/// Output
-final class ConcurrentExample {
-  @concurrent func calculateValue(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
-}
-
-// MARK: - Аннотация concurrent переносится над многострочной функцией
-final class ConcurrentExample {
-  @concurrent func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> LongType {
+  @concurrent func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int {
     first
   }
 }
 
 /// Output
 final class ConcurrentExample {
+
+  @concurrent func calculateValue(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
 
   @concurrent
   func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> LongType {
@@ -166,29 +181,18 @@ struct Example {
   @MainActor
   @available(*, unavailable)
   #endif
+ 
   var value: Int { 0 }
 }
 
-// MARK: - Аннотации хранимого свойства разделяются внутри условной компиляции
+// MARK: - Аннотации условного свойства и функции с аннотациями типов
 final class Example {
+
   #if os(macOS)
   @available(*, deprecated) @MainActor
   #endif
   var value = 0
-}
 
-/// Output
-final class Example {
-
-  #if os(macOS)
-  @available(*, deprecated)
-  @MainActor
-  #endif
-  var value = 0
-}
-
-// MARK: - Аннотация функции переносится, аннотации типов сохраняются
-final class Example {
   @available(*, deprecated) func action(_ body: @escaping @Sendable () -> Void) -> @Sendable () -> Void {
     body
   }
@@ -197,6 +201,13 @@ final class Example {
 /// Output
 final class Example {
 
+  #if os(macOS)
+  @available(*, deprecated)
+  @MainActor
+  #endif
+
+  var value = 0
+
   @available(*, deprecated)
   func action(_ body: @escaping @Sendable () -> Void) -> @Sendable () -> Void {
     body
@@ -204,7 +215,6 @@ final class Example {
 }
 
 // MARK: - Пустая строка перед отдельной аннотацией свойства
-
 struct Example {
   var appearance: NSAppearance.Name { .aqua }
   @MainActor
@@ -212,7 +222,6 @@ struct Example {
 }
 
 /// Output
-
 struct Example {
   
   var appearance: NSAppearance.Name { .aqua }
@@ -222,7 +231,6 @@ struct Example {
 }
 
 // MARK: - Группировка хранимых свойств по видам аннотаций
-
 class Example {
   @Published private var settingsTitle: String = "Settings"
   @available(*, deprecated) private var isSettingsPresented: Bool = false
@@ -232,7 +240,6 @@ class Example {
 }
 
 /// Output
-
 class Example {
 
   @Published private var count: Int = 0
@@ -265,106 +272,38 @@ final class Example {
   init() {}
 }
 
-// MARK: - Аннотации разделяются, строчный комментарий остаётся при objc
-
-final class Example: NSObject {
-
-  @available(*, deprecated) @objc // Called through Objective-C.
-  func value() -> Int { 0 }
-}
-
-/// Output
-
-final class Example: NSObject {
-
-  @available(*, deprecated)
-  @objc // Called through Objective-C.
-  func value() -> Int { 0 }
-}
-
-// MARK: - После многострочной аннотации следующая аннотация и свойство переносятся
-struct Example {
-  @available(
-    *,
-    deprecated,
-    message: "Use another property."
-  ) @MainActor var value: Int { 0 }
-}
-
-/// Output
-struct Example {
-
-  @available(
-    *,
-    deprecated,
-    message: "Use another property."
-  )
-  @MainActor
-  var value: Int { 0 }
-}
-
-// MARK: - Аннотация objc остаётся над методом; добавляется пустая строка в начале типа
-
-final class ObjectiveCExample: NSObject {
-  @objc(exportValueForConfiguredProject:defaultValue:)
-  func export(_ projectIdentifier: String, defaultValue: String) {}
-}
-
-/// Output
-
+// MARK: - Аннотации objc у методов с длинными селекторами
 final class ObjectiveCExample: NSObject {
 
   @objc(exportValueForConfiguredProject:defaultValue:)
   func export(_ projectIdentifier: String, defaultValue: String) {}
-}
 
-// MARK: - Аннотация objc переносится над методом при превышении длины строки
-
-final class ObjectiveCExample: NSObject {
-  @objc(exportValueForConfiguredProjects:defaultValue:) func export(_ projectIdentifier: String, defaultValue: String) {}
+  @objc(exportValueForConfiguredProjects:defaultValue:) func exportMany(_ projectIdentifier: String, defaultValue: String) {}
 }
 
 /// Output
-
 final class ObjectiveCExample: NSObject {
+
+  @objc(exportValueForConfiguredProject:defaultValue:)
+  func export(_ projectIdentifier: String, defaultValue: String) {}
 
   @objc(exportValueForConfiguredProjects:defaultValue:)
-  func export(_ projectIdentifier: String, defaultValue: String) {}
+  func exportMany(_ projectIdentifier: String, defaultValue: String) {}
 }
 
-// MARK: - Аннотации переносятся на отдельные строки с сохранением порядка
+// MARK: - Аннотация требования протокола при допустимой и превышенной длине строки
+protocol Example {
 
-final class Example: NSObject {
-  @objc @available(*, deprecated) func value() -> Int { 0 }
-}
-
-/// Output
-
-final class Example: NSObject {
-  
-  @objc
-  @available(*, deprecated)
-  func value() -> Int { 0 }
-}
-
-// MARK: - MainActor соединяется с требованием протокола, если строка помещается в лимит
-protocol FitsLimit {
   @MainActor
   func loadTune(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
-}
 
-/// Output
-protocol FitsLimit {
-  @MainActor func loadTune(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
-}
-
-// MARK: - MainActor переносится над требованием протокола при превышении длины строки
-protocol ExceedsLimit {
   @MainActor func loadTrack(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
 }
 
 /// Output
-protocol ExceedsLimit {
+protocol Example {
+
+  @MainActor func loadTune(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
 
   @MainActor
   func loadTrack(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
@@ -433,23 +372,4 @@ final class Example {
 @MainActor
 @available(*, deprecated)
 final class Example {
-}
-
-// MARK: - MainActor и ViewBuilder переносятся над вычисляемым свойством
-
-struct Example {
-  @MainActor @ViewBuilder var rootView: some View {
-    Text("Example")
-  }
-}
-
-/// Output
-
-struct Example {
-
-  @MainActor
-  @ViewBuilder
-  var rootView: some View {
-    Text("Example")
-  }
 }
