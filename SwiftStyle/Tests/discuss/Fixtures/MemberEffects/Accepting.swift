@@ -3,6 +3,7 @@ struct Calls {
 
   // Async throws и async rethrows остаются в одной группе
   func combined() async throws {}
+
   func repeated(_ action: () async throws -> Void) async rethrows {
     try await action()
   }

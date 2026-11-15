@@ -57,11 +57,17 @@ struct Values {
 
   init() {}
 
-  subscript(index: Int) -> Int { index }
+  subscript(index: Int) -> Int {
+    index
+  }
 
-  var value: Int { 1 }
+  var value: Int {
+    1
+  }
 
-  func read() -> Int { value }
+  func read() -> Int {
+    value
+  }
 }
 
 // MARK: - Порядок инициализатора, деинициализатора и индексатора
@@ -78,7 +84,9 @@ final class Values {
 
   deinit {}
 
-  subscript(index: Int) -> Int { index }
+  subscript(index: Int) -> Int {
+    index
+  }
 }
 
 // MARK: - Комментарий перемещается вместе с вычисляемым свойством
@@ -93,9 +101,13 @@ struct Values {
 struct Values {
 
   // Display value.
-  var value: Int { 1 }
+  var value: Int {
+    1
+  }
 
-  func read() -> Int { value }
+  func read() -> Int {
+    value
+  }
 }
 
 // MARK: - Вложенный тип перемещается перед функцией в расширении

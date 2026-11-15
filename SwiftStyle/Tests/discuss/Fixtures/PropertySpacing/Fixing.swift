@@ -16,10 +16,12 @@ struct MissingGapAfterLongGetter {
     return n
   }
 
-  func read() -> Int { x }
+  func read() -> Int {
+    x
+  }
 }
 
-// MARK: - Добавление и сокращение пустых строк между многострочными аксессорами
+// MARK: - Пустая строка между свойствами с многострочными аксессорами
 struct Accessors {
 
   var a: Int {
@@ -27,17 +29,6 @@ struct Accessors {
     set {}
   }
   var b: Int {
-    get { 2 }
-    set {}
-  }
-
-  var c: Int {
-    get { 1 }
-    set {}
-  }
-
-
-  var d: Int {
     get { 2 }
     set {}
   }
@@ -55,13 +46,32 @@ struct Accessors {
     get { 2 }
     set {}
   }
+}
 
-  var c: Int {
+// MARK: - Лишние пустые строки между свойствами с многострочными аксессорами
+struct Accessors {
+
+  var a: Int {
     get { 1 }
     set {}
   }
 
-  var d: Int {
+
+  var b: Int {
+    get { 2 }
+    set {}
+  }
+}
+
+/// Output
+struct Accessors {
+
+  var a: Int {
+    get { 1 }
+    set {}
+  }
+
+  var b: Int {
     get { 2 }
     set {}
   }
@@ -99,7 +109,7 @@ struct BlankLineAfterGroupHeader {
   var b = 2
 }
 
-// MARK: - Пара коротких вычисляемых свойств идёт подряд
+// MARK: - Короткие вычисляемые свойства разворачиваются и разделяются пустой строкой
 struct ExtraComputedGap {
   var a: Int { 1 }
 
@@ -109,8 +119,13 @@ struct ExtraComputedGap {
 /// Output
 struct ExtraComputedGap {
 
-  var a: Int { 1 }
-  var b: Int { 2 }
+  var a: Int {
+    1
+  }
+
+  var b: Int {
+    2
+  }
 }
 
 // MARK: - Пара коротких свойств разных типов идёт подряд
@@ -255,7 +270,8 @@ struct MissingWrapperBindingGap {
 
   let a = 1
 
-  @Wrappers.F var b = 2
+  @Wrappers.F
+  var b = 2
 }
 
 // MARK: - Свойство с литералом на отдельной строке отделяется от предыдущего свойства
@@ -269,7 +285,9 @@ class Computed {
 /// Output
 class Computed {
 
-  var longerName: Int { 1 }
+  var longerName: Int {
+    1
+  }
 
   var x: Int {
     1000000000000000

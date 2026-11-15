@@ -9,7 +9,9 @@ struct Example {
   @Wrapped var x: Int = 2
 }
 
-func makeExample() -> Example { Example(longerName: 3, x: 4) }
+func makeExample() -> Example {
+  Example(longerName: 3, x: 4)
+}
 
 // MARK: - Сортировка свойств с обобщённой обёрткой оставлена для ручного решения
 @propertyWrapper
@@ -22,7 +24,9 @@ struct GenericExample {
   @Box var x: Int
 }
 
-func makeExample() -> GenericExample { GenericExample(longerName: 3, x: 4) }
+func makeExample() -> GenericExample {
+  GenericExample(longerName: 3, x: 4)
+}
 
 // MARK: - Сортировка свойств, определяющих аргументы поэлементного инициализатора, оставлена для ручного решения
 struct Pair {

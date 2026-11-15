@@ -21,15 +21,30 @@ struct Values {
   var stored = 0
 }
 
-// MARK: - Условные индексатор и вычисляемые свойства перед функциями
-struct ConditionalMembers {
+// MARK: - Условный индексатор перед пустым методом
+struct ConditionalSubscript {
   func read() {}
   #if MEMBER_BRANCH
   subscript(index: Int) -> Int { index }
   #else
   subscript(index: Int) -> Int { index + 1 }
   #endif
+}
 
+/// Output
+struct ConditionalSubscript {
+
+  #if MEMBER_BRANCH
+  subscript(index: Int) -> Int { index }
+  #else
+  subscript(index: Int) -> Int { index + 1 }
+  #endif
+
+  func read() {}
+}
+
+// MARK: - Условные вычисляемые свойства перед методом с многострочным телом
+struct ConditionalGetter {
   func readValue() -> Int { 0 }
   #if MEMBER_BRANCH
   #if DEBUG
@@ -41,13 +56,7 @@ struct ConditionalMembers {
 }
 
 /// Output
-struct ConditionalMembers {
-
-  #if MEMBER_BRANCH
-  subscript(index: Int) -> Int { index }
-  #else
-  subscript(index: Int) -> Int { index + 1 }
-  #endif
+struct ConditionalGetter {
 
   #if MEMBER_BRANCH
   #if DEBUG
@@ -57,8 +66,9 @@ struct ConditionalMembers {
   #endif
   #endif
 
-  func read() {}
-  func readValue() -> Int { 0 }
+  func readValue() -> Int {
+    0
+  }
 }
 
 // MARK: - Независимая сортировка веток условной компиляции
@@ -135,5 +145,7 @@ struct Content: View {
   private var content: some View { EmptyView() }
   #endif
 
-  var body: some View { content }
+  var body: some View {
+    content
+  }
 }

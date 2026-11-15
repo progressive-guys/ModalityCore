@@ -1,8 +1,13 @@
-// MARK: - Пустая строка перед многострочной функцией
+// MARK: - Короткие реализации методов разделяются пустыми строками
 struct Methods {
 
-  func a() -> Int { 1 }
-  func b() -> Int { 2 }
+  func a() -> Int {
+    1
+  }
+
+  func b() -> Int {
+    2
+  }
 
   func c() -> Int {
     3
@@ -16,7 +21,9 @@ struct DifferentKinds {
 
   init() {}
 
-  func read() -> Int { a }
+  func read() -> Int {
+    a
+  }
 }
 
 // MARK: - Между однострочными вложенными типами сохраняется пустая строка

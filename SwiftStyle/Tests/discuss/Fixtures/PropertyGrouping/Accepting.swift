@@ -12,20 +12,46 @@ struct EquivalentArrayTypeSpellings {
   }
 }
 
-// MARK: - Комментарии разделяют вычисляемые свойства на группы
+// MARK: - Вычисляемые свойства с разным доступом имеют многострочные тела
 public enum Examples {
 
   struct ComputedCommentGroups {
 
-    private var longerName: Int { 1 }
-    var second: Int { 2 }
-    var third: Int { 3 }
-    var fourth: Int { 4 }
-    public static var flag: Bool { true }
+    private var longerName: Int {
+      1
+    }
+
+    var second: Int {
+      2
+    }
+
+    var third: Int {
+      3
+    }
+
+    var fourth: Int {
+      4
+    }
+
+    public static var flag: Bool {
+      true
+    }
+  }
+}
+
+// MARK: - Комментарии перед многострочными вычисляемыми свойствами сохраняются
+public enum Examples {
+
+  struct ComputedCommentGroups {
 
     // Display values.
-    var title: String { "value" }
-    var x: Int { 0 }
+    var title: String {
+      "value"
+    }
+
+    var x: Int {
+      0
+    }
   }
 }
 
@@ -34,8 +60,13 @@ public enum Examples {}
 
 public extension Examples {
 
-  var a1: Int { 1 }
-  internal var b1: Int { 2 }
+  var a1: Int {
+    1
+  }
+
+  internal var b1: Int {
+    2
+  }
 }
 
 // MARK: - Большая группа отделяется пустой строкой с обеих сторон
@@ -88,7 +119,9 @@ open class ReadVisibilityOrder {
   private var d = 4
   fileprivate var e = 5
 
-  open var a: Int { 1 }
+  open var a: Int {
+    1
+  }
 }
 
 // MARK: - Общая аннотация типа у нескольких свойств
@@ -122,7 +155,9 @@ struct ThreeElementsStayTogether {
 }
 
 // MARK: - Результаты обычного вызова не группируются по выведенному типу
-private func makeNumber() -> Int { 1 }
+private func makeNumber() -> Int {
+  1
+}
 
 struct Values {
 

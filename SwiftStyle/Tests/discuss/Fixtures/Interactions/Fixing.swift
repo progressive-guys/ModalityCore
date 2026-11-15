@@ -53,7 +53,9 @@ extension Int {
   func sum(
     _ first: Int,
     _ second: Int
-  ) -> Int { first + second }
+  ) -> Int {
+    first + second
+  }
 }
 
 // MARK: - Сортировка объявлений и пустая строка в начале типа

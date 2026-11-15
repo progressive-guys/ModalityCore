@@ -11,7 +11,9 @@ struct Calls {
 
   func plain() {}
 
-  func fallible(_ action: () throws -> Void) rethrows { try action() }
+  func fallible(_ action: () throws -> Void) rethrows {
+    try action()
+  }
 
   func delayed() async {}
 
@@ -135,7 +137,11 @@ struct GetterEffects {
 /// Output
 struct GetterEffects {
 
-  var fallible: Int { get throws { 2 } }
+  var fallible: Int {
+    get throws { 2 }
+  }
 
-  var delayed: Int { get async { 1 } }
+  var delayed: Int {
+    get async { 1 }
+  }
 }

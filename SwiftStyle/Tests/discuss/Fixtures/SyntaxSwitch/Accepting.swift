@@ -53,7 +53,9 @@ enum Examples {
 
 // MARK: - Пользовательский метод преобразования
 private extension ExprSyntax {
-  func convert<Node: ExprSyntaxProtocol>(_ type: Node.Type) -> Node? { self.as(type) }
+  func convert<Node: ExprSyntaxProtocol>(_ type: Node.Type) -> Node? {
+    self.as(type)
+  }
 }
 
 enum Examples {

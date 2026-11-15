@@ -36,9 +36,13 @@ enum Example {
     return false
   }
 
-  static func select(_ value: Int) -> Bool { value > 0 }
+  static func select(_ value: Int) -> Bool {
+    value > 0
+  }
 
-  static func select(_ value: Int) -> Int { value }
+  static func select(_ value: Int) -> Int {
+    value
+  }
 
   static func contextualBool(_ value: Int) -> Bool {
     let matchesCondition: Swift.Bool = select(value + 1 + 2)

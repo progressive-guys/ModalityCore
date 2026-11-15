@@ -36,4 +36,6 @@ struct Values {
   }
 }
 
-func makeValues() -> Values { Values(longerName: 1, x: 2) }
+func makeValues() -> Values {
+  Values(longerName: 1, x: 2)
+}

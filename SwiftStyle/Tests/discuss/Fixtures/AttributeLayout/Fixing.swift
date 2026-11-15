@@ -33,7 +33,9 @@ struct Example {
     message: "Use another property."
   )
   @MainActor
-  var other: Int { 0 }
+  var other: Int {
+    0
+  }
 
   @MainActor
   @ViewBuilder
@@ -60,19 +62,27 @@ final class Example: NSObject {
 
   @available(*, deprecated)
   @objc(value:)
-  func value(_ input: Int) -> Int { input }
+  func value(_ input: Int) -> Int {
+    input
+  }
 
   @available(*, deprecated)
   @objc
-  @concurrent func compute(_ input: Int) async -> Int { input }
+  @concurrent func compute(_ input: Int) async -> Int {
+    input
+  }
 
   @available(*, deprecated)
   @objc // Called through Objective-C.
-  func value() -> Int { 0 }
+  func value() -> Int {
+    0
+  }
 
   @objc
   @available(*, deprecated)
-  func orderedValue() -> Int { 0 }
+  func orderedValue() -> Int {
+    0
+  }
 }
 
 // MARK: - Available и Published перед свойством переносятся на отдельные строки
@@ -98,12 +108,18 @@ class Neighbors {
 /// Output
 class Neighbors {
 
-  var before: Int { 0 }
+  var before: Int {
+    0
+  }
 
   @available(*, deprecated, message: "This message makes the complete computed property declaration exceed the line limit.")
-  var value: Int { 0 }
+  var value: Int {
+    0
+  }
 
-  var after: Int { 0 }
+  var after: Int {
+    0
+  }
 }
 
 // MARK: - Комментарии остаются рядом со своими аннотациями
@@ -114,10 +130,12 @@ struct Example {
 
 /// Output
 struct Example {
-  
+
   @MainActor /* Actor isolation. */
   @available(*, deprecated, message: "Use another property.") // Availability.
-  var value: Int { 0 }
+  var value: Int {
+    0
+  }
 }
 
 // MARK: - Аннотации вычисляемых свойств переносятся на отдельные строки
@@ -133,10 +151,14 @@ final class Example {
 
   @MainActor
   @available(*, deprecated)
-  var value: Int { 0 }
+  var value: Int {
+    0
+  }
 
   @available(*, deprecated)
-  var availableValue: Int { 0 }
+  var availableValue: Int {
+    0
+  }
 }
 
 // MARK: - Аннотация concurrent у однострочной и многострочной функций
@@ -153,7 +175,9 @@ final class ConcurrentExample {
 /// Output
 final class ConcurrentExample {
 
-  @concurrent func calculateValue(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
+  @concurrent func calculateValue(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int {
+    first
+  }
 
   @concurrent
   func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> LongType {
@@ -182,7 +206,9 @@ struct Example {
   @available(*, unavailable)
   #endif
  
-  var value: Int { 0 }
+  var value: Int {
+    0
+  }
 }
 
 // MARK: - Аннотации условного свойства и функции с аннотациями типов
@@ -223,11 +249,15 @@ struct Example {
 
 /// Output
 struct Example {
-  
-  var appearance: NSAppearance.Name { .aqua }
+
+  var appearance: NSAppearance.Name {
+    .aqua
+  }
 
   @MainActor
-  var background: NSColor { .black }
+  var background: NSColor {
+    .black
+  }
 }
 
 // MARK: - Группировка хранимых свойств по видам аннотаций
@@ -341,7 +371,9 @@ protocol Example {
 extension Example {
 
   @available(*, deprecated)
-  func value() -> Int { 0 }
+  func value() -> Int {
+    0
+  }
 }
 
 // MARK: - После многострочной available объявление свойства переносится

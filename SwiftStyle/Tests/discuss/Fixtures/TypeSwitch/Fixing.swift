@@ -426,7 +426,10 @@ enum Example {
   struct Box {
 
     var read: () -> Any
-    var value: Any { read() }
+
+    var value: Any {
+      read()
+    }
   }
 
   static func repeatedProperties(_ input: Box) -> Int {

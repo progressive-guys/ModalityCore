@@ -26,7 +26,9 @@ end
 // MARK: - Сохранение регулярного выражения и идентификатора Unicode
 enum Examples {
 
-  static var regex: Regex<(Substring, Substring)> { #/if check(value)/# }
+  static var regex: Regex<(Substring, Substring)> {
+    #/if check(value)/#
+  }
 
   static func unicode(_ значение: Int) -> Bool {
     if значение > 0 { return true }

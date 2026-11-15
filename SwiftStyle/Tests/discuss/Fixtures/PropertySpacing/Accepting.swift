@@ -16,5 +16,7 @@ struct StoredPropertyObserver {
     }
   }
 
-  func read() -> Int { x }
+  func read() -> Int {
+    x
+  }
 }

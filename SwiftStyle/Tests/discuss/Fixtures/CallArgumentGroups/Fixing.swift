@@ -58,7 +58,9 @@ func computedValue(input: Int, sink: (Int) -> Void) {
 func computedValue(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
-  var next: Int { value + 1 }
+  var next: Int {
+    value + 1
+  }
   sink(next)
 }
 
@@ -180,7 +182,9 @@ func joinedValues(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-func touch(_ value: inout Int) { value += 1 }
+func touch(_ value: inout Int) {
+  value += 1
+}
 
 func inoutCall(input: Int, sink: (Int) -> Void) {
   var value = input
