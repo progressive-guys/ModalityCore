@@ -26,11 +26,11 @@ struct Accessors {
 
   var a: Int {
     get { 1 }
-    set {}
+    set { }
   }
   var b: Int {
     get { 2 }
-    set {}
+    set { }
   }
 }
 
@@ -39,12 +39,12 @@ struct Accessors {
 
   var a: Int {
     get { 1 }
-    set {}
+    set { }
   }
 
   var b: Int {
     get { 2 }
-    set {}
+    set { }
   }
 }
 
@@ -53,13 +53,13 @@ struct Accessors {
 
   var a: Int {
     get { 1 }
-    set {}
+    set { }
   }
 
 
   var b: Int {
     get { 2 }
-    set {}
+    set { }
   }
 }
 
@@ -68,12 +68,12 @@ struct Accessors {
 
   var a: Int {
     get { 1 }
-    set {}
+    set { }
   }
 
   var b: Int {
     get { 2 }
-    set {}
+    set { }
   }
 }
 

@@ -56,7 +56,7 @@ public enum Examples {
 }
 
 // MARK: - Эффективный уровень доступа в расширении
-public enum Examples {}
+public enum Examples { }
 
 public extension Examples {
 

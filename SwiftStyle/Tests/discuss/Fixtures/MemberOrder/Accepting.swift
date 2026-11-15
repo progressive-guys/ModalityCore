@@ -5,5 +5,5 @@ final class Values {
 
   lazy var cached = 1
 
-  init() {}
+  init() { }
 }

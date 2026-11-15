@@ -115,9 +115,9 @@ final class Node {
   var first = 0
   var second = 0
 
-  func apply(_ value: Int) {}
-  func render() {}
-  func touch() {}
+  func apply(_ value: Int) { }
+  func render() { }
+  func touch() { }
 }
 
 func run(input: Int) {
@@ -135,9 +135,9 @@ final class Node {
   var first = 0
   var second = 0
 
-  func apply(_ value: Int) {}
-  func render() {}
-  func touch() {}
+  func apply(_ value: Int) { }
+  func render() { }
+  func touch() { }
 }
 
 func run(input: Int) {

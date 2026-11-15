@@ -229,7 +229,7 @@ struct RepeatedWrapperGroup {
   @Wrappers.G var m: Int = 2
   @Wrappers.F var z: Int = 3
 
-  init() {}
+  init() { }
 }
 
 /// Output
@@ -252,7 +252,7 @@ struct RepeatedWrapperGroup {
   @Wrappers.F var z: Int = 3
   @Wrappers.G var m: Int = 2
 
-  init() {}
+  init() { }
 }
 
 // MARK: - Свойство Int присоединяется к объявлению с общей аннотацией Int

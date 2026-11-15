@@ -1,15 +1,15 @@
 // MARK: - Разрешённая глобальная функция debugFatalError
-func debugFatalError() {}
+func debugFatalError() { }
 
 // MARK: - Функции внутри типа и расширения
 enum Examples {
-  static func example() {}
+  static func example() { }
 }
 
 extension Examples {
 
   static func outer() {
-    func local() {}
+    func local() { }
     local()
   }
 }

@@ -7,7 +7,7 @@ struct Box<Value> {
 struct Values {
   @Box var longerName = 1
   @Box var x = 2
-  init() {}
+  init() { }
 }
 
 /// Output
@@ -21,5 +21,5 @@ struct Values {
   @Box var x = 2
   @Box var longerName = 1
 
-  init() {}
+  init() { }
 }

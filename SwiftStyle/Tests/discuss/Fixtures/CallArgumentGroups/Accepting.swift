@@ -1,6 +1,6 @@
 // MARK: - Обычные аргументы и inout ссылаются на подготовленные значения
 // Аргумент ссылается на подготовленное значение
-func log(message: Int) {}
+func log(message: Int) { }
 
 func ordinaryArgument(input: Int, sink: (Int) -> Void) {
   let value = input
@@ -11,7 +11,7 @@ func ordinaryArgument(input: Int, sink: (Int) -> Void) {
 }
 
 // Обычный аргумент рядом с аргументом inout
-func pair(_ other: inout Int, _ value: Int) {}
+func pair(_ other: inout Int, _ value: Int) { }
 
 func inoutArgument(input: Int, sink: (Int) -> Void) {
   var other = 0

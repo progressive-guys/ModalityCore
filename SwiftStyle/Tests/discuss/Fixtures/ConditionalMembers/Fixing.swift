@@ -3,9 +3,9 @@ struct Values {
 
   var stored = 0
   #if MEMBER_BRANCH
-  struct Nested {}
+  struct Nested { }
   #else
-  struct Nested {}
+  struct Nested { }
   #endif
 }
 
@@ -13,9 +13,9 @@ struct Values {
 struct Values {
 
   #if MEMBER_BRANCH
-  struct Nested {}
+  struct Nested { }
   #else
-  struct Nested {}
+  struct Nested { }
   #endif
 
   var stored = 0
@@ -23,7 +23,7 @@ struct Values {
 
 // MARK: - Условный индексатор перед пустым методом
 struct ConditionalSubscript {
-  func read() {}
+  func read() { }
   #if MEMBER_BRANCH
   subscript(index: Int) -> Int { index }
   #else
@@ -40,7 +40,7 @@ struct ConditionalSubscript {
   subscript(index: Int) -> Int { index + 1 }
   #endif
 
-  func read() {}
+  func read() { }
 }
 
 // MARK: - Условные вычисляемые свойства перед методом с многострочным телом
@@ -98,7 +98,7 @@ struct ConditionalBranch {
 
 // MARK: - Хранимое свойство перемещается перед init и условными вычисляемыми свойствами
 struct StoredAfterConditionalGetter {
-  init() {}
+  init() { }
   #if MEMBER_BRANCH
   var displayed: Int { 1 }
   #else
@@ -112,7 +112,7 @@ struct StoredAfterConditionalGetter {
 
   var isImporting = false
 
-  init() {}
+  init() { }
   #if MEMBER_BRANCH
   var displayed: Int { 1 }
   #else

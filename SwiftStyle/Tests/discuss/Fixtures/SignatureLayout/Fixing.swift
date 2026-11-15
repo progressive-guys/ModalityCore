@@ -1,7 +1,7 @@
 // MARK: - Компоновка полного имени, стрелки и кортежа возвращаемого типа
 enum Examples {
 
-  struct Result {}
+  struct Result { }
   static func qualifiedResult() -> Examples
     .Result { .init() }
 
@@ -16,7 +16,7 @@ enum Examples {
 /// Output
 enum Examples {
 
-  struct Result {}
+  struct Result { }
 
   static func qualifiedResult() -> Examples.Result {
     .init()

@@ -197,7 +197,7 @@ func inoutCall(input: Int, sink: (Int) -> Void) {
 struct Box {
   let value: Int }
 
-func log(_ path: KeyPath<Box, Int>, _ value: Int) {}
+func log(_ path: KeyPath<Box, Int>, _ value: Int) { }
 
 func keyPathArgument(input: Int, sink: (Int) -> Void) {
   let value = input
@@ -208,7 +208,7 @@ func keyPathArgument(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-func log(value: Int) {}
+func log(value: Int) { }
 
 func argumentLabel(input: Int, sink: (Int) -> Void) {
   let value = input
@@ -223,7 +223,7 @@ func argumentLabel(input: Int, sink: (Int) -> Void) {
 struct Box {
   let value: Int }
 
-func log(_ path: KeyPath<Box, Int>, _ value: Int) {}
+func log(_ path: KeyPath<Box, Int>, _ value: Int) { }
 
 func keyPathArgument(input: Int, sink: (Int) -> Void) {
   let value = input
@@ -233,7 +233,7 @@ func keyPathArgument(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-func log(value: Int) {}
+func log(value: Int) { }
 
 func argumentLabel(input: Int, sink: (Int) -> Void) {
   let value = input
@@ -255,7 +255,7 @@ func commentBoundary(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-func pair(_ a: Int, _ b: Int) {}
+func pair(_ a: Int, _ b: Int) { }
 
 func otherReceiver(input: Int, box: Box, sink: (Int) -> Void) {
   let value = input
@@ -279,7 +279,7 @@ func commentBoundary(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-func pair(_ a: Int, _ b: Int) {}
+func pair(_ a: Int, _ b: Int) { }
 
 func otherReceiver(input: Int, box: Box, sink: (Int) -> Void) {
   let value = input

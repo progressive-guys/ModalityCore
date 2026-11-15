@@ -28,8 +28,8 @@ protocol Requirements {
 struct Values {
   var stored = 0
   typealias Value = Int
-  func read() {}
-  struct Nested {}
+  func read() { }
+  struct Nested { }
 }
 
 /// Output
@@ -37,11 +37,11 @@ struct Values {
 
   typealias Value = Int
 
-  struct Nested {}
+  struct Nested { }
 
   var stored = 0
 
-  func read() {}
+  func read() { }
 }
 
 // MARK: - Инициализатор, индексатор, вычисляемое свойство и функция
@@ -49,13 +49,13 @@ struct Values {
   func read() -> Int { value }
   var value: Int { 1 }
   subscript(index: Int) -> Int { index }
-  init() {}
+  init() { }
 }
 
 /// Output
 struct Values {
 
-  init() {}
+  init() { }
 
   subscript(index: Int) -> Int {
     index
@@ -73,16 +73,16 @@ struct Values {
 // MARK: - Порядок инициализатора, деинициализатора и индексатора
 final class Values {
   subscript(index: Int) -> Int { index }
-  deinit {}
-  init() {}
+  deinit { }
+  init() { }
 }
 
 /// Output
 final class Values {
 
-  init() {}
+  init() { }
 
-  deinit {}
+  deinit { }
 
   subscript(index: Int) -> Int {
     index
@@ -111,35 +111,35 @@ struct Values {
 }
 
 // MARK: - Вложенный тип перемещается перед функцией в расширении
-struct Value {}
+struct Value { }
 
 extension Value {
-  func read() {}
-  struct Nested {}
+  func read() { }
+  struct Nested { }
 }
 
 /// Output
-struct Value {}
+struct Value { }
 
 extension Value {
 
-  struct Nested {}
+  struct Nested { }
 
-  func read() {}
+  func read() { }
 }
 
 // MARK: - Хранимые свойства с наблюдателем и без него перед инициализатором
 struct Values {
-  init() {}
-  var value = 0 { didSet {} }
+  init() { }
+  var value = 0 { didSet { } }
   var stored = 1
 }
 
 /// Output
 struct Values {
 
-  var value = 0 { didSet {} }
+  var value = 0 { didSet { } }
   var stored = 1
 
-  init() {}
+  init() { }
 }

@@ -1,97 +1,97 @@
 // MARK: - Порядок функций без эффектов, rethrows, async и async throws
 struct Calls {
-  func combined() async throws {}
-  func delayed() async {}
+  func combined() async throws { }
+  func delayed() async { }
   func fallible(_ action: () throws -> Void) rethrows { try action() }
-  func plain() {}
+  func plain() { }
 }
 
 /// Output
 struct Calls {
 
-  func plain() {}
+  func plain() { }
 
   func fallible(_ action: () throws -> Void) rethrows {
     try action()
   }
 
-  func delayed() async {}
+  func delayed() async { }
 
-  func combined() async throws {}
+  func combined() async throws { }
 }
 
 // MARK: - Обычная функция перемещается перед async внутри расширения
-struct Calls {}
+struct Calls { }
 
 extension Calls {
-  func delayed() async {}
-  func plain() {}
+  func delayed() async { }
+  func plain() { }
 }
 
 /// Output
-struct Calls {}
+struct Calls { }
 
 extension Calls {
 
-  func plain() {}
+  func plain() { }
 
-  func delayed() async {}
+  func delayed() async { }
 }
 
 // MARK: - Однородный условный блок async занимает место между обычными и async throws
 struct ConditionalEffects {
 
-  func combined() async throws {}
+  func combined() async throws { }
   #if os(macOS)
-  func delayed() async {}
+  func delayed() async { }
   #else
-  func delayed() async {}
+  func delayed() async { }
   #endif
-  func plain() {}
+  func plain() { }
 }
 
 /// Output
 struct ConditionalEffects {
 
-  func plain() {}
+  func plain() { }
 
   #if os(macOS)
-  func delayed() async {}
+  func delayed() async { }
   #else
-  func delayed() async {}
+  func delayed() async { }
   #endif
 
-  func combined() async throws {}
+  func combined() async throws { }
 }
 
 // MARK: - Внутри каждой условной ветки функции сортируются по эффектам
 struct MixedConditionalEffects {
 
-  func before() async {}
+  func before() async { }
   #if os(macOS)
-  func delayed() async {}
-  func plain() {}
+  func delayed() async { }
+  func plain() { }
   #else
-  func fallible() throws {}
-  func plain() {}
+  func fallible() throws { }
+  func plain() { }
   #endif
-  func after() {}
+  func after() { }
 }
 
 /// Output
 struct MixedConditionalEffects {
 
-  func before() async {}
+  func before() async { }
   #if os(macOS)
-  func plain() {}
+  func plain() { }
 
-  func delayed() async {}
+  func delayed() async { }
   #else
-  func plain() {}
+  func plain() { }
 
-  func fallible() throws {}
+  func fallible() throws { }
   #endif
-  func after() {}
+  func after() { }
 }
 
 // MARK: - Требования свойств и методов сортируются по async и throws

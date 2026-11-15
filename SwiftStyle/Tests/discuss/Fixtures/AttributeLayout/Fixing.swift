@@ -292,33 +292,33 @@ import Foundation
 
 // MARK: - Аннотация available над инициализатором
 final class Example {
-  @available(*, deprecated) init() {}
+  @available(*, deprecated) init() { }
 }
 
 /// Output
 final class Example {
 
   @available(*, deprecated)
-  init() {}
+  init() { }
 }
 
 // MARK: - Аннотации objc у методов с длинными селекторами
 final class ObjectiveCExample: NSObject {
 
   @objc(exportValueForConfiguredProject:defaultValue:)
-  func export(_ projectIdentifier: String, defaultValue: String) {}
+  func export(_ projectIdentifier: String, defaultValue: String) { }
 
-  @objc(exportValueForConfiguredProjects:defaultValue:) func exportMany(_ projectIdentifier: String, defaultValue: String) {}
+  @objc(exportValueForConfiguredProjects:defaultValue:) func exportMany(_ projectIdentifier: String, defaultValue: String) { }
 }
 
 /// Output
 final class ObjectiveCExample: NSObject {
 
   @objc(exportValueForConfiguredProject:defaultValue:)
-  func export(_ projectIdentifier: String, defaultValue: String) {}
+  func export(_ projectIdentifier: String, defaultValue: String) { }
 
   @objc(exportValueForConfiguredProjects:defaultValue:)
-  func exportMany(_ projectIdentifier: String, defaultValue: String) {}
+  func exportMany(_ projectIdentifier: String, defaultValue: String) { }
 }
 
 // MARK: - Аннотация требования протокола при допустимой и превышенной длине строки

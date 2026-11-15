@@ -1,6 +1,6 @@
 // MARK: - Объявление разделяет группы импортов
 import Foundation
-enum ImportBoundary {}
+enum ImportBoundary { }
 import Dispatch
 
 // MARK: - Импорт отдельного символа

@@ -196,13 +196,13 @@ enum Example {
     var name: String { get }
   }
 
-  class Animal {}
+  class Animal { }
 
   final class Bird: Animal, Named {
     let name = "bird"
   }
 
-  final class Fish: Animal {}
+  final class Fish: Animal { }
 
   static func mixedChecks(_ input: Any) -> Int {
     if let item = input as? Bird { return item.name.count }
@@ -219,13 +219,13 @@ enum Example {
     var name: String { get }
   }
 
-  class Animal {}
+  class Animal { }
 
   final class Bird: Animal, Named {
     let name = "bird"
   }
 
-  final class Fish: Animal {}
+  final class Fish: Animal { }
 
   static func mixedChecks(_ input: Any) -> Int {
     switch (input) {
@@ -372,9 +372,9 @@ enum Example {
 }
 
 // MARK: - Отдельные switch сохраняют оба вызова при совпадении пересекающихся типов
-protocol Named {}
+protocol Named { }
 
-struct NamedValue: Named {}
+struct NamedValue: Named { }
 
 func inspect(_ input: Any, record: (Int) -> Void) {
   if input is NamedValue { record(1) }
@@ -382,9 +382,9 @@ func inspect(_ input: Any, record: (Int) -> Void) {
 }
 
 /// Output
-protocol Named {}
+protocol Named { }
 
-struct NamedValue: Named {}
+struct NamedValue: Named { }
 
 func inspect(_ input: Any, record: (Int) -> Void) {
   switch input {

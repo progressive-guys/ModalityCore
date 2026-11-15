@@ -19,7 +19,7 @@ struct DifferentKinds {
 
   var a = 1
 
-  init() {}
+  init() { }
 
   func read() -> Int {
     a
@@ -29,9 +29,9 @@ struct DifferentKinds {
 // MARK: - Между однострочными вложенными типами сохраняется пустая строка
 struct SeparatedTypes {
 
-  struct First {}
+  struct First { }
 
-  struct Second {}
+  struct Second { }
 }
 
 // MARK: - Многострочный псевдоним типа
