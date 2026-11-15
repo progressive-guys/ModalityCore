@@ -64,9 +64,11 @@ struct Conditional {
   #if DEBUG
   var value: Int { 1 }
   func read() -> Int { value }
+
   #elseif TEST_BUILD
   var value: Int { 2 }
   func read() -> Int { value }
+
   #else
   var value: Int { 0 }
   func read() -> Int { value }

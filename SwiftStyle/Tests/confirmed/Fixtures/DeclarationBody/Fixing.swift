@@ -121,7 +121,9 @@ struct Mixed {
 struct Mixed {
 
   #if DEBUG
-  func debugValue() -> Int { 1 }
+  func debugValue() -> Int {
+    1
+  }
   #endif
 
   func read() -> Int {

@@ -10,7 +10,8 @@ func sum(_ first: Int?, _ second: Int?) -> Int {
 
 /// Output
 func sum(_ first: Int?, _ second: Int?) -> Int {
-  if let first,
+  if
+    let first,
     let second
   {
     return first + second
