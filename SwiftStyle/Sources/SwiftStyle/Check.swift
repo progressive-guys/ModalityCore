@@ -115,8 +115,13 @@ enum SwiftStyle {
 
   /// Reports that the rule engine must be implemented.
   private static func check(_ source: String, file: String) -> [LintDiagnostic] {
-    [LintDiagnostic(file: file, line: 1, character: 1,
-      ruleID: "swiftstyle_unavailable", reason: "SwiftStyle implementation is not available.")]
+    [LintDiagnostic(
+      file: file,
+      line: 1,
+      character: 1,
+      ruleID: "swiftstyle_unavailable",
+      reason: "SwiftStyle implementation is not available."
+    )]
   }
 
   private static func excluded(_ url: URL) -> Bool {
