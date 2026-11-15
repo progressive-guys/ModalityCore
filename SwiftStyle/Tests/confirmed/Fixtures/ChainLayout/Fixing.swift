@@ -18,35 +18,6 @@ enum Examples {
   }
 }
 
-// MARK: - Вызов с замыканием примыкает к многострочному основанию
-enum Library {
-
-  static func files(in folder: URL) throws -> [URL] {
-    try FileManager.default.contentsOfDirectory(
-      at: folder,
-      includingPropertiesForKeys: [.isDirectoryKey],
-      options: .skipsHiddenFiles
-    )
-      .flatMap { url in
-        url.pathExtension == "xml" ? [url] : []
-      }
-  }
-}
-
-/// Output
-enum Library {
-
-  static func files(in folder: URL) throws -> [URL] {
-    try FileManager.default.contentsOfDirectory(
-      at: folder,
-      includingPropertiesForKeys: [.isDirectoryKey],
-      options: .skipsHiddenFiles
-    ).flatMap { url in
-        url.pathExtension == "xml" ? [url] : []
-      }
-  }
-}
-
 // MARK: - Переносы цепочек вызовов и обращений к свойствам (1)
 enum Examples {
 
