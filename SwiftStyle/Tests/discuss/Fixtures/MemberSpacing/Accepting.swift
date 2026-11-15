@@ -1,4 +1,4 @@
-// MARK: - Case BeforeMultilineFunction
+// MARK: - Пустая строка перед многострочной функцией
 struct Methods {
 
   func a() -> Int { 1 }
@@ -9,7 +9,7 @@ struct Methods {
   }
 }
 
-// MARK: - Case DifferentMemberKinds
+// MARK: - Разделение разных видов членов типа
 struct DifferentKinds {
 
   var a = 1
@@ -19,7 +19,7 @@ struct DifferentKinds {
   func read() -> Int { a }
 }
 
-// MARK: - Case InlineNestedTypes
+// MARK: - Между однострочными вложенными типами сохраняется пустая строка
 struct SeparatedTypes {
 
   struct First {}
@@ -27,7 +27,7 @@ struct SeparatedTypes {
   struct Second {}
 }
 
-// MARK: - Case MultilineTypeAlias
+// MARK: - Многострочный псевдоним типа
 typealias Name = String
 
 typealias Entry = (
@@ -37,7 +37,7 @@ typealias Entry = (
 
 typealias Entries = [Entry]
 
-// MARK: - Case ProtocolKindGroups
+// MARK: - Группы требований протокола по виду объявления
 protocol Worker {
 
   associatedtype Value

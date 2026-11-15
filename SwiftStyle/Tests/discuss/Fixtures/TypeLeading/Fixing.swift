@@ -1,27 +1,24 @@
-// MARK: - Case EmptyBodyRemovePadding
-// MARK: Input
+// MARK: - Удаление пустых строк из пустого тела типа
 enum Empty {
 
 }
 
-// MARK: Output
+/// Output
 enum Empty {
 }
 
-// MARK: - Case SingleCaseRemovesPadding
-// MARK: Input
+// MARK: - Удаление пустой строки перед единственным вариантом перечисления
 enum Key {
 
   case value
 }
 
-// MARK: Output
+/// Output
 enum Key {
   case value
 }
 
-// MARK: - Case ThreeCodeLinesRemovePadding
-// MARK: Input
+// MARK: - Вход и выход совпадают: пустая строка в начале расширения сохраняется
 extension Int {
 
   func incremented() -> Int {
@@ -29,7 +26,7 @@ extension Int {
   }
 }
 
-// MARK: Output
+/// Output
 extension Int {
 
   func incremented() -> Int {

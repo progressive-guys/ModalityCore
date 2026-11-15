@@ -1,5 +1,4 @@
-// MARK: - Case BindingJoinsIfExpression
-// MARK: Input
+// MARK: - Объявление соединяется с выражением if
 enum Examples {
   static func value(_ first: Bool) -> Int {
     let
@@ -8,7 +7,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ first: Bool) -> Int {
@@ -21,8 +20,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case BraceBeforeInlineReturnBody
-// MARK: Input
+// MARK: - Открывающая скобка перед однострочным return
 enum Examples {
   static func value(_ first: Bool, _ second: Bool) -> Bool {
     if first,
@@ -31,7 +29,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ first: Bool, _ second: Bool) -> Bool {
@@ -43,8 +41,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CallConditionSharesClosingLineWithBrace
-// MARK: Input
+// MARK: - Скобка тела на строке закрытия вызова в условии
 enum Examples {
   static func value(_ values: [Int], _ value: Int) -> Bool {
     if values.contains(
@@ -55,7 +52,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ values: [Int], _ value: Int) -> Bool {
@@ -67,8 +64,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CasePatternIndentAndFollowingGap
-// MARK: Input
+// MARK: - Продолжение шаблона case выравнивается; перед default добавляется пустая строка
 func select(_ value: Int) -> Int {
   switch value {
   case 1,
@@ -77,7 +73,7 @@ func select(_ value: Int) -> Int {
   }
 }
 
-// MARK: Output
+/// Output
 func select(_ value: Int) -> Int {
   switch value {
   case 1,
@@ -87,8 +83,7 @@ func select(_ value: Int) -> Int {
   }
 }
 
-// MARK: - Case CompactGuardRemovesFollowingGap
-// MARK: Input
+// MARK: - После сокращения guard удаляется пустая строка
 func value(_ first: Bool) -> Int {
   guard first else {
     return 0
@@ -97,14 +92,13 @@ func value(_ first: Bool) -> Int {
   return 1
 }
 
-// MARK: Output
+/// Output
 func value(_ first: Bool) -> Int {
   guard first else { return 0 }
   return 1
 }
 
-// MARK: - Case ContinuedIfExpressionCondition
-// MARK: Input
+// MARK: - Продолжение условия if выравнивается, значения веток переносятся
 enum Examples {
   static func value(_ first: Bool, _ second: Bool) -> Int {
     let result = if first,
@@ -114,7 +108,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ first: Bool, _ second: Bool) -> Int {
@@ -129,13 +123,12 @@ enum Examples {
   }
 }
 
-// MARK: - Case InlineReturnWithExpandedElseAction
-// MARK: Input
+// MARK: - Однострочный return и многострочное действие в else
 func value(_ first: Bool) -> Void {
   if first { return } else { print("value") }
 }
 
-// MARK: Output
+/// Output
 func value(_ first: Bool) -> Void {
   if first { return } else {
     print("value")

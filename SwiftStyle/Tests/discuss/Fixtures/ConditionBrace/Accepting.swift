@@ -1,4 +1,4 @@
-// MARK: - Case NestedCallKeepsBraceAfterClosingParen
+// MARK: - Скобка тела остаётся после вложенного вызова в условии
 func choose(first: Int, second: Int) -> Int? {
   first > second ? first : nil
 }

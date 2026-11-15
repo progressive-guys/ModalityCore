@@ -1,4 +1,4 @@
-// MARK: - Case UnknownViewWrapper
+// MARK: - Закрытие входного свойства View с неизвестной обёрткой оставлено для ручного решения
 
 @propertyWrapper
 struct Input<Value> {

@@ -1,5 +1,4 @@
-// MARK: - Case CompactReturnBody
-// MARK: Input
+// MARK: - Короткое тело с return помещается на одной строке
 func nonnegative(_ value: Int) -> Int? {
   guard value >= 0 else {
     return nil
@@ -8,15 +7,14 @@ func nonnegative(_ value: Int) -> Int? {
   return value
 }
 
-// MARK: Output
+/// Output
 func nonnegative(_ value: Int) -> Int? {
   guard value >= 0 else { return nil }
 
   return value
 }
 
-// MARK: - Case ConditionsBeforeFirst
-// MARK: Input
+// MARK: - Перенос условий начинается перед первым условием
 func total(
   firstMeasurementCandidateForCalibration: Int?,
   secondMeasurementCandidateForCalibration: Int?,
@@ -32,7 +30,7 @@ func total(
     + thirdMeasurementCandidateForCalibration
 }
 
-// MARK: Output
+/// Output
 func total(
   firstMeasurementCandidateForCalibration: Int?,
   secondMeasurementCandidateForCalibration: Int?,

@@ -1,5 +1,4 @@
-// MARK: - Case LeftBinaryOperand
-// MARK: Input
+// MARK: - Обращение к свойству в левом операнде соединяется с основанием
 enum Example {
 
   static func firstOperand(_ input: (first: Int, second: Int)) -> Int {
@@ -8,7 +7,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func firstOperand(_ input: (first: Int, second: Int)) -> Int {
@@ -16,8 +15,7 @@ enum Example {
   }
 }
 
-// MARK: - Case MultilineBaseRemovesExtraIndent
-// MARK: Input
+// MARK: - Удаление лишнего отступа цепочки после многострочного основания
 func adjusted(_ values: [Int]) -> [Int] {
   values.map {
     $0 + 1
@@ -25,7 +23,7 @@ func adjusted(_ values: [Int]) -> [Int] {
     .filter { $0 > 0 }
 }
 
-// MARK: Output
+/// Output
 func adjusted(_ values: [Int]) -> [Int] {
   values.map {
     $0 + 1
@@ -33,8 +31,7 @@ func adjusted(_ values: [Int]) -> [Int] {
   .filter { $0 > 0 }
 }
 
-// MARK: - Case RightBinaryOperand
-// MARK: Input
+// MARK: - Обращение к свойству в правом операнде соединяется с основанием
 enum Example {
 
   static func secondOperand(_ input: (first: Int, second: Int)) -> Int {
@@ -43,7 +40,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func secondOperand(_ input: (first: Int, second: Int)) -> Int {

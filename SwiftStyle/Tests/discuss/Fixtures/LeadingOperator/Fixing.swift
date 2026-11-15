@@ -1,25 +1,23 @@
-// MARK: - Case BinaryOperatorStartsContinuation
-// MARK: Input
+// MARK: - Бинарный оператор начинает строку продолжения
 func both(_ first: Bool, _ second: Bool) -> Bool {
   first &&
   second
 }
 
-// MARK: Output
+/// Output
 func both(_ first: Bool, _ second: Bool) -> Bool {
   first
     && second
 }
 
-// MARK: - Case TernaryOperatorsStartBranches
-// MARK: Input
+// MARK: - Знаки тернарного оператора начинают строки веток
 func choose(_ flag: Bool, first: Int, second: Int) -> Int {
   flag ?
     first :
     second
 }
 
-// MARK: Output
+/// Output
 func choose(_ flag: Bool, first: Int, second: Int) -> Int {
   flag
     ? first

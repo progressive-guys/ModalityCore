@@ -1,12 +1,11 @@
-// MARK: - Case RemoveGapBetweenCompactGuards
-// MARK: Input
+// MARK: - Удаление пустой строки между короткими guard
 func requireBoth(_ first: Bool, _ second: Bool) {
   guard first else { return }
 
   guard second else { return }
 }
 
-// MARK: Output
+/// Output
 func requireBoth(_ first: Bool, _ second: Bool) {
   guard first else { return }
   guard second else { return }

@@ -1,5 +1,4 @@
-// MARK: - Case NestedCallBeforeFirst
-// MARK: Input
+// MARK: - Первый аргумент вложенного вызова переносится на новую строку
 func value() -> String {
   let value = String(
     repeating: "a",
@@ -11,7 +10,7 @@ func value() -> String {
   return value
 }
 
-// MARK: Output
+/// Output
 func value() -> String {
   let value = String(
     repeating: "a",
@@ -25,15 +24,14 @@ func value() -> String {
   return value
 }
 
-// MARK: - Case SeparateAlreadyMultilineParameters
-// MARK: Input
+// MARK: - Параметры многострочной сигнатуры размещаются по одному на строке
 func total(
   first: Int, second: Int
 ) -> Int {
   first + second
 }
 
-// MARK: Output
+/// Output
 func total(
   first: Int,
   second: Int

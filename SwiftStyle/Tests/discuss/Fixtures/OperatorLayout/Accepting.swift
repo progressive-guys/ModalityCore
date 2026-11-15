@@ -1,4 +1,4 @@
-// MARK: - Case CommentBeforeOperator
+// MARK: - Комментарий перед оператором
 enum Examples {
 
   static func commented(_ first: Double, _ second: Double) -> Double {
@@ -8,7 +8,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CompoundAssignmentKeepsOperatorAfterTarget
+// MARK: - Оператор составного присваивания остаётся после изменяемого значения
 enum Examples {
 
   static func value(_ input: Int) -> Int {
@@ -19,7 +19,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CompoundAssignmentWithMultilineString
+// MARK: - Составное присваивание многострочной строки
 enum Examples {
 
   static func multilineStringAssignment() -> String {
@@ -33,7 +33,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case DivisionAfterLongArgumentExpression
+// MARK: - Деление после длинного выражения в аргументе
 enum Examples {
 
   static func longCall(_ first: Double, _ second: Double) -> Double {
@@ -46,7 +46,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case DivisionAfterMultilineCall
+// MARK: - Деление после многострочного вызова
 enum Examples {
 
   static func multipleArguments(_ first: Double, _ second: Double) -> Double {
@@ -57,7 +57,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ExplicitGroupedOperand
+// MARK: - Операнд с явными группирующими скобками
 enum Examples {
 
   static func grouped(_ first: Int, _ second: Int, _ third: Int) -> Int {
@@ -65,7 +65,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case InlineComparisonStaysInline
+// MARK: - Короткое сравнение остаётся на одной строке
 enum Examples {
 
   static func value(_ first: Int, _ second: Int) -> Bool {
@@ -73,7 +73,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case InlineRightConversion
+// MARK: - Короткое преобразование правого операнда
 enum Examples {
 
   static func rightConversion(_ first: Int, _ second: Int) -> Double {
@@ -81,7 +81,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case NegatedGroupBeforeDivision
+// MARK: - Группа с отрицанием перед делением
 enum Examples {
 
   static func unary(_ first: Double, _ second: Double) -> Double {
@@ -91,7 +91,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ShortMixedPrecedence
+// MARK: - Короткое выражение с разным приоритетом операторов
 enum Examples {
 
   static func short(_ first: Double, _ second: Double) -> Double {
@@ -99,7 +99,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case WrappedMultiplicativeChain
+// MARK: - Многострочная цепочка умножения и деления
 enum Examples {
 
   static func longProduct(_ first: Double, _ second: Double) -> Double {
@@ -110,7 +110,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case WrappedProductWithinSum
+// MARK: - Многострочное произведение внутри суммы
 enum Examples {
 
   static func longAdditiveSegment(_ first: Double, _ second: Double) -> Double {

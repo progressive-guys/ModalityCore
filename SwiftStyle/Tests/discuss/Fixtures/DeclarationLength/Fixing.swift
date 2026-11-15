@@ -1,5 +1,4 @@
-// MARK: - Case PureWrapperExplicitInitializer
-// MARK: Input
+// MARK: - Сортировка свойств с простой обёрткой при существующем явном инициализаторе
 @propertyWrapper
 struct Box<Value> {
   var wrappedValue: Value
@@ -11,7 +10,7 @@ struct Values {
   init() {}
 }
 
-// MARK: Output
+/// Output
 @propertyWrapper
 struct Box<Value> {
   var wrappedValue: Value

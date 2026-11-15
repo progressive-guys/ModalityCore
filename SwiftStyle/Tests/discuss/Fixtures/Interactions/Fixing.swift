@@ -1,12 +1,11 @@
-// MARK: - Case AttributeThenIndent
-// MARK: Input
+// MARK: - Перенос аннотации и исправление отступа тела функции
 struct Example {
   @MainActor static func value() -> Int {
       1
   }
 }
 
-// MARK: Output
+/// Output
 struct Example {
 
   @MainActor
@@ -15,8 +14,7 @@ struct Example {
   }
 }
 
-// MARK: - Case ChainAfterIndent
-// MARK: Input
+// MARK: - Исправление отступов тела замыкания и следующего вызова в цепочке
 func adjusted(_ values: [Int]) -> [Int] {
   values.map {
       $0 + 1
@@ -24,7 +22,7 @@ func adjusted(_ values: [Int]) -> [Int] {
     .filter { $0 > 0 }
 }
 
-// MARK: Output
+/// Output
 func adjusted(_ values: [Int]) -> [Int] {
   values.map {
     $0 + 1
@@ -32,8 +30,7 @@ func adjusted(_ values: [Int]) -> [Int] {
   .filter { $0 > 0 }
 }
 
-// MARK: - Case GuardCollapseLowersTypeHeight
-// MARK: Input
+// MARK: - Guard сокращается, пустая строка в начале расширения сохраняется
 extension Int {
 
   func requirePositive() {
@@ -43,7 +40,7 @@ extension Int {
   }
 }
 
-// MARK: Output
+/// Output
 extension Int {
 
   func requirePositive() {
@@ -51,14 +48,13 @@ extension Int {
   }
 }
 
-// MARK: - Case MultilineListRaisesTypeHeight
-// MARK: Input
+// MARK: - Перенос списка увеличивает число строк тела типа
 extension Int {
   func sum(_ first: Int,
     _ second: Int) -> Int { first + second }
 }
 
-// MARK: Output
+/// Output
 extension Int {
 
   func sum(
@@ -67,8 +63,7 @@ extension Int {
   ) -> Int { first + second }
 }
 
-// MARK: - Case SortingAndTypeLeading
-// MARK: Input
+// MARK: - Сортировка объявлений и пустая строка в начале типа
 private protocol Values {
   var longestName: Int { get }
   var longName: Int { get }
@@ -76,7 +71,7 @@ private protocol Values {
   var x: Int { get }
 }
 
-// MARK: Output
+/// Output
 private protocol Values {
 
   var x: Int { get }

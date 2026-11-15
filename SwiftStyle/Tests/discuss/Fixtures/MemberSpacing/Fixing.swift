@@ -1,5 +1,4 @@
-// MARK: - Case AdjacentTypeAliases
-// MARK: Input
+// MARK: - Пустые строки между однострочными псевдонимами типов удаляются
 enum Instrument {
   typealias Fret = Int
 
@@ -8,7 +7,7 @@ enum Instrument {
   typealias Tuning = [Int]
 }
 
-// MARK: Output
+/// Output
 enum Instrument {
 
   typealias Fret = Int
@@ -16,8 +15,7 @@ enum Instrument {
   typealias Tuning = [Int]
 }
 
-// MARK: - Case AfterMultilineFunction
-// MARK: Input
+// MARK: - Пустая строка после многострочной функции
 struct MultilineMethod {
 
   func a() -> Int {
@@ -26,7 +24,7 @@ struct MultilineMethod {
   func b() -> Int { 2 }
 }
 
-// MARK: Output
+/// Output
 struct MultilineMethod {
 
   func a() -> Int {
@@ -36,8 +34,7 @@ struct MultilineMethod {
   func b() -> Int { 2 }
 }
 
-// MARK: - Case GetterBeforeMethod
-// MARK: Input
+// MARK: - Многострочный getter отделяется от следующего метода
 struct GetterBeforeMethod {
 
   var x: Int {
@@ -46,7 +43,7 @@ struct GetterBeforeMethod {
   func read() -> Int { x }
 }
 
-// MARK: Output
+/// Output
 struct GetterBeforeMethod {
 
   var x: Int {
@@ -56,38 +53,35 @@ struct GetterBeforeMethod {
   func read() -> Int { x }
 }
 
-// MARK: - Case InlineFunctions
-// MARK: Input
+// MARK: - Пустая строка между однострочными функциями удаляется
 struct Methods {
   func first() -> Int { 1 }
 
   func second() -> Int { 2 }
 }
 
-// MARK: Output
+/// Output
 struct Methods {
 
   func first() -> Int { 1 }
   func second() -> Int { 2 }
 }
 
-// MARK: - Case InlineProtocolRequirements
-// MARK: Input
+// MARK: - Пустая строка между однострочными требованиями методов удаляется
 protocol Worker {
   func start()
 
   func stop()
 }
 
-// MARK: Output
+/// Output
 protocol Worker {
 
   func start()
   func stop()
 }
 
-// MARK: - Case MultilineProtocolRequirement
-// MARK: Input
+// MARK: - Многострочное требование метода отделяется от следующего
 protocol Worker {
 
   func first(
@@ -96,7 +90,7 @@ protocol Worker {
   func second()
 }
 
-// MARK: Output
+/// Output
 protocol Worker {
 
   func first(
@@ -106,8 +100,7 @@ protocol Worker {
   func second()
 }
 
-// MARK: - Case NestedTypeBeforeProperty
-// MARK: Input
+// MARK: - Вложенный тип отделяется от следующего свойства
 struct Value {
 
   enum Key {
@@ -116,7 +109,7 @@ struct Value {
   let value: Int
 }
 
-// MARK: Output
+/// Output
 struct Value {
 
   enum Key {

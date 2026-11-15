@@ -1,5 +1,4 @@
-// MARK: - Case AssignmentRhsJoinsEquals
-// MARK: Input
+// MARK: - Правая часть присваивания соединяется со знаком равенства
 enum Examples {
   static func value(_ source: Int) -> Int {
     let result =
@@ -8,7 +7,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ source: Int) -> Int {
@@ -17,8 +16,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ConditionalCastJoinsOperand
-// MARK: Input
+// MARK: - Условное приведение типа соединяется с операндом
 enum Examples {
   static func value(_ source: Any) -> Int? {
     source
@@ -26,7 +24,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ source: Any) -> Int? {
@@ -34,8 +32,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case SelfMemberJoinsBase
-// MARK: Input
+// MARK: - Self и имя свойства соединяются, выражение getter переносится в тело
 enum Examples {
   static func value() {
     struct Value {
@@ -47,7 +44,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value() {

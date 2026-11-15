@@ -1,11 +1,10 @@
-// MARK: - Case DefaultExpressionsAndAccess
-// MARK: Input
+// MARK: - Явный инициализатор сохраняет значения по умолчанию и закрытый доступ
 struct Values {
   private var longerName = 1
   public var x = 2
 }
 
-// MARK: Output
+/// Output
 struct Values {
 
   public var x: Int
@@ -17,8 +16,7 @@ struct Values {
   }
 }
 
-// MARK: - Case PreserveMemberwiseArguments
-// MARK: Input
+// MARK: - Явный инициализатор сохраняет порядок аргументов после сортировки свойств
 struct Values {
   let longerName: Int
   let x: Int
@@ -26,7 +24,7 @@ struct Values {
 
 func makeValues() -> Values { Values(longerName: 1, x: 2) }
 
-// MARK: Output
+/// Output
 struct Values {
 
   let x: Int

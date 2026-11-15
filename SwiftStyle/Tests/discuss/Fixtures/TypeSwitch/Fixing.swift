@@ -1,5 +1,4 @@
-// MARK: - Case CaseWhere
-// MARK: Input
+// MARK: - Проверки превращаются в отдельные switch; дополнительное условие становится where
 enum Example {
 
   static func extraCondition(_ input: Any, _ condition: Bool) -> Int {
@@ -9,7 +8,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func extraCondition(_ input: Any, _ condition: Bool) -> Int {
@@ -33,8 +32,7 @@ enum Example {
   }
 }
 
-// MARK: - Case CastAndTypeTest
-// MARK: Input
+// MARK: - Приведение типа и проверка is превращаются в отдельные switch
 enum Example {
 
   static func twoChecks(_ input: Any) -> Int {
@@ -44,7 +42,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func twoChecks(_ input: Any) -> Int {
@@ -68,8 +66,7 @@ enum Example {
   }
 }
 
-// MARK: - Case Disjunction
-// MARK: Input
+// MARK: - Каждая проверка типа в выражении ИЛИ заменяется вызовом замыкания со switch
 enum Example {
 
   static func conditionChecks(_ input: Any) -> Int {
@@ -78,7 +75,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func conditionChecks(_ input: Any) -> Int {
@@ -98,8 +95,7 @@ enum Example {
   }
 }
 
-// MARK: - Case DuplicateTypeChecks
-// MARK: Input
+// MARK: - Повторные проверки одного типа сохраняются в отдельных switch
 enum Example {
 
   static func duplicateType(_ input: Any) -> Int {
@@ -109,7 +105,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func duplicateType(_ input: Any) -> Int {
@@ -133,8 +129,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ElseBranch
-// MARK: Input
+// MARK: - Ветка else последней проверки становится default последнего switch
 enum Example {
 
   static func withElse(_ input: Any) -> Int {
@@ -143,7 +138,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func withElse(_ input: Any) -> Int {
@@ -165,8 +160,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ElseIfOwnership
-// MARK: Input
+// MARK: - Else if сохраняется внутри default при замене внешнего if на switch
 enum Example {
 
   static func elseIfChecks(_ input: Any) -> Int {
@@ -179,7 +173,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func elseIfChecks(_ input: Any) -> Int {
@@ -195,8 +189,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ExistentialProjection
-// MARK: Input
+// MARK: - Отдельные switch сохраняют приведения к классу и типу any Named
 enum Example {
 
   protocol Named {
@@ -219,7 +212,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   protocol Named {
@@ -263,8 +256,7 @@ enum Example {
   }
 }
 
-// MARK: - Case GenericTypes
-// MARK: Input
+// MARK: - Приведения к обобщённым коллекциям заменяются отдельными switch
 enum Example {
 
   static func genericTypes(_ input: Any) -> Int {
@@ -275,7 +267,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func genericTypes(_ input: Any) -> Int {
@@ -307,8 +299,7 @@ enum Example {
   }
 }
 
-// MARK: - Case MutableBinding
-// MARK: Input
+// MARK: - Привязка var сохраняется в case при замене проверки на switch
 enum Example {
 
   static func mutableBinding(_ input: Any) -> Int {
@@ -321,7 +312,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func mutableBinding(_ input: Any) -> Int {
@@ -346,8 +337,7 @@ enum Example {
   }
 }
 
-// MARK: - Case NegatedTest
-// MARK: Input
+// MARK: - Отрицательная проверка типа переносит действие в default отдельного switch
 enum Example {
 
   static func negatedCheck(_ input: Any) -> Int {
@@ -357,7 +347,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func negatedCheck(_ input: Any) -> Int {
@@ -381,8 +371,7 @@ enum Example {
   }
 }
 
-// MARK: - Case NonterminalOverlappingTypes
-// MARK: Input
+// MARK: - Отдельные switch сохраняют оба вызова при совпадении пересекающихся типов
 protocol Named {}
 
 struct NamedValue: Named {}
@@ -392,7 +381,7 @@ func inspect(_ input: Any, record: (Int) -> Void) {
   if input is any Named { record(2) }
 }
 
-// MARK: Output
+/// Output
 protocol Named {}
 
 struct NamedValue: Named {}
@@ -415,8 +404,7 @@ func inspect(_ input: Any, record: (Int) -> Void) {
   }
 }
 
-// MARK: - Case RepeatedComputedReceiver
-// MARK: Input
+// MARK: - Отдельные switch сохраняют повторное чтение вычисляемого свойства
 enum Example {
 
   struct Box {
@@ -432,7 +420,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   struct Box {
@@ -470,8 +458,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ThrowingBranch
-// MARK: Input
+// MARK: - Проверки типа превращаются в отдельные switch с throw в ветках
 enum Example {
 
   enum Failure: Error {
@@ -485,7 +472,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   enum Failure: Error {

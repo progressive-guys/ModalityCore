@@ -1,7 +1,7 @@
-// MARK: - Case DeclarationBarrier
+// MARK: - Объявление разделяет группы импортов
 import Foundation
 enum ImportBoundary {}
 import Dispatch
 
-// MARK: - Case SymbolImportKind
+// MARK: - Импорт отдельного символа
 import struct Foundation.Date

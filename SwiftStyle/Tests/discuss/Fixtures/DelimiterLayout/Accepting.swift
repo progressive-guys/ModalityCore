@@ -1,4 +1,4 @@
-// MARK: - Case AdjacentClosingParentheses
+// MARK: - Соседние закрывающие скобки
 enum Examples {
 
   static func nestedClosingDelimiters(_ first: Int, _ second: Int) -> Double {
@@ -9,7 +9,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CastAfterMultilineArray
+// MARK: - Приведение типа после многострочного массива
 enum Examples {
 
   static func castCollection(_ first: Int) -> [Int] {
@@ -19,7 +19,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ClosureArgument
+// MARK: - Замыкание в аргументе вызова
 enum Examples {
 
   static func closure(_ values: [Int]) -> [Int] {
@@ -29,7 +29,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ImmediatelyCalledClosure
+// MARK: - Немедленный вызов замыкания
 enum Examples {
 
   static func invokedClosure(_ first: Int) -> Int {
@@ -39,7 +39,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case MemberAfterMultilineCall
+// MARK: - Обращение к члену типа после многострочного вызова
 enum Examples {
 
   static func nestedMember(_ values: [Int]) -> Bool {
@@ -49,7 +49,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case MemberAfterMultilineString
+// MARK: - Обращение к члену типа после многострочной строки
 enum Examples {
 
   static func multilineString() -> [UInt8] {
@@ -60,7 +60,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case MemberAfterRawMultilineString
+// MARK: - Обращение к члену типа после многострочной строки с решётками
 enum Examples {
 
   static func rawMultilineString() -> [UInt8] {
@@ -71,7 +71,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case RemainingArgumentAfterArray
+// MARK: - Следующий аргумент после массива
 enum Examples {
 
   static func remainingArgument(_ first: Int, _ second: Int) -> [[Int]] {

@@ -1,5 +1,4 @@
-// MARK: - Case Binding
-// MARK: Input
+// MARK: - Вложенные if объединяются с сохранением привязки значения
 enum Example {
 
   static func binding(_ value: Int?) {
@@ -9,7 +8,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func binding(_ value: Int?) {
@@ -21,8 +20,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ClosingComment
-// MARK: Input
+// MARK: - При объединении if сохраняется комментарий после закрывающей скобки
 func run(_ first: Bool, _ second: Bool, body: () -> Void) {
   if first {
     if second {
@@ -31,7 +29,7 @@ func run(_ first: Bool, _ second: Bool, body: () -> Void) {
   }
 }
 
-// MARK: Output
+/// Output
 func run(_ first: Bool, _ second: Bool, body: () -> Void) {
   if first,
      second
@@ -40,8 +38,7 @@ func run(_ first: Bool, _ second: Bool, body: () -> Void) {
   } // Keep this closing comment.
 }
 
-// MARK: - Case CommentBetweenConditions
-// MARK: Input
+// MARK: - При объединении if комментарий переносится между условиями
 enum Example {
 
   static func comments(_ first: Bool, _ second: Bool) {
@@ -52,7 +49,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func comments(_ first: Bool, _ second: Bool) {
@@ -65,8 +62,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ThreeLevels
-// MARK: Input
+// MARK: - Три вложенных if объединяются в список условий
 enum Example {
 
   static func threeLevels(_ first: Bool, _ second: Bool, _ third: Bool) {
@@ -78,7 +74,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func threeLevels(_ first: Bool, _ second: Bool, _ third: Bool) {
@@ -91,8 +87,7 @@ enum Example {
   }
 }
 
-// MARK: - Case TwoLevels
-// MARK: Input
+// MARK: - Два вложенных if объединяются в список условий
 enum Example {
 
   static func nested(_ first: Bool, _ second: Bool) {
@@ -104,7 +99,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func nested(_ first: Bool, _ second: Bool) {

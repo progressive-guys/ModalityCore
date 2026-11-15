@@ -1,5 +1,4 @@
-// MARK: - Case AwaitedExpression
-// MARK: Input
+// MARK: - Условие с await выносится в отдельную константу
 enum Example {
 
   static func awaitedCondition(_ receiver: () async -> String, _ argument: () async -> String) async -> Bool {
@@ -8,7 +7,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func awaitedCondition(_ receiver: () async -> String, _ argument: () async -> String) async -> Bool {
@@ -18,8 +17,7 @@ enum Example {
   }
 }
 
-// MARK: - Case BlockComment
-// MARK: Input
+// MARK: - При выносе условия блочный комментарий сохраняется
 enum Example {
 
   static func commentInCondition(_ value: Int) -> Bool {
@@ -28,7 +26,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func commentInCondition(_ value: Int) -> Bool {
@@ -38,8 +36,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ContextualOverload
-// MARK: Input
+// MARK: - Тип Bool у вынесенного условия сохраняет выбор перегрузки
 enum Example {
 
   static func select(_ value: Int) -> Bool { value > 0 }
@@ -52,7 +49,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func select(_ value: Int) -> Bool { value > 0 }
@@ -66,8 +63,7 @@ enum Example {
   }
 }
 
-// MARK: - Case FirstGuardCondition
-// MARK: Input
+// MARK: - Первое условие guard выносится перед проверкой
 enum Example {
 
   static func guardFirstCondition(_ value: Int, _ enabled: Bool) -> Bool {
@@ -76,7 +72,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func guardFirstCondition(_ value: Int, _ enabled: Bool) -> Bool {
@@ -86,8 +82,7 @@ enum Example {
   }
 }
 
-// MARK: - Case IfWithElse
-// MARK: Input
+// MARK: - Условие if выносится с сохранением ветки else
 enum Example {
 
   static func ifWithElse(_ input: Int) -> Bool {
@@ -96,7 +91,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func ifWithElse(_ input: Int) -> Bool {
@@ -106,8 +101,7 @@ enum Example {
   }
 }
 
-// MARK: - Case InsideLoop
-// MARK: Input
+// MARK: - Условие выносится внутри тела цикла
 enum Example {
 
   static func loopBody(_ values: [Int]) -> Bool {
@@ -119,7 +113,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func loopBody(_ values: [Int]) -> Bool {
@@ -132,8 +126,7 @@ enum Example {
   }
 }
 
-// MARK: - Case LocalNameCollision
-// MARK: Input
+// MARK: - Имя вынесенного условия не совпадает с существующими параметрами
 enum Example {
 
   static func nameCollision(_ matchesCondition: Int, _ matchesCondition2: Int) -> Bool {
@@ -142,7 +135,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func nameCollision(_ matchesCondition: Int, _ matchesCondition2: Int) -> Bool {
@@ -152,8 +145,7 @@ enum Example {
   }
 }
 
-// MARK: - Case NestedClosure
-// MARK: Input
+// MARK: - Условие с вложенными замыканиями выносится целиком
 enum Example {
 
   static func nestedClosure(_ values: [Int]) -> Bool {
@@ -162,7 +154,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func nestedClosure(_ values: [Int]) -> Bool {
@@ -172,8 +164,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ReceiverBeforeArgument
-// MARK: Input
+// MARK: - При выносе условия сохраняется порядок вычисления объекта и аргумента
 enum Example {
 
   static func receiverOrder(_ receiver: () -> String, _ argument: () -> String) -> Bool {
@@ -182,7 +173,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func receiverOrder(_ receiver: () -> String, _ argument: () -> String) -> Bool {
@@ -192,8 +183,7 @@ enum Example {
   }
 }
 
-// MARK: - Case RepeatedReceivers
-// MARK: Input
+// MARK: - При выносе условия сохраняются повторные вызовы объекта
 enum Example {
 
   static func repeatedReceiverCalls(_ receiver: () -> String) -> Bool {
@@ -202,7 +192,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func repeatedReceiverCalls(_ receiver: () -> String) -> Bool {
@@ -212,8 +202,7 @@ enum Example {
   }
 }
 
-// MARK: - Case RepeatedSyntaxReceivers
-// MARK: Input
+// MARK: - Повторные вызовы SwiftSyntax сохраняются в вынесенном условии
 
 enum Example {
 
@@ -223,7 +212,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Example {
 
@@ -234,8 +223,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ShortCircuit
-// MARK: Input
+// MARK: - При выносе условия сохраняется короткое замыкание оператора &&
 enum Example {
 
   static func shortCircuit(_ enabled: Bool, _ receiver: () -> String, _ argument: () -> String) -> Bool {
@@ -244,7 +232,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func shortCircuit(_ enabled: Bool, _ receiver: () -> String, _ argument: () -> String) -> Bool {
@@ -254,8 +242,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ThrowingExpression
-// MARK: Input
+// MARK: - Условие с try выносится в отдельную константу
 enum Example {
 
   static func throwingCondition(_ receiver: () throws -> String, _ argument: () throws -> String) throws -> Bool {
@@ -264,7 +251,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func throwingCondition(_ receiver: () throws -> String, _ argument: () throws -> String) throws -> Bool {
@@ -274,8 +261,7 @@ enum Example {
   }
 }
 
-// MARK: - Case WidthBoundaryExceeded
-// MARK: Input
+// MARK: - Условие с вложенным вызовом длиной 121 символ выносится в константу
 enum Example {
 
   static func nestedOverLimit(_ text: String) -> Bool {
@@ -284,7 +270,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func nestedOverLimit(_ text: String) -> Bool {

@@ -1,5 +1,4 @@
-// MARK: - Case CaseContinuationTwoSpaces
-// MARK: Input
+// MARK: - Продолжение шаблона case с отступом в два пробела
 func selected(_ value: Int) -> Bool {
   switch value {
   case 0,
@@ -10,7 +9,7 @@ func selected(_ value: Int) -> Bool {
   }
 }
 
-// MARK: Output
+/// Output
 func selected(_ value: Int) -> Bool {
   switch value {
   case 0,

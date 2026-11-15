@@ -1,8 +1,7 @@
-// MARK: - Case RemoveBlankKeepMultilineBraces
-// MARK: Input
+// MARK: - Пустое тело функции сокращается до одной строки
 func empty() {
 
 }
 
-// MARK: Output
+/// Output
 func empty() { }

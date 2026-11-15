@@ -1,5 +1,4 @@
-// MARK: - Case RemoveClosureTailBlank
-// MARK: Input
+// MARK: - Удаление пустой строки в конце замыкания
 func example() {
   let action = {
     print("value")
@@ -8,7 +7,7 @@ func example() {
   action()
 }
 
-// MARK: Output
+/// Output
 func example() {
   let action = {
     print("value")
@@ -16,14 +15,13 @@ func example() {
   action()
 }
 
-// MARK: - Case RemoveFunctionTailBlank
-// MARK: Input
+// MARK: - Удаление пустой строки в конце функции
 func value() -> Int {
   return 1
 
 }
 
-// MARK: Output
+/// Output
 func value() -> Int {
   return 1
 }

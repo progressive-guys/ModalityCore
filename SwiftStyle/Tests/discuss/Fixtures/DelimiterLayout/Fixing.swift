@@ -1,12 +1,11 @@
-// MARK: - Case ArithmeticAfterCollection
-// MARK: Input
+// MARK: - Закрывающая скобка группы переносится после арифметики над коллекцией
 func arithmeticAfterCollection(_ first: Int) -> Int {
   ([
     first
   ].count + 1)
 }
 
-// MARK: Output
+/// Output
 func arithmeticAfterCollection(_ first: Int) -> Int {
   ([
     first
@@ -14,15 +13,14 @@ func arithmeticAfterCollection(_ first: Int) -> Int {
   )
 }
 
-// MARK: - Case ArrayClosingDelimiter
-// MARK: Input
+// MARK: - Закрывающая скобка массива переносится на отдельную строку
 func array(_ first: Int, _ second: Int) -> [Int] {
   [
     first,
     second]
 }
 
-// MARK: Output
+/// Output
 func array(_ first: Int, _ second: Int) -> [Int] {
   [
     first,
@@ -30,56 +28,52 @@ func array(_ first: Int, _ second: Int) -> [Int] {
   ]
 }
 
-// MARK: - Case CallClosingDelimiter
-// MARK: Input
+// MARK: - Закрывающая скобка вызова переносится на отдельную строку
 func arguments(_ first: Int, _ second: Int) -> Int {
   max(first,
     second)
 }
 
-// MARK: Output
+/// Output
 func arguments(_ first: Int, _ second: Int) -> Int {
   max(first,
     second
   )
 }
 
-// MARK: - Case DictionaryClosingDelimiter
-// MARK: Input
+// MARK: - Закрывающая скобка словаря переносится на отдельную строку
 func dictionary(_ first: Int, _ second: Int) -> [String: Int] {
   ["first": first,
     "second": second]
 }
 
-// MARK: Output
+/// Output
 func dictionary(_ first: Int, _ second: Int) -> [String: Int] {
   ["first": first,
     "second": second
   ]
 }
 
-// MARK: - Case InvokedClosureClosingDelimiter
-// MARK: Input
+// MARK: - Закрывающая скобка внешнего вызова переносится после вызова замыкания
 func sameLineClosureBody(_ first: Int) -> Int {
   Int({
     first + 1 }())
 }
 
-// MARK: Output
+/// Output
 func sameLineClosureBody(_ first: Int) -> Int {
   Int({
     first + 1 }()
   )
 }
 
-// MARK: - Case PartlyMultilineGetterBody
-// MARK: Input
+// MARK: - Выражение getter переносится со строки открывающей скобки в тело
 enum Examples {
   static var value: Int { 1
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static var value: Int {
@@ -87,43 +81,40 @@ enum Examples {
   }
 }
 
-// MARK: - Case StringArgumentClosingDelimiter
-// MARK: Input
+// MARK: - Закрывающая скобка вызова переносится после строкового аргумента
 func singleLineString() -> Int? {
   Int(
     "1")
 }
 
-// MARK: Output
+/// Output
 func singleLineString() -> Int? {
   Int(
     "1"
   )
 }
 
-// MARK: - Case SubscriptClosingDelimiter
-// MARK: Input
+// MARK: - Закрывающая скобка индексирования переносится на отдельную строку
 func subscriptCall(_ first: Int, _ second: Int) -> Int {
   [first, second][
     0]
 }
 
-// MARK: Output
+/// Output
 func subscriptCall(_ first: Int, _ second: Int) -> Int {
   [first, second][
     0
   ]
 }
 
-// MARK: - Case TernaryAfterCollection
-// MARK: Input
+// MARK: - Закрывающая скобка группы переносится после тернарного выражения
 func ternaryAfterCollection(_ first: Int) -> Int {
   ([
     first
   ].isEmpty ? 0 : first)
 }
 
-// MARK: Output
+/// Output
 func ternaryAfterCollection(_ first: Int) -> Int {
   ([
     first
@@ -131,15 +122,14 @@ func ternaryAfterCollection(_ first: Int) -> Int {
   )
 }
 
-// MARK: - Case TupleClosingDelimiter
-// MARK: Input
+// MARK: - Закрывающая скобка кортежа переносится на отдельную строку
 func tuple(_ first: Int, _ second: Int) -> (Int, Int) {
   (
     first,
     second)
 }
 
-// MARK: Output
+/// Output
 func tuple(_ first: Int, _ second: Int) -> (Int, Int) {
   (
     first,

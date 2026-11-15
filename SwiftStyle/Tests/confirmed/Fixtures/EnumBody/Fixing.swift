@@ -1,8 +1,7 @@
-// MARK: - Case ExpandInlineCaseBody
-// MARK: Input
+// MARK: - Тело перечисления переносится, варианты остаются на одной строке
 enum Choice { case first, second }
 
-// MARK: Output
+/// Output
 enum Choice {
   case first, second
 }

@@ -1,10 +1,9 @@
-// MARK: - Case CommentMovesWithImport
-// MARK: Input
+// MARK: - Комментарий перемещается вместе с импортом
 import Foundation
 // Needed by the following import.
 import Dispatch
 
-// MARK: Output
+/// Output
 // Needed by the following import.
 import Dispatch
 import Foundation

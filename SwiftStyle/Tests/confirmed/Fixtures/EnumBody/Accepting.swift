@@ -1,4 +1,4 @@
-// MARK: - Case AssociatedValueCommasPreserved
+// MARK: - Связанные значения варианта перечисления сохраняются на одной строке
 enum Value {
   case pair(Int, Int)
 }

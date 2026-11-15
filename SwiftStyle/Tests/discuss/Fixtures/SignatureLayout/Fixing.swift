@@ -1,12 +1,11 @@
-// MARK: - Case QualifiedReturnTypeCompacts
-// MARK: Input
+// MARK: - Полное имя возвращаемого типа помещается на одной строке
 enum Examples {
   struct Result {}
   static func value() -> Examples
     .Result { .init() }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   struct Result {}
@@ -14,27 +13,25 @@ enum Examples {
   static func value() -> Examples.Result { .init() }
 }
 
-// MARK: - Case ReturnArrowJoinsSignature
-// MARK: Input
+// MARK: - Стрелка возвращаемого типа соединяется с сигнатурой
 enum Examples {
   static func value()
     -> Int { 1 }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
   static func value() -> Int { 1 }
 }
 
-// MARK: - Case TupleReturnTypeCompacts
-// MARK: Input
+// MARK: - Кортеж возвращаемого типа помещается на одной строке
 enum Examples {
   static func value() -> (
     Int, Int
   ) { (1, 2) }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
   static func value() -> (Int, Int) { (1, 2) }
 }

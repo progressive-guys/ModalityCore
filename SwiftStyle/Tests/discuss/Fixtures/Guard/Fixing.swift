@@ -1,5 +1,4 @@
-// MARK: - Case NestedCallsInConditions
-// MARK: Input
+// MARK: - Первое условие guard переносится на новую строку перед вложенными вызовами
 enum Example {
 
   static func value(
@@ -16,7 +15,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func value(

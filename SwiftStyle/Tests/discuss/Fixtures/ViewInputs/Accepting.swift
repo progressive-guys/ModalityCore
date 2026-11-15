@@ -1,4 +1,4 @@
-// MARK: - Case ModelNestedInView
+// MARK: - Модель, вложенная в View
 
 enum Examples {
 
@@ -11,7 +11,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case OrdinaryModelProperty
+// MARK: - Обычное свойство модели
 enum Examples {
 
   struct Model {
@@ -19,7 +19,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case PrivateViewInputsWithExplicitInitializer
+// MARK: - Закрытые входные свойства View с явным инициализатором
 
 enum Examples {
 

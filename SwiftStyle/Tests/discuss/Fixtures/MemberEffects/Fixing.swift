@@ -1,11 +1,10 @@
-// MARK: - Case AsyncBeforeAsyncThrowing
-// MARK: Input
+// MARK: - Функции async перед функциями async throws
 struct FunctionEffects {
   func combined() async throws {}
   func delayed() async {}
 }
 
-// MARK: Output
+/// Output
 struct FunctionEffects {
 
   func delayed() async {}
@@ -13,8 +12,7 @@ struct FunctionEffects {
   func combined() async throws {}
 }
 
-// MARK: - Case ExtensionScope
-// MARK: Input
+// MARK: - Обычная функция перемещается перед async внутри расширения
 struct Calls {}
 
 extension Calls {
@@ -22,7 +20,7 @@ extension Calls {
   func plain() {}
 }
 
-// MARK: Output
+/// Output
 struct Calls {}
 
 extension Calls {
@@ -32,8 +30,7 @@ extension Calls {
   func delayed() async {}
 }
 
-// MARK: - Case HomogeneousConditionalRegion
-// MARK: Input
+// MARK: - Однородный условный блок async занимает место между обычными и async throws
 struct ConditionalEffects {
 
   func combined() async throws {}
@@ -45,7 +42,7 @@ struct ConditionalEffects {
   func plain() {}
 }
 
-// MARK: Output
+/// Output
 struct ConditionalEffects {
 
   func plain() {}
@@ -59,8 +56,7 @@ struct ConditionalEffects {
   func combined() async throws {}
 }
 
-// MARK: - Case MixedConditionalRegion
-// MARK: Input
+// MARK: - Внутри каждой условной ветки функции сортируются по эффектам
 struct MixedConditionalEffects {
 
   func before() async {}
@@ -74,7 +70,7 @@ struct MixedConditionalEffects {
   func after() {}
 }
 
-// MARK: Output
+/// Output
 struct MixedConditionalEffects {
 
   func before() async {}
@@ -90,14 +86,13 @@ struct MixedConditionalEffects {
   func after() {}
 }
 
-// MARK: - Case PlainBeforeRethrowing
-// MARK: Input
+// MARK: - Обычные функции перед функциями rethrows
 struct RethrowingEffects {
   func fallible(_ action: () throws -> Void) rethrows { try action() }
   func plain() {}
 }
 
-// MARK: Output
+/// Output
 struct RethrowingEffects {
 
   func plain() {}
@@ -105,8 +100,7 @@ struct RethrowingEffects {
   func fallible(_ action: () throws -> Void) rethrows { try action() }
 }
 
-// MARK: - Case ProtocolGetterEffects
-// MARK: Input
+// MARK: - Требования getter сортируются и разделяются по async и throws
 protocol Values {
 
   var combined: Int { get async throws }
@@ -115,7 +109,7 @@ protocol Values {
   var plain: Int { get }
 }
 
-// MARK: Output
+/// Output
 protocol Values {
 
   var plain: Int { get }
@@ -127,8 +121,7 @@ protocol Values {
   var combined: Int { get async throws }
 }
 
-// MARK: - Case ProtocolMethodEffects
-// MARK: Input
+// MARK: - Требования методов сортируются и разделяются по async и throws
 protocol Calls {
 
   func combinedCall() async throws
@@ -137,7 +130,7 @@ protocol Calls {
   func plainCall()
 }
 
-// MARK: Output
+/// Output
 protocol Calls {
 
   func plainCall()
@@ -149,14 +142,13 @@ protocol Calls {
   func combinedCall() async throws
 }
 
-// MARK: - Case ThrowingGetterBeforeAsync
-// MARK: Input
+// MARK: - Getter с throws перед getter с async
 struct GetterEffects {
   var delayed: Int { get async { 1 } }
   var fallible: Int { get throws { 2 } }
 }
 
-// MARK: Output
+/// Output
 struct GetterEffects {
 
   var fallible: Int { get throws { 2 } }

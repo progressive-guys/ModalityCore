@@ -1,4 +1,4 @@
-// MARK: - Case DocumentedCase
+// MARK: - Комментарий документации перед вариантом перечисления
 func documented() {
   enum Value {
 
@@ -11,7 +11,7 @@ func documented() {
   }
 }
 
-// MARK: - Case PropertyBetweenCases
+// MARK: - Свойство между вариантами перечисления
 func otherDeclarations() {
   enum Value {
 
@@ -21,7 +21,7 @@ func otherDeclarations() {
   }
 }
 
-// MARK: - Case TrailingMultilineComment
+// MARK: - Многострочный комментарий после варианта
 func blockComment() {
   enum Value {
 

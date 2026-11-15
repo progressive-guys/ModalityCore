@@ -1,4 +1,4 @@
-// MARK: - Case ArrayReceiverConditionKeepsSeparateBrace
+// MARK: - Условие с вызовом у массива сохраняет скобку тела на отдельной строке
 enum Examples {
 
   static func arrayLiteral(_ value: String) -> Bool {
@@ -11,7 +11,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case IfExpressionBodyAtBindingIndent
+// MARK: - Тело выражения if выровнено по объявлению
 enum Examples {
 
   static func value(_ first: Bool) -> Int {
@@ -24,7 +24,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case NestedCallInIfExpressionCondition
+// MARK: - Вложенный вызов в условии выражения if
 enum Examples {
 
   static func nestedArguments(_ argument: Int, _ first: Bool) -> Int {

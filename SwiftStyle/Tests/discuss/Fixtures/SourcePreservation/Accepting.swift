@@ -1,4 +1,4 @@
-// MARK: - Case EscapedIdentifier
+// MARK: - Идентификатор в обратных кавычках
 enum Examples {
 
   static func backticks(_ `default`: Int) -> Bool {
@@ -7,13 +7,13 @@ enum Examples {
   }
 }
 
-// MARK: - Case LiteralAndCommentBytes
+// MARK: - Содержимое литералов и комментариев сохраняется побайтно
 func text() -> String {
   // Keep  two spaces and punctuation: (, ).
   return #"value :  [a, b]"#
 }
 
-// MARK: - Case NestedMultilineInterpolation
+// MARK: - Вложенная многострочная интерполяция
 let nested = """
 value: \(
   """
@@ -23,12 +23,12 @@ value: \(
 end
 """
 
-// MARK: - Case RawRegexConditionText
+// MARK: - Текст if внутри регулярного выражения с решётками сохраняется
 enum Examples {
   static var regex: Regex<(Substring, Substring)> { #/if check(value)/# }
 }
 
-// MARK: - Case UnicodeIdentifierInExpression
+// MARK: - Идентификатор Unicode в выражении
 enum Examples {
 
   static func unicode(_ значение: Int) -> Bool {
@@ -37,5 +37,5 @@ enum Examples {
   }
 }
 
-// MARK: - Case UnicodeWithoutFinalLF
+// MARK: - Строка с составным Unicode-символом сохраняется без завершающего переноса
 let decomposed = "Café"

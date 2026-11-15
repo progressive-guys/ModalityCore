@@ -1,4 +1,4 @@
-// MARK: - Case ThreeArgumentCallWithGap
+// MARK: - Вызов с тремя аргументами и пустой строкой после него
 
 enum Examples {
 
@@ -13,7 +13,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case TwoArgumentCallWithGap
+// MARK: - Вызов с двумя аргументами и пустой строкой после него
 enum Examples {
 
   static func value() -> String {
@@ -26,7 +26,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case TwoArgumentCallWithoutGap
+// MARK: - Вызов с двумя аргументами без пустой строки после него
 enum Examples {
 
   static func value() -> String {

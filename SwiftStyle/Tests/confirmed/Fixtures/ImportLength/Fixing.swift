@@ -1,23 +1,21 @@
-// MARK: - Case AttributeIsNotPartOfKey
-// MARK: Input
+// MARK: - Импорты без аннотаций размещаются перед импортами с preconcurrency
 @preconcurrency import Dispatch
 @preconcurrency import AnotherDispatch
 import Foundation
 import VeryVeryLongImportFoundation
 
-// MARK: Output
+/// Output
 import Foundation
 import VeryVeryLongImportFoundation
 @preconcurrency import Dispatch
 @preconcurrency import AnotherDispatch
 
-// MARK: - Case SortDistinctLengths
-// MARK: Input
+// MARK: - Сортировка импортов разной длины
 import Foundation
 import Dispatch
 import Swift
 
-// MARK: Output
+/// Output
 import Swift
 import Dispatch
 import Foundation

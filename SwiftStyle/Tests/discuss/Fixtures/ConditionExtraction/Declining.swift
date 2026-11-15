@@ -1,4 +1,4 @@
-// MARK: - Case BindingCondition
+// MARK: - Сложный индекс в optional-привязке не выносится автоматически
 enum Examples {
 
   static func bindingCondition(_ values: [Int: Int], _ value: Int) -> Int {
@@ -7,7 +7,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case Conditions
+// MARK: - Сложное выражение во втором условии не выносится автоматически
 enum Examples {
 
   static func conditionalTail(_ enabled: Bool, _ value: Int) -> Bool {
@@ -16,7 +16,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ElseIfCondition
+// MARK: - Сложное условие else if не выносится автоматически
 enum Examples {
 
   static func elseIfCondition(_ enabled: Bool, _ value: Int) -> Bool {
@@ -25,7 +25,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ImplicitResultCondition
+// MARK: - Сложное условие if с неявным результатом не выносится автоматически
 enum Examples {
 
   static func implicitResultCondition(_ value: Int) -> Bool {
@@ -37,7 +37,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case LabeledCondition
+// MARK: - Сложное условие инструкции с меткой не выносится автоматически
 enum Examples {
 
   static func labeledCondition(_ value: Int) -> Bool {
@@ -46,7 +46,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case LaterConditionWithSyntaxCalls
+// MARK: - Повторные вызовы SwiftSyntax после первого условия не выносятся автоматически
 
 enum Examples {
 
@@ -56,7 +56,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case MacroCondition
+// MARK: - Условие с макросом не выносится автоматически
 enum Examples {
 
   static func macroCondition() -> Bool {
@@ -65,7 +65,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case WhereCondition
+// MARK: - Сложное условие where не выносится автоматически
 enum Examples {
 
   static func whereCondition(_ values: [Int]) -> Bool {

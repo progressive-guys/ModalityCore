@@ -1,4 +1,4 @@
-// MARK: - Case AfterTypedBinding
+// MARK: - Условие после объявления с явным типом
 enum Examples {
 
   static func typedBinding(_ text: String) -> Bool {
@@ -7,7 +7,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CaseWhereScope
+// MARK: - Область видимости условия where у варианта switch
 enum Examples {
 
   static func caseWhere(_ value: Int) -> Bool {
@@ -21,7 +21,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CatchWhereScope
+// MARK: - Область видимости условия where у catch
 enum Examples {
 
   enum Failure: Error {
@@ -39,7 +39,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ClosurePredicate
+// MARK: - Короткий предикат-замыкание остаётся непосредственно в условии
 enum Examples {
 
   static func shortPredicate(_ values: [Int]) -> Bool {
@@ -48,7 +48,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CommentInsideCall
+// MARK: - Комментарий внутри вызова в условии
 enum Examples {
 
   static func nestedComment(_ value: Int) -> Bool {
@@ -57,7 +57,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ForWhereScope
+// MARK: - Область видимости условия where у цикла for
 enum Examples {
 
   static func forWhere(_ values: [Int]) -> Void {
@@ -67,7 +67,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case MultilineCallShape
+// MARK: - Многострочный вызов в условии
 enum Examples {
 
   static func multilineNestedCall(_ value: Int) -> Bool {
@@ -79,7 +79,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case MutatingCallResult
+// MARK: - Результат вызова, изменяющего состояние, в условии
 enum Examples {
 
   static func apiInsertedResult(_ values: inout Set<Int>, _ value: Int) -> Bool {
@@ -88,7 +88,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case OptionalInvocation
+// MARK: - Вызов необязательного значения в условии
 enum Examples {
 
   static func optionalCall(_ callback: (() -> Bool)?) -> Bool {
@@ -97,7 +97,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case RepeatConditionScope
+// MARK: - Вложенные вызовы остаются в условии цикла repeat
 enum Examples {
 
   static func repeatExcluded(_ value: Int) {
@@ -107,7 +107,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ShortArithmetic
+// MARK: - Короткое арифметическое выражение в условии
 enum Examples {
 
   static func simpleArithmetic(_ value: Int, _ offset: Int, _ limit: Int) -> Bool {
@@ -116,7 +116,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ShortGuardCall
+// MARK: - Короткие вложенные вызовы остаются в условии guard
 enum Examples {
 
   static func guardNestedCall(_ value: Int) -> Bool {
@@ -125,7 +125,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ShortNestedCalls
+// MARK: - Короткие вложенные вызовы в условии
 enum Examples {
 
   static func deepShortCall(_ value: Int) -> Bool {
@@ -134,7 +134,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case SubscriptExpression
+// MARK: - Обращение по индексу в условии
 enum Examples {
 
   static func indexing(_ values: [Int], _ index: Int) -> Bool {
@@ -143,7 +143,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case WhileConditionScope
+// MARK: - Вложенные вызовы остаются в условии цикла while
 enum Examples {
 
   static func whileExcluded(_ value: Int) {
@@ -151,7 +151,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case WidthBoundaryAccepted
+// MARK: - Вложенный вызов длиной 120 символов остаётся в условии
 enum Examples {
 
   static func nestedAtLimit(_ text: String) -> Bool {

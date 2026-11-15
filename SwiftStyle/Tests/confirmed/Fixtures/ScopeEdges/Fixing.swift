@@ -1,11 +1,10 @@
-// MARK: - Case RemoveFunctionHeadBlank
-// MARK: Input
+// MARK: - Удаление пустой строки в начале функции
 func value() -> Int {
 
   return 1
 }
 
-// MARK: Output
+/// Output
 func value() -> Int {
   return 1
 }

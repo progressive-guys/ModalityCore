@@ -1,5 +1,4 @@
-// MARK: - Case CommentedDeclaration
-// MARK: Input
+// MARK: - Комментарий и объединение подготовленных значений начинают отдельные группы
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let value = input
   // Prepare another value.
@@ -8,7 +7,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(sum)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let value = input
 
@@ -19,8 +18,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(sum)
 }
 
-// MARK: - Case ConsumerOfTwoPreparedGroups
-// MARK: Input
+// MARK: - Вызов с данными двух подготовленных групп отделяется пустой строкой
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   var first = [input]
   first.append(1)
@@ -30,7 +28,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(first.count + second.count)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   var first = [input]
   first.append(1)
@@ -41,8 +39,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(first.count + second.count)
 }
 
-// MARK: - Case EarlierLocalInDeclarationGroup
-// MARK: Input
+// MARK: - Обращение к раннему значению сохраняет группу объявлений; итоговый вызов отделяется
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let base = input
   let count = other
@@ -52,7 +49,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(scaled + count + width)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let base = input
   let count = other
@@ -63,8 +60,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(scaled + count + width)
 }
 
-// MARK: - Case IndependentBetweenDependentStages
-// MARK: Input
+// MARK: - Независимое объявление отделяется от предыдущего и следующего этапов
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let base = input
   let scaled = base * 2
@@ -73,7 +69,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(spacing)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let base = input
   let scaled = base * 2
@@ -84,8 +80,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(spacing)
 }
 
-// MARK: - Case IndependentBindingsJoinSharedUse
-// MARK: Input
+// MARK: - Независимые объявления объединяются общим использованием
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let first = input
 
@@ -94,7 +89,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(sum)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, other: Int, sink: (Int) -> Void) {
   let first = input
   let second = other
@@ -102,8 +97,7 @@ func run(input: Int, other: Int, sink: (Int) -> Void) {
   sink(sum)
 }
 
-// MARK: - Case ReturnReadsPreparedGroups
-// MARK: Input
+// MARK: - Объявление и return, объединяющий разные группы, отделяются пустыми строками
 func run(input: Int, other: Int) -> Int {
   let value = input
   let scaled = value * 2
@@ -111,7 +105,7 @@ func run(input: Int, other: Int) -> Int {
   return scaled + count
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, other: Int) -> Int {
   let value = input
   let scaled = value * 2
@@ -121,8 +115,7 @@ func run(input: Int, other: Int) -> Int {
   return scaled + count
 }
 
-// MARK: - Case SeparateObjectConfigurations
-// MARK: Input
+// MARK: - Настройка разных объектов образует отдельные группы
 final class Node {
 
   var first = 0
@@ -142,7 +135,7 @@ func run(input: Int) {
   second.render()
 }
 
-// MARK: Output
+/// Output
 final class Node {
 
   var first = 0

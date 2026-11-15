@@ -1,22 +1,20 @@
-// MARK: - Case MainActorFunctionOnSeparateLine
-// MARK: Input
+// MARK: - Аннотация MainActor над функцией
 @MainActor func value() -> Int {
   1
 }
 
-// MARK: Output
+/// Output
 @MainActor
 func value() -> Int {
   1
 }
 
-// MARK: - Case PropertyWrapperTypeAttribute
-// MARK: Input
+// MARK: - Аннотация propertyWrapper переносится над объявлением типа
 @propertyWrapper struct Box<Value> {
   var wrappedValue: Value
 }
 
-// MARK: Output
+/// Output
 @propertyWrapper
 struct Box<Value> {
   var wrappedValue: Value

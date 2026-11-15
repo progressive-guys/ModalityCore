@@ -1,5 +1,4 @@
-// MARK: - Case CalleeIsNotArgument
-// MARK: Input
+// MARK: - После вызова через локальную функцию разрыв перед её копированием удаляется
 func run(input: Int, sink: (Int) -> Void) {
   let value = sink
   value(input)
@@ -8,7 +7,7 @@ func run(input: Int, sink: (Int) -> Void) {
   next(input)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = sink
   value(input)
@@ -16,8 +15,7 @@ func run(input: Int, sink: (Int) -> Void) {
   next(input)
 }
 
-// MARK: - Case ClosureBodyArgument
-// MARK: Input
+// MARK: - Вызов с чтением значения в теле замыкания отделяется от следующего объявления
 func run(input: Int, visit: (() -> Int) -> Void, sink: (Int) -> Void) {
   let value = input
   visit { value }
@@ -25,7 +23,7 @@ func run(input: Int, visit: (() -> Int) -> Void, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, visit: (() -> Int) -> Void, sink: (Int) -> Void) {
   let value = input
   visit { value }
@@ -34,8 +32,7 @@ func run(input: Int, visit: (() -> Int) -> Void, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case ClosureBodyInitializer
-// MARK: Input
+// MARK: - Пустая строка перед инициализацией замыкания без явного захвата удаляется
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -44,7 +41,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next())
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -52,8 +49,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next())
 }
 
-// MARK: - Case ComputedLocalIsNotInitializer
-// MARK: Input
+// MARK: - Пустая строка перед локальным вычисляемым свойством удаляется
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -62,7 +58,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -70,8 +66,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case GuardAfterCompletedCallStage
-// MARK: Input
+// MARK: - Guard отделяется от предыдущей группы объявлений и вызовов
 enum Example {
 
   static func run(input: Int, sink: (Int) -> Void) {
@@ -82,7 +77,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func run(input: Int, sink: (Int) -> Void) {
@@ -94,8 +89,7 @@ enum Example {
   }
 }
 
-// MARK: - Case IfAfterCompletedCallStage
-// MARK: Input
+// MARK: - If отделяется от предыдущей группы объявлений и вызовов
 enum Example {
 
   static func run(input: Int, sink: (Int) -> Void) {
@@ -109,7 +103,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func run(input: Int, sink: (Int) -> Void) {
@@ -124,8 +118,7 @@ enum Example {
   }
 }
 
-// MARK: - Case IfExpressionInitializer
-// MARK: Input
+// MARK: - Пустая строка перед инициализацией через if удаляется; следующий вызов отделяется
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -138,7 +131,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -151,8 +144,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case IndependentNextStage
-// MARK: Input
+// MARK: - Независимое выражение начинает новую группу
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -160,7 +152,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -169,8 +161,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case InitializerReadsTwoGroups
-// MARK: Input
+// MARK: - Объявление, читающее две подготовленные группы, отделяется пустой строкой
 func run(input: Int, sink: (Int) -> Void) {
   let first = input
   sink(first)
@@ -181,7 +172,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let first = input
   sink(first)
@@ -193,8 +184,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case InoutIsNotByValueRead
-// MARK: Input
+// MARK: - После вызова с inout разрыв перед производным объявлением удаляется
 func touch(_ value: inout Int) { value += 1 }
 
 func run(input: Int, sink: (Int) -> Void) {
@@ -205,7 +195,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func touch(_ value: inout Int) { value += 1 }
 
 func run(input: Int, sink: (Int) -> Void) {
@@ -215,8 +205,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case KeyPathComponentIsNotReference
-// MARK: Input
+// MARK: - Совпадение имени с компонентом KeyPath не сохраняет разрыв перед объявлением
 struct Box {
   let value: Int }
 
@@ -231,7 +220,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 struct Box {
   let value: Int }
 
@@ -245,8 +234,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case LabelIsNotReference
-// MARK: Input
+// MARK: - Совпадение имени с меткой аргумента не сохраняет разрыв перед объявлением
 func log(value: Int) {}
 
 func run(input: Int, sink: (Int) -> Void) {
@@ -258,7 +246,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func log(value: Int) {}
 
 func run(input: Int, sink: (Int) -> Void) {
@@ -269,8 +257,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case LeadingCommentBarrier
-// MARK: Input
+// MARK: - Комментарий перед выражением начинает новую группу
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -279,7 +266,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -289,8 +276,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case MemberNameIsNotReference
-// MARK: Input
+// MARK: - Совпадение имени со свойством другого объекта не сохраняет разрыв
 struct Box {
   let value: Int }
 
@@ -305,7 +291,7 @@ func run(input: Int, box: Box, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 struct Box {
   let value: Int }
 
@@ -319,8 +305,7 @@ func run(input: Int, box: Box, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case MultilineDerivedInitializer
-// MARK: Input
+// MARK: - Пустая строка перед вызовом с многострочным производным значением удаляется
 enum Example {
 
   static func run(input: Int, sink: (Int) -> Void) {
@@ -335,7 +320,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func run(input: Int, sink: (Int) -> Void) {
@@ -349,8 +334,7 @@ enum Example {
   }
 }
 
-// MARK: - Case MultilinePreviousCall
-// MARK: Input
+// MARK: - Пустая строка перед производным объявлением после многострочного вызова удаляется
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(
@@ -361,7 +345,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(
@@ -371,8 +355,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case MultipleBindings
-// MARK: Input
+// MARK: - Пустая строка перед объявлением нескольких значений удаляется
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -381,7 +364,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next + ignored)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -389,8 +372,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next + ignored)
 }
 
-// MARK: - Case NoAliasExpansion
-// MARK: Input
+// MARK: - После вызова с псевдонимом разрыв перед использованием исходного значения удаляется
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   let alias = value
@@ -400,7 +382,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   let alias = value
@@ -409,8 +391,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case NormalizeExcessGap
-// MARK: Input
+// MARK: - Две пустые строки перед производным объявлением сокращаются до одной
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -420,7 +401,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -429,8 +410,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case OnlyImmediatelyPreviousCall
-// MARK: Input
+// MARK: - Ранний вызов не сохраняет разделитель перед производным объявлением
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   let other = input + 1
@@ -441,7 +421,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   let other = input + 1
@@ -451,8 +431,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case ReceiverIsNotArgument
-// MARK: Input
+// MARK: - После вызова метода разрыв перед чтением свойства того же объекта удаляется
 func run(input: Int, sink: (Int) -> Void) {
   var value: [Int] = []
   value.append(input)
@@ -461,7 +440,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   var value: [Int] = []
   value.append(input)
@@ -469,8 +448,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case ReturnIsNotNewDeclaration
-// MARK: Input
+// MARK: - Пустая строка перед return со связанным значением удаляется
 func run(input: Int, sink: (Int) -> Void) -> Int {
   let value = input
   let copy = value + 1
@@ -479,7 +457,7 @@ func run(input: Int, sink: (Int) -> Void) -> Int {
   return abs(copy)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) -> Int {
   let value = input
   let copy = value + 1
@@ -487,8 +465,7 @@ func run(input: Int, sink: (Int) -> Void) -> Int {
   return abs(copy)
 }
 
-// MARK: - Case ShadowedArgumentClosure
-// MARK: Input
+// MARK: - Затенённое имя параметра замыкания не сохраняет разрыв перед объявлением
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   let other = input
@@ -498,7 +475,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   let other = input
@@ -507,8 +484,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: - Case ThreeStatementBody
-// MARK: Input
+// MARK: - Тело из трёх инструкций не содержит пустых строк
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -516,15 +492,14 @@ func run(input: Int, sink: (Int) -> Void) {
   let next = abs(value)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
   let next = abs(value)
 }
 
-// MARK: - Case TuplePatternDeclaration
-// MARK: Input
+// MARK: - Пустая строка перед объявлением через кортежный шаблон удаляется
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)
@@ -533,7 +508,7 @@ func run(input: Int, sink: (Int) -> Void) {
   sink(next)
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, sink: (Int) -> Void) {
   let value = input
   sink(value)

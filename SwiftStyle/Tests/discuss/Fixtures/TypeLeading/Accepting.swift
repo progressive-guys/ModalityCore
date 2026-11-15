@@ -1,4 +1,4 @@
-// MARK: - Case ThreeCodeLines
+// MARK: - Пустая строка сохраняется перед тремя вариантами перечисления
 enum Triple {
 
   case first
@@ -6,7 +6,7 @@ enum Triple {
   case third
 }
 
-// MARK: - Case ThreeCodeLinesWithDocComment
+// MARK: - Пустые строки сохраняются перед тремя свойствами и комментарием документации
 struct Triple {
 
   let first: Int

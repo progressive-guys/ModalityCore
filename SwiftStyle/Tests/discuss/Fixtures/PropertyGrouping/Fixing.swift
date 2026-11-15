@@ -1,5 +1,4 @@
-// MARK: - Case ConditionalVisibilityBranch
-// MARK: Input
+// MARK: - В условной ветке свойство public перемещается перед private
 public enum Examples {
 
   struct WrongVisibilityInConditionalBranch {
@@ -11,7 +10,7 @@ public enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 public enum Examples {
 
   struct WrongVisibilityInConditionalBranch {
@@ -23,15 +22,14 @@ public enum Examples {
   }
 }
 
-// MARK: - Case ConstructorResultType
-// MARK: Input
+// MARK: - Свойства с вызовом конструктора одного типа группируются вместе
 struct RepeatedConstructorTypeGroup {
   let a = String("one")
   let m = 1
   let z = String("two")
 }
 
-// MARK: Output
+/// Output
 struct RepeatedConstructorTypeGroup {
 
   let m = 1
@@ -39,15 +37,14 @@ struct RepeatedConstructorTypeGroup {
   let z = String("two")
 }
 
-// MARK: - Case FourBindingsOneDeclaration
-// MARK: Input
+// MARK: - Четыре привязки в одном объявлении отделяются от свойства экземпляра
 struct MultipleBindingsCountTowardGroupSize {
 
   static let a = 1, b = 2, c = 3, cc = 4
   let d = 4
 }
 
-// MARK: Output
+/// Output
 struct MultipleBindingsCountTowardGroupSize {
 
   static let a = 1, b = 2, c = 3, cc = 4
@@ -55,8 +52,7 @@ struct MultipleBindingsCountTowardGroupSize {
   let d = 4
 }
 
-// MARK: - Case FourStaticMembers
-// MARK: Input
+// MARK: - Четыре статических свойства отделяются от свойства экземпляра
 struct MissingStaticGroupGap {
 
   static let a = 1
@@ -66,7 +62,7 @@ struct MissingStaticGroupGap {
   let d = 4
 }
 
-// MARK: Output
+/// Output
 struct MissingStaticGroupGap {
 
   static let a = 1
@@ -77,8 +73,7 @@ struct MissingStaticGroupGap {
   let d = 4
 }
 
-// MARK: - Case FourVisibilityMembers
-// MARK: Input
+// MARK: - Четыре свойства public отделяются от private пустой строкой
 struct MissingVisibilityGroupGap {
 
   public var a = 1
@@ -88,7 +83,7 @@ struct MissingVisibilityGroupGap {
   private var d = 4
 }
 
-// MARK: Output
+/// Output
 struct MissingVisibilityGroupGap {
 
   public var a = 1
@@ -99,14 +94,13 @@ struct MissingVisibilityGroupGap {
   private var d = 4
 }
 
-// MARK: - Case LetBeforeVar
-// MARK: Input
+// MARK: - Константы перед изменяемыми свойствами
 final class Values {
   var a = 1
   let b = 2
 }
 
-// MARK: Output
+/// Output
 final class Values {
 
   let b = 2
@@ -114,8 +108,7 @@ final class Values {
   var a = 1
 }
 
-// MARK: - Case PlainBeforeWrappedStorage
-// MARK: Input
+// MARK: - Обычные хранимые свойства перед свойствами с обёртками
 enum Wrappers {
 
   @propertyWrapper
@@ -129,7 +122,7 @@ final class Values {
   var b = 2
 }
 
-// MARK: Output
+/// Output
 enum Wrappers {
 
   @propertyWrapper
@@ -144,36 +137,33 @@ final class Values {
   @Wrappers.F var a: Int = 1
 }
 
-// MARK: - Case PrivateBeforeFileprivate
-// MARK: Input
+// MARK: - Свойства private перед fileprivate
 final class Values {
   fileprivate var a = 1
   private var b = 2
 }
 
-// MARK: Output
+/// Output
 final class Values {
 
   private var b = 2
   fileprivate var a = 1
 }
 
-// MARK: - Case PublicBeforePrivate
-// MARK: Input
+// MARK: - Свойства public перед private
 final class Values {
   private var a = 1
   public var b = 2
 }
 
-// MARK: Output
+/// Output
 final class Values {
 
   public var b = 2
   private var a = 1
 }
 
-// MARK: - Case PublishedPrivateSetter
-// MARK: Input
+// MARK: - Свойство Published с открытым setter размещается перед private(set)
 
 final class Model {
 
@@ -181,7 +171,7 @@ final class Model {
   @Published var isReady = false
 }
 
-// MARK: Output
+/// Output
 
 final class Model {
 
@@ -190,15 +180,14 @@ final class Model {
   @Published private(set) var value = 0
 }
 
-// MARK: - Case RepeatedExplicitType
-// MARK: Input
+// MARK: - Свойства с одинаковым явным типом собираются вместе
 final class Values {
   var a: Int = 1
   var m: String = "value"
   var z: Int = 2
 }
 
-// MARK: Output
+/// Output
 final class Values {
 
   var a: Int = 1
@@ -206,15 +195,14 @@ final class Values {
   var m: String = "value"
 }
 
-// MARK: - Case RepeatedLiteralType
-// MARK: Input
+// MARK: - Свойства с целочисленными литералами собираются вместе
 final class Values {
   var a = 1
   var m = "value"
   var z = -2
 }
 
-// MARK: Output
+/// Output
 final class Values {
 
   var a = 1
@@ -222,8 +210,7 @@ final class Values {
   var m = "value"
 }
 
-// MARK: - Case RepeatedWrapperIdentity
-// MARK: Input
+// MARK: - Свойства с одинаковой обёрткой собираются вместе
 enum Wrappers {
 
   @propertyWrapper
@@ -245,7 +232,7 @@ struct RepeatedWrapperGroup {
   init() {}
 }
 
-// MARK: Output
+/// Output
 enum Wrappers {
 
   @propertyWrapper
@@ -268,8 +255,7 @@ struct RepeatedWrapperGroup {
   init() {}
 }
 
-// MARK: - Case SharedTypeBindingGroup
-// MARK: Input
+// MARK: - Свойство Int присоединяется к объявлению с общей аннотацией Int
 struct RepeatedSharedTypeGroup {
   var a, b: Int
   var s = "value"
@@ -281,7 +267,7 @@ struct RepeatedSharedTypeGroup {
   }
 }
 
-// MARK: Output
+/// Output
 struct RepeatedSharedTypeGroup {
 
   var z = 3
@@ -294,14 +280,13 @@ struct RepeatedSharedTypeGroup {
   }
 }
 
-// MARK: - Case StaticBeforeInstance
-// MARK: Input
+// MARK: - Статические свойства перед свойствами экземпляра
 final class Values {
   let a = 1
   static let b = 2
 }
 
-// MARK: Output
+/// Output
 final class Values {
 
   static let b = 2

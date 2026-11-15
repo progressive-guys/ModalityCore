@@ -1,4 +1,4 @@
-// MARK: - Case InnerElseBranch
+// MARK: - У вложенного if есть ветка else
 enum Examples {
 
   static func innerElse(_ first: Bool, _ second: Bool) {
@@ -12,7 +12,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case OuterElseBranch
+// MARK: - У внешнего if есть ветка else
 enum Examples {
 
   static func outerElse(_ first: Bool, _ second: Bool) {
@@ -26,7 +26,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case StatementAfterInnerIf
+// MARK: - Инструкция после вложенного if
 enum Examples {
 
   static func after(_ first: Bool, _ second: Bool) {
@@ -40,7 +40,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case StatementBeforeInnerIf
+// MARK: - Инструкция перед вложенным if
 enum Examples {
 
   static func before(_ first: Bool, _ second: Bool) {

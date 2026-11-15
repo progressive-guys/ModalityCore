@@ -1,5 +1,4 @@
-// MARK: - Case MultilineIfBraceOnOwnLine
-// MARK: Input
+// MARK: - Открывающая скобка многострочного if на отдельной строке
 func sum(_ first: Int?, _ second: Int?) -> Int {
   if let first,
      let second {
@@ -9,7 +8,7 @@ func sum(_ first: Int?, _ second: Int?) -> Int {
   return 0
 }
 
-// MARK: Output
+/// Output
 func sum(_ first: Int?, _ second: Int?) -> Int {
   if let first,
     let second

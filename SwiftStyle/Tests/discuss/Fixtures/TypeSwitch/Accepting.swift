@@ -1,4 +1,4 @@
-// MARK: - Case AlternatingDisjunctionReceivers
+// MARK: - Разные объекты в проверках, объединённых через ИЛИ
 enum Examples {
 
   static func alternatingObjects(_ input: Any, _ second: Any) -> Bool {
@@ -7,7 +7,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case BindingBreaksSeries
+// MARK: - Объявление значения прерывает серию проверок типа
 enum Examples {
 
   static func unconditionalCast(_ input: Any) -> Int {
@@ -20,7 +20,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case CastInBranchBody
+// MARK: - Приведение типа внутри ветки
 enum Examples {
 
   static func castInBody(_ input: Any, _ ready: Bool) -> String? {
@@ -29,7 +29,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case DifferentReceivers
+// MARK: - Проверки типа у разных объектов
 enum Examples {
 
   static func differentReceiver(_ input: Any, _ second: Any) -> Int {
@@ -39,7 +39,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case RepeatedCallReceiver
+// MARK: - Повторный вызов для получения проверяемого объекта
 enum Examples {
 
   static func repeatedCalls(_ make: () -> Any) -> Int {
@@ -51,7 +51,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case SingleCast
+// MARK: - Одиночное приведение типа
 enum Examples {
 
   static func singleCheck(_ input: Any) -> Int {
@@ -60,7 +60,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case SingleTest
+// MARK: - Одиночная проверка типа
 enum Examples {
 
   static func singleTypeTest(_ input: Any) -> Bool {
@@ -69,7 +69,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case StatementBreaksSeries
+// MARK: - Инструкция прерывает серию проверок типа
 enum Examples {
 
   static func interruption(_ input: Any) -> Int {
@@ -83,7 +83,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case TestInsideClosure
+// MARK: - Проверка типа внутри замыкания
 enum Examples {
 
   static func closurePredicate(_ values: [Any]) -> Bool {

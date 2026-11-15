@@ -1,4 +1,4 @@
-// MARK: - Case ArrayTypeSpellings
+// MARK: - Разные формы записи типа массива
 struct EquivalentArrayTypeSpellings {
 
   var a: [Int]
@@ -12,7 +12,7 @@ struct EquivalentArrayTypeSpellings {
   }
 }
 
-// MARK: - Case ComputedCommentGroups
+// MARK: - Комментарии разделяют вычисляемые свойства на группы
 public enum Examples {
 
   struct ComputedCommentGroups {
@@ -29,7 +29,7 @@ public enum Examples {
   }
 }
 
-// MARK: - Case EffectiveExtensionAccess
+// MARK: - Эффективный уровень доступа в расширении
 public enum Examples {}
 
 public extension Examples {
@@ -38,7 +38,7 @@ public extension Examples {
   internal var b1: Int { 2 }
 }
 
-// MARK: - Case LargeGroupHasBothSeparators
+// MARK: - Большая группа отделяется пустой строкой с обеих сторон
 struct LargeGroupHasBothSeparators {
 
   let value = 0
@@ -51,7 +51,7 @@ struct LargeGroupHasBothSeparators {
   private var hidden = 5
 }
 
-// MARK: - Case MarkHeaderPreserved
+// MARK: - Заголовок MARK группы сохраняется
 struct HeaderBetweenVisibilityGroups {
 
   public var a = 1
@@ -65,7 +65,7 @@ struct HeaderBetweenVisibilityGroups {
   private var e = 5
 }
 
-// MARK: - Case ReadAccessAndPrivateSetter
+// MARK: - Свойства разделены по доступу для записи при одинаковом доступе для чтения
 struct ReadVisibilityWithPrivateSetter {
 
   public var b : Int
@@ -80,7 +80,7 @@ struct ReadVisibilityWithPrivateSetter {
   }
 }
 
-// MARK: - Case ReadVisibilityOrder
+// MARK: - Хранимые свойства упорядочены по доступу, вычисляемое open размещено после них
 open class ReadVisibilityOrder {
 
   public var b = 2
@@ -91,7 +91,7 @@ open class ReadVisibilityOrder {
   open var a: Int { 1 }
 }
 
-// MARK: - Case SharedTypeAnnotationAccepted
+// MARK: - Общая аннотация типа у нескольких свойств
 struct SharedTypeAnnotation {
 
   var c = 3
@@ -99,7 +99,7 @@ struct SharedTypeAnnotation {
   var s = "value"
 }
 
-// MARK: - Case StaticCrossReferences
+// MARK: - Перекрёстные ссылки между статическими свойствами
 struct OptionSetLiteralKeepsDeclaredType: OptionSet {
 
   static let c: OptionSetLiteralKeepsDeclaredType = [.a, .b]
@@ -112,7 +112,7 @@ struct OptionSetLiteralKeepsDeclaredType: OptionSet {
   }
 }
 
-// MARK: - Case ThreeStaticMembers
+// MARK: - Группа из трёх статических свойств
 struct ThreeElementsStayTogether {
 
   static let a = 1
@@ -121,7 +121,7 @@ struct ThreeElementsStayTogether {
   let value = 4
 }
 
-// MARK: - Case UnknownCallResultType
+// MARK: - Результаты обычного вызова не группируются по выведенному типу
 private func makeNumber() -> Int { 1 }
 
 struct Values {
@@ -131,7 +131,7 @@ struct Values {
   let m = "value"
 }
 
-// MARK: - Case WrapperArgumentsShareIdentity
+// MARK: - Аргументы одной обёртки не разделяют её на разные виды
 @propertyWrapper
 struct Wrapped<Value> {
   var wrappedValue: Value

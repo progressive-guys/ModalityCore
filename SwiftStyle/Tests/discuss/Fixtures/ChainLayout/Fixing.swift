@@ -1,5 +1,4 @@
-// MARK: - Case BreakBeforeChainedClosure
-// MARK: Input
+// MARK: - Перенос перед замыканием в цепочке
 enum Examples {
   static func value(_ values: [Int]) -> [Int] {
     values.map { $0 + 1 }.filter { value in
@@ -8,7 +7,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ values: [Int]) -> [Int] {
@@ -19,8 +18,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ClosureSuffixJoinsWrappedReceiver
-// MARK: Input
+// MARK: - Вызов с замыканием примыкает к многострочному основанию
 
 enum Library {
 
@@ -36,7 +34,7 @@ enum Library {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Library {
 
@@ -51,8 +49,7 @@ enum Library {
   }
 }
 
-// MARK: - Case ExpandChainedCallArguments
-// MARK: Input
+// MARK: - Цепочка вызовов разделяется перед вызовом с многострочными аргументами
 enum Examples {
   static func value(_ values: [Int], _ value: Int) -> Bool {
     values.sorted().contains(
@@ -61,7 +58,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ values: [Int], _ value: Int) -> Bool {
@@ -72,8 +69,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case JoinReturnCallWithClosure
-// MARK: Input
+// MARK: - Вызов после return соединяется с замыканием
 enum Examples {
   static func values() -> [Int] {
     let text = String(
@@ -93,7 +89,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func values() -> [Int] {
@@ -113,8 +109,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case PartlyWrappedMemberChain
-// MARK: Input
+// MARK: - Частично перенесённая цепочка обращений к членам типа
 enum Examples {
   static func value(_ values: [Int]) -> Int {
     values.sorted().dropFirst()
@@ -122,7 +117,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ values: [Int]) -> Int {
@@ -132,8 +127,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case SuffixArgumentsJoinWrappedReceiver
-// MARK: Input
+// MARK: - Аргументы продолжения примыкают к многострочному основанию
 enum Examples {
 
   static func values() -> [Int] {
@@ -149,7 +143,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func values() -> [Int] {

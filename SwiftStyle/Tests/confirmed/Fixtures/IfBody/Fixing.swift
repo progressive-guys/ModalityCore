@@ -1,5 +1,4 @@
-// MARK: - Case ExpandOrdinaryAction
-// MARK: Input
+// MARK: - Обычное действие переносится в многострочное тело
 func accumulate(_ value: Int) -> Int {
   var result = 0
   if value > 0 { result += value }
@@ -7,7 +6,7 @@ func accumulate(_ value: Int) -> Int {
   return result
 }
 
-// MARK: Output
+/// Output
 func accumulate(_ value: Int) -> Int {
   var result = 0
   if value > 0 {

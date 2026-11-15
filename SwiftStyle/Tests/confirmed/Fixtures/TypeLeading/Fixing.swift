@@ -1,5 +1,4 @@
-// MARK: - Case FourCodeLinesNeedPadding
-// MARK: Input
+// MARK: - Перед четырьмя вариантами перечисления добавляется пустая строка
 enum Quartet {
   case first
   case second
@@ -7,7 +6,7 @@ enum Quartet {
   case fourth
 }
 
-// MARK: Output
+/// Output
 enum Quartet {
 
   case first
@@ -16,23 +15,21 @@ enum Quartet {
   case fourth
 }
 
-// MARK: - Case FourCodeLinesNeedPadding
-// MARK: Input
+// MARK: - Пустой сценарий без входа и ожидаемого результата
 
-// MARK: - Case OneCodeLine
+// MARK: - Разворачивание тела перечисления: имена типов во входе и выходе различаются
 enum Single { case only }
 
 
-// MARK: Output
+/// Output
 enum Quartet {
   case only
 }
 
-// MARK: - Case EmptyEnum
-// MARK: Input
+// MARK: - Пустое перечисление сокращается до одной строки
 enum Single {
 }
 
 
-// MARK: Output
+/// Output
 enum Single { }

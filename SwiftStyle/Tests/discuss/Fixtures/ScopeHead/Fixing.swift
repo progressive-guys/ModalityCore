@@ -1,5 +1,4 @@
-// MARK: - Case CatchBody
-// MARK: Input
+// MARK: - Удаление пустой строки в начале catch
 func visit(_ action: () throws -> Void) {
   do {
     try action()
@@ -9,7 +8,7 @@ func visit(_ action: () throws -> Void) {
   }
 }
 
-// MARK: Output
+/// Output
 func visit(_ action: () throws -> Void) {
   do {
     try action()
@@ -18,8 +17,7 @@ func visit(_ action: () throws -> Void) {
   }
 }
 
-// MARK: - Case ClosureWithParameters
-// MARK: Input
+// MARK: - Удаление пустой строки после параметров замыкания
 func visit() {
   let action = { (value: Int) in
 
@@ -29,7 +27,7 @@ func visit() {
   action(1)
 }
 
-// MARK: Output
+/// Output
 func visit() {
   let action = { (value: Int) in
     print(value)
@@ -38,8 +36,7 @@ func visit() {
   action(1)
 }
 
-// MARK: - Case ClosureWithoutSignature
-// MARK: Input
+// MARK: - Удаление пустой строки в начале замыкания без параметров
 func visit() {
   let action = {
 
@@ -49,7 +46,7 @@ func visit() {
   action()
 }
 
-// MARK: Output
+/// Output
 func visit() {
   let action = {
     print("first")
@@ -58,32 +55,29 @@ func visit() {
   action()
 }
 
-// MARK: - Case CommentOnlyFunction
-// MARK: Input
+// MARK: - Удаление пустой строки перед единственным комментарием функции
 func empty() {
 
   // Empty body.
 }
 
-// MARK: Output
+/// Output
 func empty() {
   // Empty body.
 }
 
-// MARK: - Case ComputedProperty
-// MARK: Input
+// MARK: - Удаление пустой строки в начале вычисляемого свойства
 var value: Int {
 
   1
 }
 
-// MARK: Output
+/// Output
 var value: Int {
   1
 }
 
-// MARK: - Case DeferBody
-// MARK: Input
+// MARK: - Удаление пустой строки в начале defer
 func visit() {
   defer {
 
@@ -91,15 +85,14 @@ func visit() {
   }
 }
 
-// MARK: Output
+/// Output
 func visit() {
   defer {
     print("done")
   }
 }
 
-// MARK: - Case Deinitializer
-// MARK: Input
+// MARK: - Удаление пустой строки в начале деинициализатора
 final class Owner {
   deinit {
 
@@ -107,7 +100,7 @@ final class Owner {
   }
 }
 
-// MARK: Output
+/// Output
 final class Owner {
 
   deinit {
@@ -115,8 +108,7 @@ final class Owner {
   }
 }
 
-// MARK: - Case DoBody
-// MARK: Input
+// MARK: - Удаление пустой строки в начале do
 func visit(_ action: () throws -> Void) {
   do {
 
@@ -126,7 +118,7 @@ func visit(_ action: () throws -> Void) {
   }
 }
 
-// MARK: Output
+/// Output
 func visit(_ action: () throws -> Void) {
   do {
     try action()
@@ -135,8 +127,7 @@ func visit(_ action: () throws -> Void) {
   }
 }
 
-// MARK: - Case ElseBody
-// MARK: Input
+// MARK: - Удаление пустой строки в начале else
 func visit(_ value: Int) {
   if value > 0 {
     print(value)
@@ -146,7 +137,7 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 func visit(_ value: Int) {
   if value > 0 {
     print(value)
@@ -155,8 +146,7 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: - Case ForBody
-// MARK: Input
+// MARK: - Удаление пустой строки в начале цикла for
 func visit(_ values: [Int]) {
   for value in values {
 
@@ -164,15 +154,14 @@ func visit(_ values: [Int]) {
   }
 }
 
-// MARK: Output
+/// Output
 func visit(_ values: [Int]) {
   for value in values {
     print(value)
   }
 }
 
-// MARK: - Case Getter
-// MARK: Input
+// MARK: - Удаление пустой строки в начале getter
 var value: Int {
   get {
 
@@ -180,15 +169,14 @@ var value: Int {
   }
 }
 
-// MARK: Output
+/// Output
 var value: Int {
   get {
     return 1
   }
 }
 
-// MARK: - Case GuardFailure
-// MARK: Input
+// MARK: - Удаление пустой строки в начале ветки else у guard
 func visit(_ value: Int) {
   guard value > 0 else {
 
@@ -197,7 +185,7 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 func visit(_ value: Int) {
   guard value > 0 else {
     print(value)
@@ -205,8 +193,7 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: - Case IfComment
-// MARK: Input
+// MARK: - Удаление пустой строки перед комментарием в начале if
 func visit(_ value: Int) {
   if value > 0 {
 
@@ -215,7 +202,7 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 func visit(_ value: Int) {
   if value > 0 {
     // Keep this comment.
@@ -223,8 +210,7 @@ func visit(_ value: Int) {
   }
 }
 
-// MARK: - Case Initializer
-// MARK: Input
+// MARK: - Удаление пустой строки в начале инициализатора
 final class Owner {
   init() {
 
@@ -232,7 +218,7 @@ final class Owner {
   }
 }
 
-// MARK: Output
+/// Output
 final class Owner {
 
   init() {
@@ -240,8 +226,7 @@ final class Owner {
   }
 }
 
-// MARK: - Case RepeatBody
-// MARK: Input
+// MARK: - Удаление пустой строки в начале repeat
 func visit(_ values: inout [Int]) {
   repeat {
 
@@ -249,15 +234,14 @@ func visit(_ values: inout [Int]) {
   } while !values.isEmpty
 }
 
-// MARK: Output
+/// Output
 func visit(_ values: inout [Int]) {
   repeat {
     print(values.popLast() as Any)
   } while !values.isEmpty
 }
 
-// MARK: - Case Setter
-// MARK: Input
+// MARK: - Удаление пустой строки в начале setter
 var value: Int {
   get { 0 }
   set {
@@ -266,7 +250,7 @@ var value: Int {
   }
 }
 
-// MARK: Output
+/// Output
 var value: Int {
   get { 0 }
   set {
@@ -274,8 +258,7 @@ var value: Int {
   }
 }
 
-// MARK: - Case SwitchBody
-// MARK: Input
+// MARK: - Удаление пустой строки перед первым вариантом switch
 func value(_ input: Int) -> Int {
   switch input {
 
@@ -284,7 +267,7 @@ func value(_ input: Int) -> Int {
   }
 }
 
-// MARK: Output
+/// Output
 func value(_ input: Int) -> Int {
   switch input {
   case 0: return 0
@@ -292,8 +275,7 @@ func value(_ input: Int) -> Int {
   }
 }
 
-// MARK: - Case WhileBody
-// MARK: Input
+// MARK: - Удаление пустой строки в начале while
 func visit(_ values: inout [Int]) {
   while !values.isEmpty {
 
@@ -301,7 +283,7 @@ func visit(_ values: inout [Int]) {
   }
 }
 
-// MARK: Output
+/// Output
 func visit(_ values: inout [Int]) {
   while !values.isEmpty {
     print(values.removeLast())

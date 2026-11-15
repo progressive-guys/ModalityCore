@@ -1,5 +1,4 @@
-// MARK: - Case CallArgumentMargin
-// MARK: Input
+// MARK: - Отступ многострочной строки в аргументе уменьшается до двух пробелов
 func argument() {
   print(
     """
@@ -9,7 +8,7 @@ func argument() {
   )
 }
 
-// MARK: Output
+/// Output
 func argument() {
   print(
     """
@@ -19,8 +18,7 @@ func argument() {
   )
 }
 
-// MARK: - Case ComputedPropertyMargin
-// MARK: Input
+// MARK: - Отступ строки в вычисляемом свойстве уменьшается с сохранением вложенного отступа
 var value: String {
   """
     first
@@ -28,7 +26,7 @@ var value: String {
     """
 }
 
-// MARK: Output
+/// Output
 var value: String {
   """
   first
@@ -36,8 +34,7 @@ var value: String {
   """
 }
 
-// MARK: - Case FunctionResultMargin
-// MARK: Input
+// MARK: - Отступ многострочного результата функции уменьшается до двух пробелов
 func value() -> String {
   """
     first
@@ -45,7 +42,7 @@ func value() -> String {
     """
 }
 
-// MARK: Output
+/// Output
 func value() -> String {
   """
   first
@@ -53,32 +50,29 @@ func value() -> String {
   """
 }
 
-// MARK: - Case JoinLongLiteralsWithContinuation
-// MARK: Input
+// MARK: - Объединение длинных литералов с продолжением строки
 let longText = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-// MARK: Output
+/// Output
 let longText = """
   abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLM\
   NOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ
   """
 
-// MARK: - Case JoinRawAndEscapedLiterals
-// MARK: Input
+// MARK: - Объединение литералов с решётками и экранированием
 let escaped = #"a\b"# + "\n\"quoted\""
 
-// MARK: Output
+/// Output
 let escaped = "a\\b\n\"quoted\""
 
-// MARK: - Case JoinRawLiteralConcatenation
-// MARK: Input
+// MARK: - Объединение сцепленных строк с решётками
 enum Examples {
   static func value() -> String {
     #"first"# + #"second"#
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value() -> String {
@@ -86,8 +80,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case LineContinuationMargin
-// MARK: Input
+// MARK: - Отступы строки с продолжением уменьшаются с сохранением обратной косой черты
 func lineContinuation(_ number: Int) -> String {
   """
     \(number) · rows: 2 · \
@@ -95,7 +88,7 @@ func lineContinuation(_ number: Int) -> String {
     """
 }
 
-// MARK: Output
+/// Output
 func lineContinuation(_ number: Int) -> String {
   """
   \(number) · rows: 2 · \
@@ -103,8 +96,7 @@ func lineContinuation(_ number: Int) -> String {
   """
 }
 
-// MARK: - Case RawInterpolationMargin
-// MARK: Input
+// MARK: - Отступ строки с решётками и интерполяцией уменьшается до двух пробелов
 func rawInterpolation(_ number: Int) -> String {
   #"""
     \path
@@ -112,7 +104,7 @@ func rawInterpolation(_ number: Int) -> String {
     """#
 }
 
-// MARK: Output
+/// Output
 func rawInterpolation(_ number: Int) -> String {
   #"""
   \path
@@ -120,8 +112,7 @@ func rawInterpolation(_ number: Int) -> String {
   """#
 }
 
-// MARK: - Case RelativeIndentAndBlankLineMargin
-// MARK: Input
+// MARK: - Отступы многострочного литерала уменьшаются, пустая строка получает отступ
 func blankLinesAndIndentation() -> String {
   """
     first
@@ -131,7 +122,7 @@ func blankLinesAndIndentation() -> String {
     """
 }
 
-// MARK: Output
+/// Output
 func blankLinesAndIndentation() -> String {
   """
   first
@@ -141,8 +132,7 @@ func blankLinesAndIndentation() -> String {
   """
 }
 
-// MARK: - Case SingleLineInterpolation
-// MARK: Input
+// MARK: - Многострочная запись одной строки с интерполяцией сокращается
 enum Examples {
   static func value(_ text: String) -> String {
     """
@@ -151,7 +141,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ text: String) -> String {
@@ -159,31 +149,28 @@ enum Examples {
   }
 }
 
-// MARK: - Case StoredLiteralMargin
-// MARK: Input
+// MARK: - Отступ многострочной строки в глобальной константе уменьшается до двух пробелов
 let overIndented = """
     first
     """
 
-// MARK: Output
+/// Output
 let overIndented = """
   first
   """
 
-// MARK: - Case StoredRawLiteralJoinsBinding
-// MARK: Input
+// MARK: - Строка с решётками соединяется с объявлением глобальной константы
 let standaloneRaw =
   #"""
     first
     """#
 
-// MARK: Output
+/// Output
 let standaloneRaw = #"""
   first
   """#
 
-// MARK: - Case TabMargin
-// MARK: Input
+// MARK: - Общий отступ табуляцией заменяется пробелами, вложенная табуляция сохраняется
 func tabs() -> String {
   """
 	one
@@ -191,7 +178,7 @@ func tabs() -> String {
 	"""
 }
 
-// MARK: Output
+/// Output
 func tabs() -> String {
   """
   one

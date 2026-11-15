@@ -1,9 +1,9 @@
-// MARK: - Case BlankLineBoundary
+// MARK: - Пустая строка разделяет группы импортов
 import Foundation
 
 import Dispatch
 
-// MARK: - Case ConditionalBoundary
+// MARK: - Условная компиляция разделяет группы импортов
 #if USE_FOUNDATION
 import Foundation
 #else

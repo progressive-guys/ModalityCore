@@ -1,20 +1,18 @@
-// MARK: - Case AdjacentCases
-// MARK: Input
+// MARK: - Пустая строка между соседними вариантами перечисления удаляется
 enum Value {
   case first
 
   case second
 }
 
-// MARK: Output
+/// Output
 enum Value {
 
   case first
   case second
 }
 
-// MARK: - Case MultilineAssociatedValues
-// MARK: Input
+// MARK: - После варианта с многострочными связанными значениями добавляется пустая строка
 enum Value {
 
   case first(
@@ -24,7 +22,7 @@ enum Value {
   case second
 }
 
-// MARK: Output
+/// Output
 enum Value {
 
   case first(

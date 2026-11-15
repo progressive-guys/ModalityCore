@@ -1,5 +1,4 @@
-// MARK: - Case GuardCompactionThenGrouping
-// MARK: Input
+// MARK: - Группировка после сокращения guard
 func requireBoth(_ first: Bool, _ second: Bool) {
   guard first else {
     return
@@ -10,14 +9,13 @@ func requireBoth(_ first: Bool, _ second: Bool) {
   }
 }
 
-// MARK: Output
+/// Output
 func requireBoth(_ first: Bool, _ second: Bool) {
   guard first else { return }
   guard second else { return }
 }
 
-// MARK: - Case ImportAndIndentation
-// MARK: Input
+// MARK: - Сортировка импортов вместе с исправлением отступов
 import Foundation
 import Dispatch
 
@@ -25,7 +23,7 @@ func value() -> Int {
     1
 }
 
-// MARK: Output
+/// Output
 import Dispatch
 import Foundation
 

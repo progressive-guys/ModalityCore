@@ -1,5 +1,4 @@
-// MARK: - Case ConditionalNestedTypeBeforeStorage
-// MARK: Input
+// MARK: - Условное объявление вложенного типа перед хранимыми свойствами
 struct Values {
 
   var stored = 0
@@ -10,7 +9,7 @@ struct Values {
   #endif
 }
 
-// MARK: Output
+/// Output
 struct Values {
 
   #if MEMBER_BRANCH
@@ -22,8 +21,7 @@ struct Values {
   var stored = 0
 }
 
-// MARK: - Case ConditionalSubscriptBeforeFunction
-// MARK: Input
+// MARK: - Условное объявление индексатора перед функцией
 struct FunctionBeforeConditionalSubscript {
   func read() {}
   #if MEMBER_BRANCH
@@ -33,7 +31,7 @@ struct FunctionBeforeConditionalSubscript {
   #endif
 }
 
-// MARK: Output
+/// Output
 struct FunctionBeforeConditionalSubscript {
 
   #if MEMBER_BRANCH
@@ -44,8 +42,7 @@ struct FunctionBeforeConditionalSubscript {
   func read() {}
 }
 
-// MARK: - Case IndependentBranches
-// MARK: Input
+// MARK: - Независимая сортировка веток условной компиляции
 struct ConditionalBranch {
   #if MEMBER_BRANCH
   func read() -> Int { value }
@@ -56,7 +53,7 @@ struct ConditionalBranch {
   #endif
 }
 
-// MARK: Output
+/// Output
 struct ConditionalBranch {
 
   #if MEMBER_BRANCH
@@ -70,8 +67,7 @@ struct ConditionalBranch {
   #endif
 }
 
-// MARK: - Case NestedConditionalGetterBeforeFunction
-// MARK: Input
+// MARK: - Условные вычисляемые свойства перемещаются перед функцией
 struct FunctionBeforeConditionalGetter {
   func read() -> Int { 0 }
   #if MEMBER_BRANCH
@@ -83,7 +79,7 @@ struct FunctionBeforeConditionalGetter {
   #endif
 }
 
-// MARK: Output
+/// Output
 struct FunctionBeforeConditionalGetter {
 
   #if MEMBER_BRANCH
@@ -96,8 +92,7 @@ struct FunctionBeforeConditionalGetter {
   func read() -> Int { 0 }
 }
 
-// MARK: - Case StorageBeforeConditionalGetter
-// MARK: Input
+// MARK: - Хранимое свойство перемещается перед init и условными вычисляемыми свойствами
 struct StoredAfterConditionalGetter {
   init() {}
   #if MEMBER_BRANCH
@@ -108,7 +103,7 @@ struct StoredAfterConditionalGetter {
   var isImporting = false
 }
 
-// MARK: Output
+/// Output
 struct StoredAfterConditionalGetter {
 
   var isImporting = false
@@ -121,8 +116,7 @@ struct StoredAfterConditionalGetter {
   #endif
 }
 
-// MARK: - Case WrappedStorageBeforeRegion
-// MARK: Input
+// MARK: - Свойство с обёрткой перед блоком условной компиляции
 
 struct Content: View {
 
@@ -136,7 +130,7 @@ struct Content: View {
   var body: some View { content }
 }
 
-// MARK: Output
+/// Output
 
 struct Content: View {
 

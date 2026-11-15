@@ -1,5 +1,4 @@
-// MARK: - Case ConditionalGroupAtStart
-// MARK: Input
+// MARK: - Пустая строка между короткими case внутри условной компиляции удаляется
 func conditionalGap(_ value: Int) -> Int {
   switch value {
   #if os(macOS)
@@ -11,7 +10,7 @@ func conditionalGap(_ value: Int) -> Int {
   }
 }
 
-// MARK: Output
+/// Output
 func conditionalGap(_ value: Int) -> Int {
   switch value {
   #if os(macOS)
@@ -22,8 +21,7 @@ func conditionalGap(_ value: Int) -> Int {
   }
 }
 
-// MARK: - Case LeadingCommentBelongsToCase
-// MARK: Input
+// MARK: - Вариант switch с ведущим комментарием отделяется с обеих сторон
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"
@@ -33,7 +31,7 @@ func category(_ value: Int) -> String {
   }
 }
 
-// MARK: Output
+/// Output
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"

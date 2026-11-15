@@ -1,4 +1,4 @@
-// MARK: - Case EmptyContentLineWithoutMarginSpaces
+// MARK: - Пустая строка внутри литерала без отступа
 enum Examples {
 
   static func blankLinesAndIndentation() -> String {
@@ -11,7 +11,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ExplicitNewlinePreventsSingleLineRewrite
+// MARK: - Явный перевод строки препятствует сокращению литерала
 enum Examples {
 
   static func explicitNewline(_ text: String) -> String {
@@ -21,7 +21,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case LiteralAfterExplicitReturn
+// MARK: - Строковый литерал после явного return
 enum Examples {
 
   static func inlineReturn() -> String {
@@ -32,7 +32,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case RawLiteralInterpolationLikeText
+// MARK: - Текст, похожий на интерполяцию, в строке с решётками
 enum Examples {
 
   static let raw = #"""
@@ -40,7 +40,7 @@ enum Examples {
     """#
 }
 
-// MARK: - Case SemicolonInsideLiteral
+// MARK: - Точка с запятой внутри строкового литерала
 enum Examples {
 
   static func status(_ failure: String?) -> String {

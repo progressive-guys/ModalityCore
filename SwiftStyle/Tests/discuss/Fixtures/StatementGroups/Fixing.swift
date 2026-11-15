@@ -1,5 +1,4 @@
-// MARK: - Case AdjacentAssignments
-// MARK: Input
+// MARK: - Соседние присваивания идут подряд
 func configure(_ state: inout (displayLink: Int, callbackTarget: Int, isRunning: Bool, lastError: String?)) {
   state.displayLink = 1
   state.callbackTarget = 2
@@ -8,7 +7,7 @@ func configure(_ state: inout (displayLink: Int, callbackTarget: Int, isRunning:
   state.lastError = nil
 }
 
-// MARK: Output
+/// Output
 func configure(_ state: inout (displayLink: Int, callbackTarget: Int, isRunning: Bool, lastError: String?)) {
   state.displayLink = 1
   state.callbackTarget = 2
@@ -16,8 +15,7 @@ func configure(_ state: inout (displayLink: Int, callbackTarget: Int, isRunning:
   state.lastError = nil
 }
 
-// MARK: - Case AssignmentSeriesOverridesStageReads
-// MARK: Input
+// MARK: - Серия присваиваний важнее связей с группами подготовки
 func configure(_ left: inout [Int], right: inout [Int]) {
   var first = [0]
   first.append(1)
@@ -30,7 +28,7 @@ func configure(_ left: inout [Int], right: inout [Int]) {
   right = first + second
 }
 
-// MARK: Output
+/// Output
 func configure(_ left: inout [Int], right: inout [Int]) {
   var first = [0]
   first.append(1)
@@ -42,8 +40,7 @@ func configure(_ left: inout [Int], right: inout [Int]) {
   right = first + second
 }
 
-// MARK: - Case CallsBeforeAssignments
-// MARK: Input
+// MARK: - Между серией вызовов и серией присваиваний добавляется пустая строка
 final class Node {
 
   var first = 0
@@ -61,7 +58,7 @@ func run(node: Node) {
   node.second = 2
 }
 
-// MARK: Output
+/// Output
 final class Node {
 
   var first = 0
@@ -80,8 +77,7 @@ func run(node: Node) {
   node.second = 2
 }
 
-// MARK: - Case CaptureInitializerReadsLocal
-// MARK: Input
+// MARK: - Явный захват соединяет объявление замыкания с подготовленным значением
 func process(_ input: Int) {
   let value = input
 
@@ -91,7 +87,7 @@ func process(_ input: Int) {
   completion()
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int) {
   let value = input
   let completion = { [captured = value] in
@@ -100,8 +96,7 @@ func process(_ input: Int) {
   completion()
 }
 
-// MARK: - Case ClosureBodyReadsPreparedLocal
-// MARK: Input
+// MARK: - Чтение в теле замыкания убирает разрыв перед вызовом forEach
 func process(_ values: [Int], identifier: Int) {
   let requestID = identifier
 
@@ -110,7 +105,7 @@ func process(_ values: [Int], identifier: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 func process(_ values: [Int], identifier: Int) {
   let requestID = identifier
   values.forEach { value in
@@ -118,8 +113,7 @@ func process(_ values: [Int], identifier: Int) {
   }
 }
 
-// MARK: - Case ClosureContainingSwitchRead
-// MARK: Input
+// MARK: - Чтение во вложенном switch соединяет замыкание с подготовленным значением
 func label(_ kind: Int, center: Int) {
   let angle = center + 90
 
@@ -132,7 +126,7 @@ func label(_ kind: Int, center: Int) {
   completion()
 }
 
-// MARK: Output
+/// Output
 func label(_ kind: Int, center: Int) {
   let angle = center + 90
   let completion = {
@@ -144,8 +138,7 @@ func label(_ kind: Int, center: Int) {
   completion()
 }
 
-// MARK: - Case ClosureDeclarationThenArgument
-// MARK: Input
+// MARK: - Пустая строка между объявлением замыкания и передачей его в аргумент удаляется
 func process(_ values: [Int]) {
   let completion: (Int) -> Void = { value in
     print(value)
@@ -154,7 +147,7 @@ func process(_ values: [Int]) {
   values.forEach(completion)
 }
 
-// MARK: Output
+/// Output
 func process(_ values: [Int]) {
   let completion: (Int) -> Void = { value in
     print(value)
@@ -162,8 +155,7 @@ func process(_ values: [Int]) {
   values.forEach(completion)
 }
 
-// MARK: - Case ClosureDeclarationThenCallee
-// MARK: Input
+// MARK: - Вызов объявленного замыкания отделяется пустой строкой
 func run(input: Int, other: Int, sink: @escaping (Int) -> Void) {
   let callback: () -> Void = {
     sink(input)
@@ -171,7 +163,7 @@ func run(input: Int, other: Int, sink: @escaping (Int) -> Void) {
   callback()
 }
 
-// MARK: Output
+/// Output
 func run(input: Int, other: Int, sink: @escaping (Int) -> Void) {
   let callback: () -> Void = {
     sink(input)
@@ -180,8 +172,7 @@ func run(input: Int, other: Int, sink: @escaping (Int) -> Void) {
   callback()
 }
 
-// MARK: - Case ConditionalMutationOfPreparedLocal
-// MARK: Input
+// MARK: - Условное изменение коллекции соединяется с её объявлением
 func headers(_ extra: [String]) -> [String] {
   var fields = ["default"]
 
@@ -191,7 +182,7 @@ func headers(_ extra: [String]) -> [String] {
   return fields
 }
 
-// MARK: Output
+/// Output
 func headers(_ extra: [String]) -> [String] {
   var fields = ["default"]
   if !extra.isEmpty {
@@ -200,8 +191,7 @@ func headers(_ extra: [String]) -> [String] {
   return fields
 }
 
-// MARK: - Case ElseReadsOuterBinding
-// MARK: Input
+// MARK: - Чтение внешнего значения в else убирает разрыв перед if
 func process(_ input: Int?, alternative: Int?) {
   let value = input
 
@@ -212,7 +202,7 @@ func process(_ input: Int?, alternative: Int?) {
   }
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int?, alternative: Int?) {
   let value = input
   if let value = alternative {
@@ -222,8 +212,7 @@ func process(_ input: Int?, alternative: Int?) {
   }
 }
 
-// MARK: - Case ExpressionPatternReadsLocal
-// MARK: Input
+// MARK: - Использование локального значения в шаблоне if case убирает разрыв
 func process(_ input: Int, candidate: Int) {
   let value = input
 
@@ -232,7 +221,7 @@ func process(_ input: Int, candidate: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int, candidate: Int) {
   let value = input
   if case value = candidate {
@@ -240,8 +229,7 @@ func process(_ input: Int, candidate: Int) {
   }
 }
 
-// MARK: - Case GuardBindingContinuesGroup
-// MARK: Input
+// MARK: - Привязка guard продолжает группу
 func process(_ input: Int?) {
   let candidate = input
 
@@ -250,7 +238,7 @@ func process(_ input: Int?) {
   print(value + 1)
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int?) {
   let candidate = input
   guard let value = candidate else { return }
@@ -258,8 +246,7 @@ func process(_ input: Int?) {
   print(value + 1)
 }
 
-// MARK: - Case GuardFailureReadsPreparedLocal
-// MARK: Input
+// MARK: - Guard соединяется с подготовкой по чтению в else и отделяется от следующего вызова
 func process(_ input: Int, enabled: Bool) {
   let value = input
 
@@ -270,7 +257,7 @@ func process(_ input: Int, enabled: Bool) {
   print(value)
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int, enabled: Bool) {
   let value = input
   guard enabled else {
@@ -281,8 +268,7 @@ func process(_ input: Int, enabled: Bool) {
   print(value)
 }
 
-// MARK: - Case IfBodyReadsPreparedLocal
-// MARK: Input
+// MARK: - Чтение подготовленного значения в ветках убирает разрыв перед if
 func play(_ input: Int, high: Bool) {
   let volume = input
 
@@ -293,7 +279,7 @@ func play(_ input: Int, high: Bool) {
   }
 }
 
-// MARK: Output
+/// Output
 func play(_ input: Int, high: Bool) {
   let volume = input
   if high {
@@ -303,8 +289,7 @@ func play(_ input: Int, high: Bool) {
   }
 }
 
-// MARK: - Case IndependentActionBeforeFinalReturn
-// MARK: Input
+// MARK: - Независимый вызов отделяется от подготовки и итогового return
 enum Examples {
 
   static func value() -> String {
@@ -317,7 +302,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value() -> String {
@@ -332,8 +317,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case InlineChecksBeforeReturn
-// MARK: Input
+// MARK: - Итоговый return отделяется от серии однострочных проверок
 func missingGapBeforeReturn(_ x: Int) -> Int {
   if x == 0 { return 0 }
   if x < 0 { return -1 }
@@ -341,7 +325,7 @@ func missingGapBeforeReturn(_ x: Int) -> Int {
   return x
 }
 
-// MARK: Output
+/// Output
 func missingGapBeforeReturn(_ x: Int) -> Int {
   if x == 0 { return 0 }
   if x < 0 { return -1 }
@@ -350,8 +334,7 @@ func missingGapBeforeReturn(_ x: Int) -> Int {
   return x
 }
 
-// MARK: - Case LocalUsedAsForSequence
-// MARK: Input
+// MARK: - Цикл for соединяется с объявлением используемой коллекции
 func process(_ input: [Int]) {
   let values = input
 
@@ -360,7 +343,7 @@ func process(_ input: [Int]) {
   }
 }
 
-// MARK: Output
+/// Output
 func process(_ input: [Int]) {
   let values = input
   for value in values {
@@ -368,8 +351,7 @@ func process(_ input: [Int]) {
   }
 }
 
-// MARK: - Case MixedMultilineChecks
-// MARK: Input
+// MARK: - Многострочный if отделяется от соседних однострочных guard
 func check(_ value: Int) {
   guard value > 0 else { return }
   if value == 1 {
@@ -378,7 +360,7 @@ func check(_ value: Int) {
   guard value < 10 else { return }
 }
 
-// MARK: Output
+/// Output
 func check(_ value: Int) {
   guard value > 0 else { return }
 
@@ -389,8 +371,7 @@ func check(_ value: Int) {
   guard value < 10 else { return }
 }
 
-// MARK: - Case MultilineExpressionsExcessGap
-// MARK: Input
+// MARK: - Лишние пустые строки между многострочными выражениями
 func process(_ input: Int) {
   let value = max(
     input,
@@ -404,7 +385,7 @@ func process(_ input: Int) {
   )
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int) {
   let value = max(
     input,
@@ -417,8 +398,7 @@ func process(_ input: Int) {
   )
 }
 
-// MARK: - Case NamedCatchReadsOuterError
-// MARK: Input
+// MARK: - Do-catch соединяется с подготовкой по чтению внешнего значения в catch
 
 func process(_ input: Int) {
   let error = input
@@ -430,7 +410,7 @@ func process(_ input: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 
 func process(_ input: Int) {
   let error = input
@@ -441,8 +421,7 @@ func process(_ input: Int) {
   }
 }
 
-// MARK: - Case OrdinaryActionsExcessGap
-// MARK: Input
+// MARK: - Лишние пустые строки между обычными действиями
 func update(_ input: Int, first: inout [Int], second: inout [Int]) {
   let value = input
   first.append(value)
@@ -452,7 +431,7 @@ func update(_ input: Int, first: inout [Int], second: inout [Int]) {
   first.sort()
 }
 
-// MARK: Output
+/// Output
 func update(_ input: Int, first: inout [Int], second: inout [Int]) {
   let value = input
   first.append(value)
@@ -461,8 +440,7 @@ func update(_ input: Int, first: inout [Int], second: inout [Int]) {
   first.sort()
 }
 
-// MARK: - Case PreparedLocalsOverrideCheckGaps
-// MARK: Input
+// MARK: - Связь с подготовленными значениями объединяет проверки
 func declarationsThenChecksAndReturn() -> Int {
   let a = 1
   let b = 2
@@ -476,7 +454,7 @@ func declarationsThenChecksAndReturn() -> Int {
   return a
 }
 
-// MARK: Output
+/// Output
 func declarationsThenChecksAndReturn() -> Int {
   let a = 1
   let b = 2
@@ -487,26 +465,24 @@ func declarationsThenChecksAndReturn() -> Int {
   return a
 }
 
-// MARK: - Case PreparedLocalsUsedByCalls
-// MARK: Input
-func process(_ input: Int) {
+// MARK: - Подготовка значений отделяется от серии вызовов
+func process(_ input: Int, other: Int, consume: (Bool) -> Void) {
   let first = input
-  let second = input + 1
-
-  print(first)
-  print(second)
+  let second = other
+  consume(first > 0)
+  consume(second > 0)
 }
 
-// MARK: Output
-func process(_ input: Int) {
+/// Output
+func process(_ input: Int, other: Int, consume: (Bool) -> Void) {
   let first = input
-  let second = input + 1
-  print(first)
-  print(second)
+  let second = other
+
+  consume(first > 0)
+  consume(second > 0)
 }
 
-// MARK: - Case ShortDeclarationMultilineConsumer
-// MARK: Input
+// MARK: - Короткое объявление соединяется с многострочным вызовом, читающим значение
 func process(_ input: Int) {
   let value = input
 
@@ -516,7 +492,7 @@ func process(_ input: Int) {
   )
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int) {
   let value = input
   print(
@@ -525,8 +501,7 @@ func process(_ input: Int) {
   )
 }
 
-// MARK: - Case SwitchBodyReadDoesNotJoin
-// MARK: Input
+// MARK: - Чтение только в ветках switch не объединяет группы
 func label(_ kind: Int, center: Int) {
   let angle = center + 90
   switch kind {
@@ -538,7 +513,7 @@ func label(_ kind: Int, center: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 func label(_ kind: Int, center: Int) {
   let angle = center + 90
 
@@ -551,8 +526,7 @@ func label(_ kind: Int, center: Int) {
   }
 }
 
-// MARK: - Case SwitchSubjectReadsLocal
-// MARK: Input
+// MARK: - Switch соединяется с объявлением переключаемого значения
 func process(_ input: Int) {
   let value = input
 
@@ -562,7 +536,7 @@ func process(_ input: Int) {
   }
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int) {
   let value = input
   switch value {
@@ -571,8 +545,7 @@ func process(_ input: Int) {
   }
 }
 
-// MARK: - Case TallCallBeforeReturn
-// MARK: Input
+// MARK: - После объявления с четырьмя строками аргументов добавляется разрыв перед return
 
 func value() -> String {
   let value = "a".replacingOccurrences(
@@ -584,7 +557,7 @@ func value() -> String {
   return value
 }
 
-// MARK: Output
+/// Output
 
 func value() -> String {
   let value = "a".replacingOccurrences(
@@ -597,8 +570,7 @@ func value() -> String {
   return value
 }
 
-// MARK: - Case ThreeOrdinaryActions
-// MARK: Input
+// MARK: - Три обычных действия идут подряд
 func update(_ first: inout [Int], second: inout [Int]) {
   first.removeAll()
 
@@ -607,15 +579,14 @@ func update(_ first: inout [Int], second: inout [Int]) {
   first.append(0)
 }
 
-// MARK: Output
+/// Output
 func update(_ first: inout [Int], second: inout [Int]) {
   first.removeAll()
   second.sort()
   first.append(0)
 }
 
-// MARK: - Case TupleLocalsUsedByCalls
-// MARK: Input
+// MARK: - Вызовы соединяются с объявлением читаемых элементов кортежа
 func process(_ input: (Int, Int)) {
   let (first, second) = input
 
@@ -624,7 +595,7 @@ func process(_ input: (Int, Int)) {
   print(first + second)
 }
 
-// MARK: Output
+/// Output
 func process(_ input: (Int, Int)) {
   let (first, second) = input
   print(first)
@@ -632,8 +603,7 @@ func process(_ input: (Int, Int)) {
   print(first + second)
 }
 
-// MARK: - Case WeakCaptureWithShorthandBinding
-// MARK: Input
+// MARK: - Слабый захват соединяет замыкание с объявлением объекта
 
 enum Examples {
 
@@ -648,7 +618,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Examples {
 
@@ -660,4 +630,343 @@ enum Examples {
     }
     completion()
   }
+}
+
+// MARK: - Лишний разрыв внутри серии проверок удаляется
+func run(input: Int, other: Int, sink: (Int) -> Void) {
+  let first = input
+  let second = other
+
+  XCTAssertGreaterThan(first, 0)
+
+  XCTAssertGreaterThan(second, 0)
+}
+
+/// Output
+func run(input: Int, other: Int, sink: (Int) -> Void) {
+  let first = input
+  let second = other
+
+  XCTAssertGreaterThan(first, 0)
+  XCTAssertGreaterThan(second, 0)
+}
+
+// MARK: - Лишний разрыв внутри серии вызовов удаляется
+func run(input: Int, other: Int, consume: (Int, Int) -> Void) {
+  let first = input
+  let second = other
+
+  consume(first, 0)
+
+  consume(second, 0)
+}
+
+/// Output
+func run(input: Int, other: Int, consume: (Int, Int) -> Void) {
+  let first = input
+  let second = other
+
+  consume(first, 0)
+  consume(second, 0)
+}
+
+// MARK: - Проверка другого значения отделяется от присваивания result
+func run(input: Int) {
+  var result = input
+  let original = input
+  result = input + 1
+  XCTAssertEqual(original, input)
+}
+
+/// Output
+func run(input: Int) {
+  var result = input
+  let original = input
+  result = input + 1
+
+  XCTAssertEqual(original, input)
+}
+
+// MARK: - Вызов с другим значением отделяется от присваивания result
+func run(input: Int, consume: (Int, Int) -> Void) {
+  var result = input
+  let original = input
+  result = input + 1
+  consume(original, input)
+}
+
+/// Output
+func run(input: Int, consume: (Int, Int) -> Void) {
+  var result = input
+  let original = input
+  result = input + 1
+
+  consume(original, input)
+}
+
+// MARK: - Проверка соединяется с подготовкой и отделяется от производного объявления
+func run(input: Int, sink: (Int) -> Void) {
+  let value = input
+
+  XCTAssertEqual(value, input)
+  let next = abs(value)
+  sink(next)
+}
+
+/// Output
+func run(input: Int, sink: (Int) -> Void) {
+  let value = input
+  XCTAssertEqual(value, input)
+
+  let next = abs(value)
+  sink(next)
+}
+
+// MARK: - Вызов соединяется с подготовкой и отделяется от производного объявления
+func run(input: Int, sink: (Int) -> Void, consume: (Int, Int) -> Void) {
+  let value = input
+
+  consume(value, input)
+  let next = abs(value)
+  sink(next)
+}
+
+/// Output
+func run(input: Int, sink: (Int) -> Void, consume: (Int, Int) -> Void) {
+  let value = input
+  consume(value, input)
+
+  let next = abs(value)
+  sink(next)
+}
+
+// MARK: - Присваивание и связанная проверка образуют пару
+func run(input: Int) {
+  var result = input
+
+  XCTAssertEqual(result, input)
+  result = input + 1
+
+  XCTAssertEqual(result, input + 1)
+}
+
+/// Output
+func run(input: Int) {
+  var result = input
+  XCTAssertEqual(result, input)
+
+  result = input + 1
+  XCTAssertEqual(result, input + 1)
+}
+
+// MARK: - Присваивание и связанный вызов образуют пару
+func run(input: Int, consume: (Int, Int) -> Void) {
+  var result = input
+
+  consume(result, input)
+  result = input + 1
+
+  consume(result, input + 1)
+}
+
+/// Output
+func run(input: Int, consume: (Int, Int) -> Void) {
+  var result = input
+  consume(result, input)
+
+  result = input + 1
+  consume(result, input + 1)
+}
+
+// MARK: - Проверки результата составного присваивания соединяются с подготовкой
+
+func run(input: Int) {
+  var result = input
+  result += 1
+
+  XCTAssertGreaterThan(result, input)
+  XCTAssertEqual(result, input + 1)
+}
+
+/// Output
+
+func run(input: Int) {
+  var result = input
+  result += 1
+  XCTAssertGreaterThan(result, input)
+  XCTAssertEqual(result, input + 1)
+}
+
+// MARK: - Вызовы с результатом составного присваивания соединяются с подготовкой
+
+func run(input: Int, consume: (Int, Int) -> Void) {
+  var result = input
+  result += 1
+
+  consume(result, input)
+  consume(result, input + 1)
+}
+
+/// Output
+
+func run(input: Int, consume: (Int, Int) -> Void) {
+  var result = input
+  result += 1
+  consume(result, input)
+  consume(result, input + 1)
+}
+
+// MARK: - Объявление и связанный макрос expect образуют пару
+func run(input: Int) {
+  let first = input + 1
+
+  #expect(first > input)
+  let second = input + 2
+
+  #expect(second > input)
+}
+
+/// Output
+func run(input: Int) {
+  let first = input + 1
+  #expect(first > input)
+
+  let second = input + 2
+  #expect(second > input)
+}
+
+// MARK: - Независимое объявление и связанный вызов образуют пару
+func run(input: Int, consume: (Bool) -> Void) {
+  let first = input + 1
+
+  consume(first > input)
+  let second = input + 2
+
+  consume(second > input)
+}
+
+/// Output
+func run(input: Int, consume: (Bool) -> Void) {
+  let first = input + 1
+  consume(first > input)
+
+  let second = input + 2
+  consume(second > input)
+}
+
+// MARK: - Серия проверок с вызываемым замыканием отделяется от подготовки
+func run(input: Int) {
+  let result = input
+  XCTAssertTrue({ result == input }())
+  XCTAssertEqual(result, input)
+  XCTAssertGreaterThanOrEqual(result, Int.min)
+}
+
+/// Output
+func run(input: Int) {
+  let result = input
+
+  XCTAssertTrue({ result == input }())
+  XCTAssertEqual(result, input)
+  XCTAssertGreaterThanOrEqual(result, Int.min)
+}
+
+// MARK: - Серия обычных вызовов с вызываемым замыканием отделяется от подготовки
+func run(input: Int, consume: (Bool) -> Void, compare: (Int, Int) -> Void) {
+  let result = input
+  consume({ result == input }())
+  compare(result, input)
+  compare(result, Int.min)
+}
+
+/// Output
+func run(input: Int, consume: (Bool) -> Void, compare: (Int, Int) -> Void) {
+  let result = input
+
+  consume({ result == input }())
+  compare(result, input)
+  compare(result, Int.min)
+}
+
+// MARK: - Лишние пустые строки между многострочной подготовкой и проверками
+enum LayoutTest {
+
+  static func verify(_ pages: [[Int]]) {
+    let layout = pages
+      .flatMap { $0 }
+      .prefix(
+        2
+      )
+
+
+    XCTAssertEqual(layout.count, 2)
+    XCTAssertEqual(layout.first, 1)
+    XCTAssertEqual(layout.last, 2)
+  }
+}
+
+/// Output
+enum LayoutTest {
+
+  static func verify(_ pages: [[Int]]) {
+    let layout = pages
+      .flatMap { $0 }
+      .prefix(
+        2
+      )
+
+    XCTAssertEqual(layout.count, 2)
+    XCTAssertEqual(layout.first, 1)
+    XCTAssertEqual(layout.last, 2)
+  }
+}
+
+// MARK: - Лишние пустые строки между многострочной подготовкой и вызовами
+enum LayoutTest {
+
+  static func verify(_ pages: [[Int]], consume: (Int?, Int?) -> Void) {
+    let layout = pages
+      .flatMap { $0 }
+      .prefix(
+        2
+      )
+
+
+    consume(layout.count, 2)
+    consume(layout.first, 1)
+    consume(layout.last, 2)
+  }
+}
+
+/// Output
+enum LayoutTest {
+
+  static func verify(_ pages: [[Int]], consume: (Int?, Int?) -> Void) {
+    let layout = pages
+      .flatMap { $0 }
+      .prefix(
+        2
+      )
+
+    consume(layout.count, 2)
+    consume(layout.first, 1)
+    consume(layout.last, 2)
+  }
+}
+
+// MARK: - Подготовка значений отделяется от серии expect
+func run(input: Int, other: Int, sink: (Int) -> Void) {
+  let first = input
+  let second = other
+  #expect(first > 0)
+  #expect(second > 0)
+}
+
+/// Output
+func run(input: Int, other: Int, sink: (Int) -> Void) {
+  let first = input
+  let second = other
+
+  #expect(first > 0)
+  #expect(second > 0)
 }

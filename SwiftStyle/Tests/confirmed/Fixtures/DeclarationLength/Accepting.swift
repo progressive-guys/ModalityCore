@@ -1,4 +1,4 @@
-// MARK: - Case AlreadyOrderedMemberwiseStruct
+// MARK: - Свойства структуры уже упорядочены
 struct Pair {
 
   let x: Int
@@ -9,26 +9,26 @@ func makePair() -> Pair {
   Pair(x: 1, longerName: 2)
 }
 
-// MARK: - Case EnumCasesKeepTheirOrder
+// MARK: - Порядок вариантов перечисления сохраняется
 enum Code: Int, CaseIterable {
 
   case longerName
   case x
 }
 
-// MARK: - Case LocalStatementsStayInOrder
+// MARK: - Порядок локальных инструкций сохраняется
 func value() -> Int {
   let longerName = 1
   let x = 2
   return longerName + x
 }
 
-// MARK: - Case ParametersKeepTheirOrder
+// MARK: - Порядок параметров сохраняется
 func sum(longerName: Int, x: Int) -> Int {
   longerName + x
 }
 
-// MARK: - Case StableEqualLengths
+// MARK: - Объявления одинаковой длины сохраняют порядок
 private protocol Values {
 
   var z: Int { get }

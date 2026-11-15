@@ -1,4 +1,4 @@
-// MARK: - Case ActionAndDefer
+// MARK: - Действие и его отложенная отмена остаются вместе
 func update(_ active: inout Bool) {
   active = true
   defer { active = false }
@@ -7,7 +7,7 @@ func update(_ active: inout Bool) {
   print(value)
 }
 
-// MARK: - Case CallSeparatesAssignments
+// MARK: - Вызов разделяет группы присваиваний
 func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)) {
   state.first = 1
   state.second = 2
@@ -18,7 +18,7 @@ func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)
   state.fourth = 4
 }
 
-// MARK: - Case ClosureParameterShadowsLocal
+// MARK: - Параметр замыкания затеняет локальное значение
 func process(_ input: Int) {
   let value = input
 
@@ -29,7 +29,7 @@ func process(_ input: Int) {
   print(value)
 }
 
-// MARK: - Case CommentSeparatesAssignments
+// MARK: - Комментарий разделяет группы присваиваний
 func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)) {
   state.first = 1
   state.second = 2
@@ -39,7 +39,7 @@ func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int)
   state.fourth = 4
 }
 
-// MARK: - Case ConditionalCompilationBarrier
+// MARK: - Условная компиляция разделяет группы инструкций
 func process(_ input: Int) {
   let value = input
 
@@ -51,7 +51,7 @@ func process(_ input: Int) {
   print(value + 1)
 }
 
-// MARK: - Case DifferentReceiversRemainAdjacent
+// MARK: - Вызовы разных объектов идут подряд
 func update(_ input: Int, first: inout [Int], second: inout [Int]) {
   let value = input
   first.append(value)
@@ -59,7 +59,7 @@ func update(_ input: Int, first: inout [Int], second: inout [Int]) {
   first.sort()
 }
 
-// MARK: - Case FirstActionDoesNotReadLocal
+// MARK: - Первое действие не читает подготовленное значение
 func update(_ input: Int, values: inout [Int]) {
   let value = input
 
@@ -68,7 +68,7 @@ func update(_ input: Int, values: inout [Int]) {
   values.sort()
 }
 
-// MARK: - Case ForPatternShadowsLocal
+// MARK: - Переменная цикла for затеняет локальное значение
 func process(_ input: Int, values: [Int]) {
   let value = input
 
@@ -79,7 +79,7 @@ func process(_ input: Int, values: [Int]) {
   print(value)
 }
 
-// MARK: - Case IfBodyReadsTwoPreparationGroups
+// MARK: - Тело if читает значения двух подготовленных групп
 func check(_ enabled: Bool, _ values: [Int]) {
   let first = values.first ?? 0
   print(first)
@@ -91,7 +91,7 @@ func check(_ enabled: Bool, _ values: [Int]) {
   }
 }
 
-// MARK: - Case ImplicitCatchShadowsError
+// MARK: - Неявная ошибка catch затеняет внешнее значение
 
 func process(_ input: Int) {
   let error = input
@@ -105,7 +105,7 @@ func process(_ input: Int) {
   print(error)
 }
 
-// MARK: - Case LoopAccumulatesPreparedLocal
+// MARK: - Цикл заполняет подготовленную коллекцию
 func run(input: [Int]) -> [Int] {
   var result: [Int] = []
   for value in input {
@@ -114,7 +114,7 @@ func run(input: [Int]) -> [Int] {
   return result
 }
 
-// MARK: - Case MultilineAssignmentBoundary
+// MARK: - Многострочное присваивание разделяет группы
 enum Examples {
 
   static func configure(_ state: inout (first: Int, second: Int, third: Int, fourth: Int), input: Int) {
@@ -130,7 +130,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case MultilineExpressionsZeroGap
+// MARK: - Связанные многострочные выражения без пустой строки
 func process(_ input: Int) {
   let value = max(
     input,
@@ -142,7 +142,7 @@ func process(_ input: Int) {
   )
 }
 
-// MARK: - Case NestedDeclarationShadows
+// MARK: - Вложенное объявление затеняет внешнее значение
 func process(_ input: Int, enabled: Bool) {
   let value = input
 
@@ -154,7 +154,7 @@ func process(_ input: Int, enabled: Bool) {
   print(value)
 }
 
-// MARK: - Case OldLocalAfterGuardBarrier
+// MARK: - Использование прежнего значения после разделяющего guard
 enum Examples {
 
   static func update(_ input: Int, active: inout Bool, offset: inout Int, notify: (Int) -> Void) {
@@ -168,7 +168,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case RepeatConditionBindingScope
+// MARK: - Условие repeat читает внешнее значение, а тело объявляет одноимённое локальное
 func process(_ input: Int) {
   let value = input
 
@@ -180,7 +180,7 @@ func process(_ input: Int) {
   print(value)
 }
 
-// MARK: - Case SwitchExpressionReadsPreparedLocal
+// MARK: - Выражение switch читает подготовленное значение
 func label(_ kind: Int, center: Int) -> String {
   let angle = center + 90
   let text = switch kind {
@@ -190,7 +190,7 @@ func label(_ kind: Int, center: Int) -> String {
   return text
 }
 
-// MARK: - Case SwitchPatternShadowsLocal
+// MARK: - Шаблон switch затеняет локальное значение
 func process(_ input: Int, alternative: Int?) {
   let value = input
 

@@ -1,4 +1,4 @@
-// MARK: - Case DocCommentBelongsToProperty
+// MARK: - Комментарий документации относится к своему свойству
 struct DocCommentBelongsToProperty {
 
   var a = 1
@@ -7,7 +7,7 @@ struct DocCommentBelongsToProperty {
   var b = 2
 }
 
-// MARK: - Case ObserverIsStored
+// MARK: - Свойство с наблюдателями считается хранимым
 struct StoredPropertyObserver {
 
   var x = 1 {

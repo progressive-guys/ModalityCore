@@ -1,12 +1,11 @@
-// MARK: - Case ConstantGetsEmptyInitializer
-// MARK: Input
+// MARK: - Свойство View становится private; добавляется пустой инициализатор
 
 struct InitializedConstant: View {
   let title = "value"
   var body: some View { Text(title) }
 }
 
-// MARK: Output
+/// Output
 
 struct InitializedConstant: View {
 
@@ -18,15 +17,14 @@ struct InitializedConstant: View {
   var body: some View { Text(title) }
 }
 
-// MARK: - Case DefaultInputInitializer
-// MARK: Input
+// MARK: - Свойство View становится private; значение по умолчанию переносится в инициализатор
 
 struct Defaults: View {
   var value: Int = 1
   var body: some View { Text(String(value)) }
 }
 
-// MARK: Output
+/// Output
 
 struct Defaults: View {
 
@@ -39,8 +37,7 @@ struct Defaults: View {
   var body: some View { Text(String(value)) }
 }
 
-// MARK: - Case EscapingClosureInitializer
-// MARK: Input
+// MARK: - Свойство-замыкание View становится private; добавляется инициализатор с escaping
 
 struct Content: View {
   let action: () -> Int
@@ -50,7 +47,7 @@ struct Content: View {
 @MainActor
 func makeContent() -> Content { Content(action: { 3 }) }
 
-// MARK: Output
+/// Output
 
 struct Content: View {
 
@@ -66,8 +63,7 @@ struct Content: View {
 @MainActor
 func makeContent() -> Content { Content(action: { 3 }) }
 
-// MARK: - Case ExistingInitializer
-// MARK: Input
+// MARK: - Свойства View становятся private; существующий инициализатор сохраняется
 
 struct ExplicitInitializer: View {
   let title: String
@@ -81,7 +77,7 @@ struct ExplicitInitializer: View {
   }
 }
 
-// MARK: Output
+/// Output
 
 struct ExplicitInitializer: View {
 
@@ -98,8 +94,7 @@ struct ExplicitInitializer: View {
   var body: some View { Text(title) }
 }
 
-// MARK: - Case GeneratedBindingInitializer
-// MARK: Input
+// MARK: - Входы View становятся private; инициализатор принимает Binding и сохраняет Environment и State
 
 struct GeneratedInitializer: SwiftUI.View {
   let title: String
@@ -109,7 +104,7 @@ struct GeneratedInitializer: SwiftUI.View {
   var body: some View { Text(title) }
 }
 
-// MARK: Output
+/// Output
 
 struct GeneratedInitializer: SwiftUI.View {
 

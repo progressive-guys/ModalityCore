@@ -1,5 +1,4 @@
-// MARK: - Case AfterMultilineGuard
-// MARK: Input
+// MARK: - Пустая строка после многострочного guard
 func process(_ input: Int?) {
   guard
     let value = input
@@ -7,7 +6,7 @@ func process(_ input: Int?) {
   print(value)
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int?) {
   guard
     let value = input
@@ -16,8 +15,7 @@ func process(_ input: Int?) {
   print(value)
 }
 
-// MARK: - Case LongBodyAfterInlineGuard
-// MARK: Input
+// MARK: - В теле из четырёх инструкций guard отделяется пустой строкой
 func value(_ first: Bool) -> Int {
   guard first else { return 0 }
   print(first)
@@ -26,7 +24,7 @@ func value(_ first: Bool) -> Int {
   return 1
 }
 
-// MARK: Output
+/// Output
 func value(_ first: Bool) -> Int {
   guard first else { return 0 }
 
@@ -36,8 +34,7 @@ func value(_ first: Bool) -> Int {
   return 1
 }
 
-// MARK: - Case MultilineThenInlineGuard
-// MARK: Input
+// MARK: - Между многострочным и однострочным guard добавляется пустая строка
 func process(_ input: Int?) {
   guard
     let value = input
@@ -46,7 +43,7 @@ func process(_ input: Int?) {
   print(value)
 }
 
-// MARK: Output
+/// Output
 func process(_ input: Int?) {
   guard
     let value = input
@@ -56,8 +53,7 @@ func process(_ input: Int?) {
   print(value)
 }
 
-// MARK: - Case ShortBodyAfterInlineGuard
-// MARK: Input
+// MARK: - В теле из трёх инструкций пустая строка после guard удаляется
 func value(_ ready: Bool) -> Int {
   guard ready else { return 0 }
 
@@ -65,7 +61,7 @@ func value(_ ready: Bool) -> Int {
   return 1
 }
 
-// MARK: Output
+/// Output
 func value(_ ready: Bool) -> Int {
   guard ready else { return 0 }
   print(ready)

@@ -1,4 +1,4 @@
-// MARK: - Case CommentBetweenReceiverAndSuffix
+// MARK: - Комментарий между объектом и продолжением цепочки
 enum Examples {
 
   static func values() -> [Int] {
@@ -13,7 +13,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case IndentedArgumentsAfterChain
+// MARK: - Отступ аргументов после цепочки вызовов
 enum Examples {
 
   static func value(_ values: [Int], _ value: Int) -> Bool {
@@ -24,7 +24,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case IndentedClosureAfterChain
+// MARK: - Отступ замыкания после цепочки вызовов
 enum Examples {
 
   static func value(_ values: [Int]) -> [Int] {

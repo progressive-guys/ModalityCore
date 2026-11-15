@@ -1,5 +1,4 @@
-// MARK: - Case AdditiveTermAfterDivision
-// MARK: Input
+// MARK: - Деление соединяется на одной строке, следующее сложение переносится
 enum Examples {
 
   static func laterAdditiveTerm(_ first: Double, _ second: Double) -> Double {
@@ -9,7 +8,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func laterAdditiveTerm(_ first: Double, _ second: Double) -> Double {
@@ -19,8 +18,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case AdditiveTermAfterRemainder
-// MARK: Input
+// MARK: - Вычисление остатка соединяется на одной строке, следующее сложение переносится
 enum Examples {
 
   static func splitRemainder(_ first: Int, _ second: Int) -> Int {
@@ -30,7 +28,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func splitRemainder(_ first: Int, _ second: Int) -> Int {
@@ -40,8 +38,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ArithmeticInsideCompoundAssignment
-// MARK: Input
+// MARK: - Правая часть составного присваивания сокращается до одной строки
 func compound(_ first: Int, _ second: Int) -> Int {
   var value = first
   value += first +
@@ -49,15 +46,14 @@ func compound(_ first: Int, _ second: Int) -> Int {
   return value
 }
 
-// MARK: Output
+/// Output
 func compound(_ first: Int, _ second: Int) -> Int {
   var value = first
   value += first + second
   return value
 }
 
-// MARK: - Case BooleanChainWrapsAllTerms
-// MARK: Input
+// MARK: - Все части логической цепочки переносятся вместе
 enum Examples {
   static func value(_ first: Bool, _ second: Bool, _ third: Bool) -> Bool {
     first && second
@@ -65,7 +61,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ first: Bool, _ second: Bool, _ third: Bool) -> Bool {
@@ -75,8 +71,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ComparisonBeforeMultilineArray
-// MARK: Input
+// MARK: - Сравнение с многострочным массивом начинается на новой строке
 enum Example {
 
   static func checkValues() {
@@ -89,7 +84,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func checkValues() {
@@ -103,21 +98,19 @@ enum Example {
   }
 }
 
-// MARK: - Case ComparisonStartsContinuation
-// MARK: Input
+// MARK: - Оператор сравнения начинает строку продолжения
 func comparison(_ first: Int, _ second: Int) -> Bool {
   first ==
     second
 }
 
-// MARK: Output
+/// Output
 func comparison(_ first: Int, _ second: Int) -> Bool {
   first
     == second
 }
 
-// MARK: - Case CustomOperatorStartsContinuation
-// MARK: Input
+// MARK: - Пользовательский оператор начинает строку продолжения
 infix operator <+>: AdditionPrecedence
 
 struct Value {
@@ -133,7 +126,7 @@ func combine(_ first: Value, _ second: Value) -> Value {
     second
 }
 
-// MARK: Output
+/// Output
 infix operator <+>: AdditionPrecedence
 
 struct Value {
@@ -150,8 +143,7 @@ func combine(_ first: Value, _ second: Value) -> Value {
     <+> second
 }
 
-// MARK: - Case DivisionAfterCollapsedArgument
-// MARK: Input
+// MARK: - Деление после сокращённого аргумента вызова
 enum Operands {
   struct Item {
     let value: Int
@@ -171,7 +163,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Operands {
 
   struct Item {
@@ -192,8 +184,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case ExpandedConversionBecomesSingleLine
-// MARK: Input
+// MARK: - Многострочное преобразование сокращается до одной строки
 enum Operands {
   struct Item {
     let value: Int
@@ -214,7 +205,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Operands {
 
   struct Item {
@@ -234,8 +225,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case GroupedDifferenceBeforeDivision
-// MARK: Input
+// MARK: - Разность в скобках соединяется на одной строке, деление переносится
 enum Examples {
 
   static func wrongIndent(_ first: Double, _ second: Double) -> Double {
@@ -245,7 +235,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func wrongIndent(_ first: Double, _ second: Double) -> Double {
@@ -255,33 +245,30 @@ enum Examples {
   }
 }
 
-// MARK: - Case IsolatedAdditionCompacts
-// MARK: Input
+// MARK: - Отдельное сложение сокращается до одной строки
 func value(_ first: Int, _ second: Int) -> Int {
   first
     +
     second
 }
 
-// MARK: Output
+/// Output
 func value(_ first: Int, _ second: Int) -> Int {
   first + second
 }
 
-// MARK: - Case LeadingAdditionCompacts
-// MARK: Input
+// MARK: - Сложение с оператором в начале продолжения сокращается до одной строки
 func shortExpression(_ first: Double, _ second: Double) -> Double {
   first
     + second
 }
 
-// MARK: Output
+/// Output
 func shortExpression(_ first: Double, _ second: Double) -> Double {
   first + second
 }
 
-// MARK: - Case LongNilCoalescingWraps
-// MARK: Input
+// MARK: - Длинное выражение с оператором ?? переносится
 enum Examples {
   static func value(_ input: Int?,
     _ fallback: Int) -> Int {
@@ -290,7 +277,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ input: Int?,
@@ -301,34 +288,31 @@ enum Examples {
   }
 }
 
-// MARK: - Case MixedAdditiveBreaksCompact
-// MARK: Input
+// MARK: - Лишние переносы сложения и вычитания удаляются
 func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
   first +
     second
     - third
 }
 
-// MARK: Output
+/// Output
 func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
   first + second - third
 }
 
-// MARK: - Case MixedMultiplicativeBreaksCompact
-// MARK: Input
+// MARK: - Лишние переносы умножения и деления удаляются
 func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
   first *
     second
     / third
 }
 
-// MARK: Output
+/// Output
 func value(_ first: Int, _ second: Int, _ third: Int) -> Int {
   first * second / third
 }
 
-// MARK: - Case MultiplicationWithinAdditiveChain
-// MARK: Input
+// MARK: - Переносы проходят по сложению и вычитанию, сохраняя произведение целиком
 enum Examples {
 
   static func splitProduct(_ first: Double, _ second: Double, _ third: Double, _ fourth: Double) -> Double {
@@ -338,7 +322,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func splitProduct(_ first: Double, _ second: Double, _ third: Double, _ fourth: Double) -> Double {
@@ -349,8 +333,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case NilCoalescingChainWrapsAllTerms
-// MARK: Input
+// MARK: - Все части цепочки ?? переносятся вместе
 enum Examples {
   static func value(_ first: Int?, _ second: Int?, _ third: Int) -> Int {
     first ?? second
@@ -358,7 +341,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ first: Int?, _ second: Int?, _ third: Int) -> Int {
@@ -368,21 +351,19 @@ enum Examples {
   }
 }
 
-// MARK: - Case NilCoalescingStartsContinuation
-// MARK: Input
+// MARK: - Оператор ?? начинает строку продолжения
 func fallback(_ first: Int?, _ second: Int) -> Int {
   first ??
     second
 }
 
-// MARK: Output
+/// Output
 func fallback(_ first: Int?, _ second: Int) -> Int {
   first
     ?? second
 }
 
-// MARK: - Case NilCoalescingWithMemberOperand
-// MARK: Input
+// MARK: - Оператор ?? переносится перед обращением к свойству
 enum Examples {
   static func value(_ first: Int?, _ second: (value: Int, other: Bool)) -> Int {
     first ??
@@ -390,7 +371,7 @@ enum Examples {
   }
 }
 
-// MARK: Output
+/// Output
 enum Examples {
 
   static func value(_ first: Int?, _ second: (value: Int, other: Bool)) -> Int {
@@ -399,33 +380,30 @@ enum Examples {
   }
 }
 
-// MARK: - Case PartlyWrappedAdditiveChainCompacts
-// MARK: Input
+// MARK: - Частично перенесённая сумма сокращается до одной строки
 func partialLeading(_ first: Int, _ second: Int, _ third: Int) -> Int {
   first + second
     - third
 }
 
-// MARK: Output
+/// Output
 func partialLeading(_ first: Int, _ second: Int, _ third: Int) -> Int {
   first + second - third
 }
 
-// MARK: - Case RangeStartsContinuation
-// MARK: Input
+// MARK: - Оператор диапазона начинает строку продолжения
 func range(_ first: Int, _ second: Int) -> ClosedRange<Int> {
   first ...
     second
 }
 
-// MARK: Output
+/// Output
 func range(_ first: Int, _ second: Int) -> ClosedRange<Int> {
   first
     ... second
 }
 
-// MARK: - Case RightConversionCollapsesBeforeDivision
-// MARK: Input
+// MARK: - Преобразование делителя сокращается, оператор деления переносится
 enum Example {
 
   static func fraction(_ pitch: Int, _ referencePitch: Int, _ octaveSubdivisions: Int) -> Double {
@@ -436,7 +414,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 enum Example {
 
   static func fraction(_ pitch: Int, _ referencePitch: Int, _ octaveSubdivisions: Int) -> Double {
@@ -446,39 +424,36 @@ enum Example {
   }
 }
 
-// MARK: - Case ShortArithmeticInsideConversion
-// MARK: Input
+// MARK: - Арифметика внутри преобразования типа сокращается до одной строки
 func shortConversion(_ first: Int, _ second: Int) -> Double {
   Double(first -
     second) / 12
 }
 
-// MARK: Output
+/// Output
 func shortConversion(_ first: Int, _ second: Int) -> Double {
   Double(first - second) / 12
 }
 
-// MARK: - Case ShortRightCallCompacts
-// MARK: Input
+// MARK: - Короткий вызов справа сокращается до одной строки
 func sum(_ first: Int, _ second: Int) -> Int {
   first + abs(
     second
   )
 }
 
-// MARK: Output
+/// Output
 func sum(_ first: Int, _ second: Int) -> Int {
   first + abs(second)
 }
 
-// MARK: - Case TrailingAdditionCompacts
-// MARK: Input
+// MARK: - Сложение с оператором в конце строки сокращается до одной строки
 func trailing(_ first: Int, _ second: Int) -> Int {
   first +
     second
 }
 
-// MARK: Output
+/// Output
 func trailing(_ first: Int, _ second: Int) -> Int {
   first + second
 }

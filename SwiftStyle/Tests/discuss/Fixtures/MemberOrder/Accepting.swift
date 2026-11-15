@@ -1,4 +1,4 @@
-// MARK: - Case ClosureValuedStorage
+// MARK: - Хранимое свойство со значением-замыканием
 final class Values {
 
   var callback: () -> Int = { 1 }
@@ -6,7 +6,7 @@ final class Values {
   init() {}
 }
 
-// MARK: - Case LazyStoredProperty
+// MARK: - Ленивое хранимое свойство
 final class Values {
 
   lazy var cached = 1

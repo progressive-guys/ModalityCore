@@ -1,12 +1,11 @@
-// MARK: - Case MixedConditionLines
-// MARK: Input
+// MARK: - Условия if разделяются по строкам, скобка тела переносится отдельно
 func matches(_ first: Bool, _ second: Bool, _ third: Bool) -> Bool {
   if first, second,
     third { return true }
   return false
 }
 
-// MARK: Output
+/// Output
 func matches(_ first: Bool, _ second: Bool, _ third: Bool) -> Bool {
   if first,
      second,

@@ -1,5 +1,4 @@
-// MARK: - Case AccessorPropertyAttributeStack
-// MARK: Input
+// MARK: - Аннотации свойства с get и set переносятся на отдельные строки
 struct Example {
   @MainActor @available(*, deprecated) var value: Int {
     get { 0 }
@@ -7,7 +6,7 @@ struct Example {
   }
 }
 
-// MARK: Output
+/// Output
 struct Example {
 
   @MainActor
@@ -18,14 +17,13 @@ struct Example {
   }
 }
 
-// MARK: - Case AvailabilityBeforeInlineObjC
-// MARK: Input
+// MARK: - Available и objc перед функцией переносятся на отдельные строки
 
 final class Example: NSObject {
   @available(*, deprecated) @objc(value:) func value(_ input: Int) -> Int { input }
 }
 
-// MARK: Output
+/// Output
 
 final class Example: NSObject {
   
@@ -34,14 +32,13 @@ final class Example: NSObject {
   func value(_ input: Int) -> Int { input }
 }
 
-// MARK: - Case AvailabilityBeforeInlineWrapper
-// MARK: Input
+// MARK: - Available и Published перед свойством переносятся на отдельные строки
 
 final class Example {
   @available(*, deprecated) @Published var value = 0
 }
 
-// MARK: Output
+/// Output
 
 final class Example {
 
@@ -50,14 +47,13 @@ final class Example {
   var value = 0
 }
 
-// MARK: - Case AvailabilityBeforeMultipleInlineAttributes
-// MARK: Input
+// MARK: - Available и objc переносятся, concurrent остаётся на строке функции
 
 final class Example: NSObject {
   @available(*, deprecated) @objc @concurrent func compute(_ input: Int) async -> Int { input }
 }
 
-// MARK: Output
+/// Output
 
 final class Example: NSObject {
   
@@ -66,15 +62,14 @@ final class Example: NSObject {
   @concurrent func compute(_ input: Int) async -> Int { input }
 }
 
-// MARK: - Case AvailabilityBetweenComputedProperties
-// MARK: Input
+// MARK: - Длинная аннотация available переносится над вычисляемым свойством
 class Neighbors {
   var before: Int { 0 }
   @available(*, deprecated, message: "This message makes the complete computed property declaration exceed the line limit.") var value: Int { 0 }
   var after: Int { 0 }
 }
 
-// MARK: Output
+/// Output
 class Neighbors {
 
   var before: Int { 0 }
@@ -85,14 +80,13 @@ class Neighbors {
   var after: Int { 0 }
 }
 
-// MARK: - Case CommentsStayWithAttributes
-// MARK: Input
+// MARK: - Комментарии остаются рядом со своими аннотациями
 struct Example {
   @MainActor /* Actor isolation. */ @available(*, deprecated, message: "Use another property.") // Availability.
   var value: Int { 0 }
 }
 
-// MARK: Output
+/// Output
 struct Example {
   
   @MainActor /* Actor isolation. */
@@ -100,13 +94,12 @@ struct Example {
   var value: Int { 0 }
 }
 
-// MARK: - Case ComputedPropertyAttributeStack
-// MARK: Input
+// MARK: - Аннотации вычисляемого свойства переносятся на отдельные строки
 final class Example {
   @MainActor @available(*, deprecated) var value: Int { 0 }
 }
 
-// MARK: Output
+/// Output
 final class Example {
 
   @MainActor
@@ -114,40 +107,37 @@ final class Example {
   var value: Int { 0 }
 }
 
-// MARK: - Case ComputedPropertyAvailabilityOnSeparateLine
-// MARK: Input
+// MARK: - Аннотация available над вычисляемым свойством
 final class Example {
   @available(*, deprecated) var value: Int { 0 }
 }
 
-// MARK: Output
+/// Output
 final class Example {
 
   @available(*, deprecated)
   var value: Int { 0 }
 }
 
-// MARK: - Case ConcurrentAttributeAtInlineLimit
-// MARK: Input
+// MARK: - Concurrent соединяется с функцией, пока строка помещается в лимит
 final class ConcurrentExample {
   @concurrent
   func calculateValue(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
 }
 
-// MARK: Output
+/// Output
 final class ConcurrentExample {
   @concurrent func calculateValue(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> Int { first }
 }
 
-// MARK: - Case ConcurrentAttributeOverInlineLimit
-// MARK: Input
+// MARK: - Аннотация concurrent переносится над многострочной функцией
 final class ConcurrentExample {
   @concurrent func calculateValues(_ first: Int, second: Int, third: Int, fourth: Int, fifth: Int) async -> LongType {
     first
   }
 }
 
-// MARK: Output
+/// Output
 final class ConcurrentExample {
 
   @concurrent
@@ -156,8 +146,7 @@ final class ConcurrentExample {
   }
 }
 
-// MARK: - Case ConditionalComputedPropertyAttributes
-// MARK: Input
+// MARK: - Аннотации вычисляемого свойства разделяются внутри веток условной компиляции
 struct Example {
   #if os(macOS)
   @MainActor @available(*, deprecated)
@@ -167,7 +156,7 @@ struct Example {
   var value: Int { 0 }
 }
 
-// MARK: Output
+/// Output
 struct Example {
 
   #if os(macOS)
@@ -180,8 +169,7 @@ struct Example {
   var value: Int { 0 }
 }
 
-// MARK: - Case ConditionalStoredPropertyAttributes
-// MARK: Input
+// MARK: - Аннотации хранимого свойства разделяются внутри условной компиляции
 final class Example {
   #if os(macOS)
   @available(*, deprecated) @MainActor
@@ -189,7 +177,7 @@ final class Example {
   var value = 0
 }
 
-// MARK: Output
+/// Output
 final class Example {
 
   #if os(macOS)
@@ -199,15 +187,14 @@ final class Example {
   var value = 0
 }
 
-// MARK: - Case FunctionAttributePreservesTypeAttributes
-// MARK: Input
+// MARK: - Аннотация функции переносится, аннотации типов сохраняются
 final class Example {
   @available(*, deprecated) func action(_ body: @escaping @Sendable () -> Void) -> @Sendable () -> Void {
     body
   }
 }
 
-// MARK: Output
+/// Output
 final class Example {
 
   @available(*, deprecated)
@@ -216,8 +203,7 @@ final class Example {
   }
 }
 
-// MARK: - Case GapBeforeStandalonePropertyAttribute
-// MARK: Input
+// MARK: - Пустая строка перед отдельной аннотацией свойства
 
 struct Example {
   var appearance: NSAppearance.Name { .aqua }
@@ -225,7 +211,7 @@ struct Example {
   var background: NSColor { .black }
 }
 
-// MARK: Output
+/// Output
 
 struct Example {
   
@@ -235,8 +221,7 @@ struct Example {
   var background: NSColor { .black }
 }
 
-// MARK: - Case GroupStoredAttributeKinds
-// MARK: Input
+// MARK: - Группировка хранимых свойств по видам аннотаций
 
 class Example {
   @Published private var settingsTitle: String = "Settings"
@@ -246,7 +231,7 @@ class Example {
   @Published private var label: String = "Label"
 }
 
-// MARK: Output
+/// Output
 
 class Example {
 
@@ -261,29 +246,26 @@ class Example {
   private var isSettingsPresented: Bool = false
 }
 
-// MARK: - Case ImportAttributeJoinsImport
-// MARK: Input
+// MARK: - Аннотация помещается на строке импорта
 @preconcurrency
 import Foundation
 
-// MARK: Output
+/// Output
 @preconcurrency import Foundation
 
-// MARK: - Case InitializerAvailabilityOnSeparateLine
-// MARK: Input
+// MARK: - Аннотация available над инициализатором
 final class Example {
   @available(*, deprecated) init() {}
 }
 
-// MARK: Output
+/// Output
 final class Example {
 
   @available(*, deprecated)
   init() {}
 }
 
-// MARK: - Case InlineAttributeLineComment
-// MARK: Input
+// MARK: - Аннотации разделяются, строчный комментарий остаётся при objc
 
 final class Example: NSObject {
 
@@ -291,7 +273,7 @@ final class Example: NSObject {
   func value() -> Int { 0 }
 }
 
-// MARK: Output
+/// Output
 
 final class Example: NSObject {
 
@@ -300,8 +282,7 @@ final class Example: NSObject {
   func value() -> Int { 0 }
 }
 
-// MARK: - Case MultilineAttributeArgumentsAndFollowingAttribute
-// MARK: Input
+// MARK: - После многострочной аннотации следующая аннотация и свойство переносятся
 struct Example {
   @available(
     *,
@@ -310,7 +291,7 @@ struct Example {
   ) @MainActor var value: Int { 0 }
 }
 
-// MARK: Output
+/// Output
 struct Example {
 
   @available(
@@ -322,15 +303,14 @@ struct Example {
   var value: Int { 0 }
 }
 
-// MARK: - Case ObjCAttributeAtInlineLimit
-// MARK: Input
+// MARK: - Аннотация objc остаётся над методом; добавляется пустая строка в начале типа
 
 final class ObjectiveCExample: NSObject {
   @objc(exportValueForConfiguredProject:defaultValue:)
   func export(_ projectIdentifier: String, defaultValue: String) {}
 }
 
-// MARK: Output
+/// Output
 
 final class ObjectiveCExample: NSObject {
 
@@ -338,14 +318,13 @@ final class ObjectiveCExample: NSObject {
   func export(_ projectIdentifier: String, defaultValue: String) {}
 }
 
-// MARK: - Case ObjCAttributeOverInlineLimit
-// MARK: Input
+// MARK: - Аннотация objc переносится над методом при превышении длины строки
 
 final class ObjectiveCExample: NSObject {
   @objc(exportValueForConfiguredProjects:defaultValue:) func export(_ projectIdentifier: String, defaultValue: String) {}
 }
 
-// MARK: Output
+/// Output
 
 final class ObjectiveCExample: NSObject {
 
@@ -353,14 +332,13 @@ final class ObjectiveCExample: NSObject {
   func export(_ projectIdentifier: String, defaultValue: String) {}
 }
 
-// MARK: - Case PreserveAttributeOrder
-// MARK: Input
+// MARK: - Аннотации переносятся на отдельные строки с сохранением порядка
 
 final class Example: NSObject {
   @objc @available(*, deprecated) func value() -> Int { 0 }
 }
 
-// MARK: Output
+/// Output
 
 final class Example: NSObject {
   
@@ -369,39 +347,36 @@ final class Example: NSObject {
   func value() -> Int { 0 }
 }
 
-// MARK: - Case ProtocolActorAtInlineLimit
-// MARK: Input
+// MARK: - MainActor соединяется с требованием протокола, если строка помещается в лимит
 protocol FitsLimit {
   @MainActor
   func loadTune(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
 }
 
-// MARK: Output
+/// Output
 protocol FitsLimit {
   @MainActor func loadTune(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
 }
 
-// MARK: - Case ProtocolActorOverInlineLimit
-// MARK: Input
+// MARK: - MainActor переносится над требованием протокола при превышении длины строки
 protocol ExceedsLimit {
   @MainActor func loadTrack(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
 }
 
-// MARK: Output
+/// Output
 protocol ExceedsLimit {
 
   @MainActor
   func loadTrack(_ identifier: String, includeMuted: Bool, useCache: Bool, includeArchived: Bool) async -> Int
 }
 
-// MARK: - Case ProtocolDeclarationAttributeStack
-// MARK: Input
+// MARK: - Аннотации протокола переносятся на отдельные строки
 @MainActor @available(*, deprecated) protocol Example {
   @available(*, deprecated)
   func value() -> Int
 }
 
-// MARK: Output
+/// Output
 @MainActor
 @available(*, deprecated)
 protocol Example {
@@ -410,8 +385,7 @@ protocol Example {
   func value() -> Int
 }
 
-// MARK: - Case ProtocolExtensionImplementationAttribute
-// MARK: Input
+// MARK: - Аннотация available переносится над реализацией метода в расширении
 protocol Example {
   func value() -> Int
 }
@@ -420,7 +394,7 @@ extension Example {
   @available(*, deprecated) func value() -> Int { 0 }
 }
 
-// MARK: Output
+/// Output
 protocol Example {
   func value() -> Int
 }
@@ -431,8 +405,7 @@ extension Example {
   func value() -> Int { 0 }
 }
 
-// MARK: - Case StoredAvailabilityMultilineArguments
-// MARK: Input
+// MARK: - После многострочной available объявление свойства переносится
 final class Example {
   @available(
     *,
@@ -441,7 +414,7 @@ final class Example {
   ) var value = 0
 }
 
-// MARK: Output
+/// Output
 final class Example {
 
   @available(
@@ -452,19 +425,17 @@ final class Example {
   var value = 0
 }
 
-// MARK: - Case TypeDeclarationAttributeStack
-// MARK: Input
+// MARK: - Аннотации класса переносятся на отдельные строки
 @MainActor @available(*, deprecated) final class Example {
 }
 
-// MARK: Output
+/// Output
 @MainActor
 @available(*, deprecated)
 final class Example {
 }
 
-// MARK: - Case ViewBuilderComputedPropertyStack
-// MARK: Input
+// MARK: - MainActor и ViewBuilder переносятся над вычисляемым свойством
 
 struct Example {
   @MainActor @ViewBuilder var rootView: some View {
@@ -472,7 +443,7 @@ struct Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 struct Example {
 

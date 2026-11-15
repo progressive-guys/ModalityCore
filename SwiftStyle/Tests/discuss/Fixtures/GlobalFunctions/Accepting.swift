@@ -1,7 +1,7 @@
-// MARK: - Case AllowedDebugFatalError
+// MARK: - Разрешённая глобальная функция debugFatalError
 func debugFatalError() {}
 
-// MARK: - Case LocalFunctionInExtension
+// MARK: - Локальная функция внутри расширения
 enum Examples {}
 
 extension Examples {
@@ -12,7 +12,7 @@ extension Examples {
   }
 }
 
-// MARK: - Case StaticMemberFunction
+// MARK: - Статическая функция внутри типа
 enum Examples {
   static func example() {}
 }

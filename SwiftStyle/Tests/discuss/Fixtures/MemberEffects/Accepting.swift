@@ -1,4 +1,4 @@
-// MARK: - Case AsyncRethrowingCategory
+// MARK: - Async throws и async rethrows остаются в одной группе
 struct Calls {
 
   func combined() async throws {}
@@ -7,7 +7,7 @@ struct Calls {
   }
 }
 
-// MARK: - Case TypedNeverStaysThrowingCategory
+// MARK: - Типизированный throws с Never остаётся в группе throws
 struct Calls {
 
   func fallible() throws {}

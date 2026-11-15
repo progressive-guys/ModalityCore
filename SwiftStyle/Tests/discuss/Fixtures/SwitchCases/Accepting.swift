@@ -1,4 +1,4 @@
-// MARK: - Case ContinuedPattern
+// MARK: - Многострочный шаблон варианта switch
 func header(_ value: Int) -> Int {
   switch value {
   case 0,
@@ -8,7 +8,7 @@ func header(_ value: Int) -> Int {
   }
 }
 
-// MARK: - Case TrailingLineComment
+// MARK: - Строчный комментарий после варианта switch
 func inlineComment(_ value: Int) -> Int {
   switch value {
   case 0: 0 // First value.
@@ -16,7 +16,7 @@ func inlineComment(_ value: Int) -> Int {
   }
 }
 
-// MARK: - Case TrailingMultilineComment
+// MARK: - Многострочный комментарий после варианта
 func blockComment(_ value: Int) -> Int {
   switch value {
   case 0: 0 /* First

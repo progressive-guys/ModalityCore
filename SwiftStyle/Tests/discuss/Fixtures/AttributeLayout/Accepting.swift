@@ -1,4 +1,4 @@
-// MARK: - Case CommentBetweenAttributeAndProperty
+// MARK: - Комментарий между аннотацией и свойством
 class Comments {
 
   @available(*, deprecated)
@@ -6,7 +6,7 @@ class Comments {
   var value: Int = 0
 }
 
-// MARK: - Case ConditionalProtocolPropertyAttributeStack
+// MARK: - Несколько аннотаций свойства протокола в условной компиляции
 protocol Example {
 
   #if os(macOS)
@@ -16,7 +16,7 @@ protocol Example {
   #endif
 }
 
-// MARK: - Case ObserverPropertyAttributeStack
+// MARK: - Несколько аннотаций свойства с наблюдателями
 final class Example {
 
   @MainActor
@@ -26,7 +26,7 @@ final class Example {
   }
 }
 
-// MARK: - Case ProtocolFunctionAttributeStack
+// MARK: - Несколько аннотаций метода протокола
 protocol Example {
 
   @MainActor
@@ -34,7 +34,7 @@ protocol Example {
   func read() -> Int
 }
 
-// MARK: - Case ProtocolInitializerAttributeStack
+// MARK: - Несколько аннотаций инициализатора протокола
 protocol Example {
 
   @MainActor
@@ -42,7 +42,7 @@ protocol Example {
   init()
 }
 
-// MARK: - Case ProtocolPropertyAttributeStack
+// MARK: - Несколько аннотаций свойства протокола
 protocol Example {
   
   @MainActor
@@ -50,7 +50,7 @@ protocol Example {
   var value: Int { get }
 }
 
-// MARK: - Case ProtocolSubscriptAttributeStack
+// MARK: - Несколько аннотаций индексатора протокола
 protocol Example {
   
   @MainActor
@@ -58,7 +58,7 @@ protocol Example {
   subscript(index: Int) -> Int { get }
 }
 
-// MARK: - Case StoredAvailabilityAlreadySeparate
+// MARK: - Аннотация available хранимого свойства уже на отдельной строке
 class Width120 {
 
   @available(*, deprecated, message: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")

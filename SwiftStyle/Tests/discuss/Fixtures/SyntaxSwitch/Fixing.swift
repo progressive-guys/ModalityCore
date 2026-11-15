@@ -1,5 +1,4 @@
-// MARK: - Case CaseWhere
-// MARK: Input
+// MARK: - Проверки SwiftSyntax превращаются в отдельные switch с условием where
 
 enum Example {
 
@@ -10,7 +9,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Example {
 
@@ -35,8 +34,7 @@ enum Example {
   }
 }
 
-// MARK: - Case LeadingComment
-// MARK: Input
+// MARK: - Проверки SwiftSyntax превращаются в отдельные switch, комментарий остаётся между ними
 
 enum Example {
 
@@ -48,7 +46,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Example {
 
@@ -74,8 +72,7 @@ enum Example {
   }
 }
 
-// MARK: - Case MixedSyntaxFamilies
-// MARK: Input
+// MARK: - Проверки разных семейств SwiftSyntax превращаются в отдельные switch
 
 enum Example {
 
@@ -86,7 +83,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Example {
 
@@ -111,8 +108,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ProjectedPayload
-// MARK: Input
+// MARK: - Отдельные switch сохраняют связанные значения SwiftSyntax и чтение их свойств
 
 enum Example {
 
@@ -124,7 +120,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Example {
 
@@ -157,8 +153,7 @@ enum Example {
   }
 }
 
-// MARK: - Case ThrowingPayloadBranch
-// MARK: Input
+// MARK: - Отдельные switch сохраняют throw при успешном приведении узла SwiftSyntax
 
 enum Example {
 
@@ -173,7 +168,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Example {
 
@@ -202,8 +197,7 @@ enum Example {
   }
 }
 
-// MARK: - Case TwoCasts
-// MARK: Input
+// MARK: - Два приведения SwiftSyntax превращаются в два отдельных switch
 
 enum Example {
 
@@ -214,7 +208,7 @@ enum Example {
   }
 }
 
-// MARK: Output
+/// Output
 
 enum Example {
 

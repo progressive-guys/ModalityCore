@@ -1,4 +1,4 @@
-// MARK: - Case ConditionsAroundBinding
+// MARK: - Дополнительные условия вокруг привязки типа
 
 enum Examples {
 
@@ -11,7 +11,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case FamilyProjection
+// MARK: - Проекция семейства типов SwiftSyntax
 
 enum Examples {
 
@@ -21,7 +21,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case OptionalReceiver
+// MARK: - Необязательный объект проверки типа
 
 enum Examples {
 
@@ -31,7 +31,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case OrdinaryBinding
+// MARK: - Обычная привязка значения
 enum Examples {
 
   static func optionalBinding(_ input: Int?) -> Int {
@@ -40,7 +40,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case QualifiedTypeName
+// MARK: - Полное имя проверяемого типа
 
 enum Examples {
 
@@ -50,7 +50,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case SingleCast
+// MARK: - Одиночное приведение типа
 
 enum Examples {
 
@@ -60,7 +60,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case SingleTest
+// MARK: - Одиночная проверка типа
 
 enum Examples {
 
@@ -70,7 +70,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case UserConversionMethod
+// MARK: - Пользовательский метод преобразования
 
 private extension ExprSyntax {
   func convert<Node: ExprSyntaxProtocol>(_ type: Node.Type) -> Node? { self.as(type) }

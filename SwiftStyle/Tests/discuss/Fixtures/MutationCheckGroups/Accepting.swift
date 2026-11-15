@@ -1,4 +1,4 @@
-// MARK: - Case DifferentProperty
+// MARK: - Проверка читает другое свойство
 func update(_ state: inout (count: Int, enabled: Bool)) {
   state.count += 1
 
@@ -8,7 +8,7 @@ func update(_ state: inout (count: Int, enabled: Bool)) {
   print("ready")
 }
 
-// MARK: - Case DifferentReceiver
+// MARK: - Проверка обращается к другому объекту
 func update(_ left: inout (count: Int, enabled: Bool), right: (count: Int, enabled: Bool)) {
   left.count += 1
 
@@ -18,7 +18,7 @@ func update(_ left: inout (count: Int, enabled: Bool), right: (count: Int, enabl
   print("ready")
 }
 
-// MARK: - Case InterveningStatement
+// MARK: - Между изменением значения и проверкой есть инструкция
 func update(_ value: inout Int) {
   value += 1
   print("tick")
@@ -28,7 +28,7 @@ func update(_ value: inout Int) {
   print("ready")
 }
 
-// MARK: - Case MultilineMutationBeforeCheck
+// MARK: - Многострочное изменение значения перед проверкой
 enum Examples {
 
   static func update(_ value: inout Int, input: Int) {
@@ -43,7 +43,7 @@ enum Examples {
   }
 }
 
-// MARK: - Case OnlyIfBodyReadsMutation
+// MARK: - Изменённое значение читается только в теле if
 func update(_ value: inout Int, enabled: Bool) {
   value += 1
 
@@ -54,7 +54,7 @@ func update(_ value: inout Int, enabled: Bool) {
   print("ready")
 }
 
-// MARK: - Case ReceiverBindingShadows
+// MARK: - Привязка в условии затеняет исходный объект
 func update(_ state: inout (count: Int, enabled: Bool), other: (count: Int, enabled: Bool)?) {
   state.count += 1
 

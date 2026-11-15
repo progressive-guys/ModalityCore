@@ -1,5 +1,4 @@
-// MARK: - Case MixedCaseForms
-// MARK: Input
+// MARK: - Компоновка вариантов switch: текст литерала во входе и выходе различается
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"
@@ -14,7 +13,7 @@ func category(_ value: Int) -> String {
   }
 }
 
-// MARK: Output
+/// Output
 func category(_ value: Int) -> String {
   switch value {
   case 0: return "zero"
@@ -30,8 +29,7 @@ func category(_ value: Int) -> String {
   }
 }
 
-// MARK: - Case MultilineCasesNeedSeparation
-// MARK: Input
+// MARK: - Многострочные варианты switch разделяются пустой строкой
 func flagValue(_ flag: Bool) -> Int {
   switch flag {
   case false:
@@ -41,7 +39,7 @@ func flagValue(_ flag: Bool) -> Int {
   }
 }
 
-// MARK: Output
+/// Output
 func flagValue(_ flag: Bool) -> Int {
   switch flag {
   case false:

@@ -1,39 +1,36 @@
-// MARK: - Case DeclarationLengthNotNameLength
-// MARK: Input
+// MARK: - Сортировка по длине объявления, а не имени
 enum Windows {
   static let a = "a substantially longer literal"
   static let longerName = "x"
 }
 
-// MARK: Output
+/// Output
 enum Windows {
 
   static let longerName = "x"
   static let a = "a substantially longer literal"
 }
 
-// MARK: - Case ProtocolMethodRequirements
-// MARK: Input
+// MARK: - Сортировка требований к методам протокола
 private protocol Actions {
   func value(for index: Int) -> Int
   func reset()
 }
 
-// MARK: Output
+/// Output
 private protocol Actions {
 
   func reset()
   func value(for index: Int) -> Int
 }
 
-// MARK: - Case ProtocolRequirements
-// MARK: Input
+// MARK: - Сортировка требований протокола
 private protocol Values {
   var longerName: Int { get }
   var x: Int { get }
 }
 
-// MARK: Output
+/// Output
 private protocol Values {
 
   var x: Int { get }

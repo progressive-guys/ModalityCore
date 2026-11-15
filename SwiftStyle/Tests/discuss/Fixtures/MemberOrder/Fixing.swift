@@ -1,11 +1,10 @@
-// MARK: - Case AliasBeforeAssociatedType
-// MARK: Input
+// MARK: - Псевдоним типа перед связанным типом
 protocol Requirements {
   associatedtype Value
   typealias Number = Int
 }
 
-// MARK: Output
+/// Output
 protocol Requirements {
 
   typealias Number = Int
@@ -13,14 +12,13 @@ protocol Requirements {
   associatedtype Value
 }
 
-// MARK: - Case AliasBeforeStorage
-// MARK: Input
+// MARK: - Псевдоним типа перед хранимыми свойствами
 struct AliasAfterStorage {
   var value = 0
   typealias Value = Int
 }
 
-// MARK: Output
+/// Output
 struct AliasAfterStorage {
 
   typealias Value = Int
@@ -28,14 +26,13 @@ struct AliasAfterStorage {
   var value = 0
 }
 
-// MARK: - Case AssociatedTypeBeforeSubscript
-// MARK: Input
+// MARK: - Связанный тип перед индексатором
 protocol Requirements {
   subscript(index: Int) -> Int { get }
   associatedtype Value
 }
 
-// MARK: Output
+/// Output
 protocol Requirements {
 
   associatedtype Value
@@ -43,14 +40,13 @@ protocol Requirements {
   subscript(index: Int) -> Int { get }
 }
 
-// MARK: - Case ComputedBeforeFunction
-// MARK: Input
+// MARK: - Вычисляемое свойство перед функцией
 struct FunctionBeforeComputed {
   func read() -> Int { value }
   var value: Int { 1 }
 }
 
-// MARK: Output
+/// Output
 struct FunctionBeforeComputed {
 
   var value: Int { 1 }
@@ -58,14 +54,13 @@ struct FunctionBeforeComputed {
   func read() -> Int { value }
 }
 
-// MARK: - Case DeinitializerBeforeSubscript
-// MARK: Input
+// MARK: - Деинициализатор перед индексатором
 final class SubscriptBeforeDeinit {
   subscript(index: Int) -> Int { index }
   deinit {}
 }
 
-// MARK: Output
+/// Output
 final class SubscriptBeforeDeinit {
 
   deinit {}
@@ -73,14 +68,13 @@ final class SubscriptBeforeDeinit {
   subscript(index: Int) -> Int { index }
 }
 
-// MARK: - Case InitializerBeforeComputed
-// MARK: Input
+// MARK: - Инициализатор перед вычисляемым свойством
 struct ComputedBeforeInitializer {
   var value: Int { 1 }
   init() {}
 }
 
-// MARK: Output
+/// Output
 struct ComputedBeforeInitializer {
 
   init() {}
@@ -88,14 +82,13 @@ struct ComputedBeforeInitializer {
   var value: Int { 1 }
 }
 
-// MARK: - Case InitializerBeforeDeinitializer
-// MARK: Input
+// MARK: - Инициализатор перед деинициализатором
 final class DeinitBeforeInit {
   deinit {}
   init() {}
 }
 
-// MARK: Output
+/// Output
 final class DeinitBeforeInit {
 
   init() {}
@@ -103,14 +96,13 @@ final class DeinitBeforeInit {
   deinit {}
 }
 
-// MARK: - Case InitializerBeforeSubscriptRequirement
-// MARK: Input
+// MARK: - Требование инициализатора перед требованием индексатора
 protocol Values {
   subscript(index: Int) -> Int { get }
   init()
 }
 
-// MARK: Output
+/// Output
 protocol Values {
 
   init()
@@ -118,8 +110,7 @@ protocol Values {
   subscript(index: Int) -> Int { get }
 }
 
-// MARK: - Case LeadingCommentMovesWithComputed
-// MARK: Input
+// MARK: - Комментарий перемещается вместе с вычисляемым свойством
 struct Values {
 
   func read() -> Int { value }
@@ -127,7 +118,7 @@ struct Values {
   var value: Int { 1 }
 }
 
-// MARK: Output
+/// Output
 struct Values {
 
   // Display value.
@@ -136,14 +127,13 @@ struct Values {
   func read() -> Int { value }
 }
 
-// MARK: - Case NestedTypeBeforeFunction
-// MARK: Input
+// MARK: - Вложенный тип перед функцией
 struct TypeAfterFunction {
   func read() {}
   struct Value {}
 }
 
-// MARK: Output
+/// Output
 struct TypeAfterFunction {
 
   struct Value {}
@@ -151,14 +141,13 @@ struct TypeAfterFunction {
   func read() {}
 }
 
-// MARK: - Case NestedTypeBeforeStorage
-// MARK: Input
+// MARK: - Вложенный тип перед хранимыми свойствами
 struct Values {
   var stored = 0
   struct Nested {}
 }
 
-// MARK: Output
+/// Output
 struct Values {
 
   struct Nested {}
@@ -166,8 +155,7 @@ struct Values {
   var stored = 0
 }
 
-// MARK: - Case NestedTypeInExtension
-// MARK: Input
+// MARK: - Вложенный тип перемещается перед функцией в расширении
 struct Value {}
 
 extension Value {
@@ -175,7 +163,7 @@ extension Value {
   struct Nested {}
 }
 
-// MARK: Output
+/// Output
 struct Value {}
 
 extension Value {
@@ -185,14 +173,13 @@ extension Value {
   func read() {}
 }
 
-// MARK: - Case ObserverBeforeInitializer
-// MARK: Input
+// MARK: - Свойство с наблюдателями перед инициализатором
 struct ObserverIsStored {
   init() {}
   var value = 0 { didSet {} }
 }
 
-// MARK: Output
+/// Output
 struct ObserverIsStored {
 
   var value = 0 { didSet {} }
@@ -200,14 +187,13 @@ struct ObserverIsStored {
   init() {}
 }
 
-// MARK: - Case PropertyBeforeMethodRequirement
-// MARK: Input
+// MARK: - Требование свойства перед требованием метода
 protocol Values {
   func read()
   var value: Int { get }
 }
 
-// MARK: Output
+/// Output
 protocol Values {
 
   var value: Int { get }
@@ -215,14 +201,13 @@ protocol Values {
   func read()
 }
 
-// MARK: - Case StorageBeforeInitializer
-// MARK: Input
+// MARK: - Хранимое свойство перед инициализатором
 struct InitializerBeforeStorage {
   init() {}
   var value = 1
 }
 
-// MARK: Output
+/// Output
 struct InitializerBeforeStorage {
 
   var value = 1
@@ -230,14 +215,13 @@ struct InitializerBeforeStorage {
   init() {}
 }
 
-// MARK: - Case SubscriptBeforeComputed
-// MARK: Input
+// MARK: - Индексатор перед вычисляемым свойством
 struct ComputedBeforeSubscript {
   var value: Int { 1 }
   subscript(index: Int) -> Int { index }
 }
 
-// MARK: Output
+/// Output
 struct ComputedBeforeSubscript {
 
   subscript(index: Int) -> Int { index }
@@ -245,14 +229,13 @@ struct ComputedBeforeSubscript {
   var value: Int { 1 }
 }
 
-// MARK: - Case SubscriptBeforePropertyRequirement
-// MARK: Input
+// MARK: - Требование индексатора перед требованием свойства
 protocol Values {
   var value: Int { get }
   subscript(index: Int) -> Int { get }
 }
 
-// MARK: Output
+/// Output
 protocol Values {
 
   subscript(index: Int) -> Int { get }

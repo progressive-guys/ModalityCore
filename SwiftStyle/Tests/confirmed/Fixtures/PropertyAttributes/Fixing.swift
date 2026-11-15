@@ -1,5 +1,4 @@
-// MARK: - Case KnownWrapperJoinsDeclaration
-// MARK: Input
+// MARK: - Аннотация Injected помещается на строке хранимого свойства
 @propertyWrapper
 struct Injected<Value> {
   var wrappedValue: Value
@@ -10,7 +9,7 @@ struct Settings {
   var value = 1
 }
 
-// MARK: Output
+/// Output
 @propertyWrapper
 struct Injected<Value> {
   var wrappedValue: Value

@@ -1,5 +1,4 @@
-// MARK: - Case AfterMultilineGetter
-// MARK: Input
+// MARK: - Пустая строка после многострочного getter
 struct MissingGapAfterLongGetter {
 
   var x: Int {
@@ -9,7 +8,7 @@ struct MissingGapAfterLongGetter {
   func read() -> Int { x }
 }
 
-// MARK: Output
+/// Output
 struct MissingGapAfterLongGetter {
 
   var x: Int {
@@ -20,8 +19,7 @@ struct MissingGapAfterLongGetter {
   func read() -> Int { x }
 }
 
-// MARK: - Case BetweenMultilineAccessors
-// MARK: Input
+// MARK: - Пустая строка между свойствами с многострочными аксессорами
 struct MissingGapBetweenAccessors {
 
   var a: Int {
@@ -34,7 +32,7 @@ struct MissingGapBetweenAccessors {
   }
 }
 
-// MARK: Output
+/// Output
 struct MissingGapBetweenAccessors {
 
   var a: Int {
@@ -48,15 +46,14 @@ struct MissingGapBetweenAccessors {
   }
 }
 
-// MARK: - Case CommentAfterBindingBoundary
-// MARK: Input
+// MARK: - Пустая строка между let и var ставится перед комментарием к var
 struct MissingBindingGapBeforeComment {
   let a = 1
   // Mutable value.
   var b = 2
 }
 
-// MARK: Output
+/// Output
 struct MissingBindingGapBeforeComment {
 
   let a = 1
@@ -65,8 +62,7 @@ struct MissingBindingGapBeforeComment {
   var b = 2
 }
 
-// MARK: - Case CompactAfterGroupHeader
-// MARK: Input
+// MARK: - Объявления идут подряд после заголовка группы
 struct BlankLineAfterGroupHeader {
 
   // Input values.
@@ -75,30 +71,28 @@ struct BlankLineAfterGroupHeader {
   var b = 2
 }
 
-// MARK: Output
+/// Output
 struct BlankLineAfterGroupHeader {
   // Input values.
   var a = 1
   var b = 2
 }
 
-// MARK: - Case CompactComputedPair
-// MARK: Input
+// MARK: - Пара коротких вычисляемых свойств идёт подряд
 struct ExtraComputedGap {
   var a: Int { 1 }
 
   var b: Int { 2 }
 }
 
-// MARK: Output
+/// Output
 struct ExtraComputedGap {
 
   var a: Int { 1 }
   var b: Int { 2 }
 }
 
-// MARK: - Case CompactDifferentTypePair
-// MARK: Input
+// MARK: - Пара коротких свойств разных типов идёт подряд
 struct ExtraGapBetweenTwoTypes {
 
   var w: Double = 1
@@ -106,15 +100,14 @@ struct ExtraGapBetweenTwoTypes {
   var s: String = "value"
 }
 
-// MARK: Output
+/// Output
 struct ExtraGapBetweenTwoTypes {
 
   var w: Double = 1
   var s: String = "value"
 }
 
-// MARK: - Case CompactDifferentWrapperPair
-// MARK: Input
+// MARK: - Пара коротких свойств с разными обёртками идёт подряд
 enum Wrappers {
 
   @propertyWrapper
@@ -135,7 +128,7 @@ struct ExtraGapBetweenTwoWrappers {
   @Wrappers.G var b: Int = 2
 }
 
-// MARK: Output
+/// Output
 enum Wrappers {
 
   @propertyWrapper
@@ -155,23 +148,21 @@ struct ExtraGapBetweenTwoWrappers {
   @Wrappers.G var b: Int = 2
 }
 
-// MARK: - Case CompactRequirementKinds
-// MARK: Input
+// MARK: - Требования свойств с get и get set идут подряд
 protocol Values {
   var a: Int { get }
 
   var b: Int { get set }
 }
 
-// MARK: Output
+/// Output
 protocol Values {
 
   var a: Int { get }
   var b: Int { get set }
 }
 
-// MARK: - Case CompactSameTypePair
-// MARK: Input
+// MARK: - Пара коротких свойств одного типа идёт подряд
 struct BlankLineWithinSameType {
 
   var a = 1
@@ -179,15 +170,14 @@ struct BlankLineWithinSameType {
   var b = 2
 }
 
-// MARK: Output
+/// Output
 struct BlankLineWithinSameType {
 
   var a = 1
   var b = 2
 }
 
-// MARK: - Case ExcessBetweenAccessors
-// MARK: Input
+// MARK: - Две пустые строки между свойствами с аксессорами сокращаются до одной
 struct ExtraGapBetweenAccessors {
 
   var a: Int {
@@ -202,7 +192,7 @@ struct ExtraGapBetweenAccessors {
   }
 }
 
-// MARK: Output
+/// Output
 struct ExtraGapBetweenAccessors {
 
   var a: Int {
@@ -216,8 +206,7 @@ struct ExtraGapBetweenAccessors {
   }
 }
 
-// MARK: - Case ExcessBindingGap
-// MARK: Input
+// MARK: - Две пустые строки между let и var сокращаются до одной
 struct ExtraBindingGap {
   let a = 1
 
@@ -225,7 +214,7 @@ struct ExtraBindingGap {
   var b = 2
 }
 
-// MARK: Output
+/// Output
 struct ExtraBindingGap {
 
   let a = 1
@@ -233,14 +222,13 @@ struct ExtraBindingGap {
   var b = 2
 }
 
-// MARK: - Case LetVarBoundary
-// MARK: Input
+// MARK: - Между let и var добавляется пустая строка
 struct MissingSmallBindingGap {
   let a = 1
   var b = 2
 }
 
-// MARK: Output
+/// Output
 struct MissingSmallBindingGap {
 
   let a = 1
@@ -248,8 +236,7 @@ struct MissingSmallBindingGap {
   var b = 2
 }
 
-// MARK: - Case LetWrappedVarBoundary
-// MARK: Input
+// MARK: - Между let и var с обёрткой добавляется пустая строка
 enum Wrappers {
 
   @propertyWrapper
@@ -263,7 +250,7 @@ struct MissingWrapperBindingGap {
   @Wrappers.F var b = 2
 }
 
-// MARK: Output
+/// Output
 enum Wrappers {
 
   @propertyWrapper
@@ -279,8 +266,7 @@ struct MissingWrapperBindingGap {
   @Wrappers.F var b = 2
 }
 
-// MARK: - Case MultilineLiteralGetter
-// MARK: Input
+// MARK: - Свойство с литералом на отдельной строке отделяется от предыдущего свойства
 class Computed {
   var longerName: Int { 1 }
   var x: Int {
@@ -288,7 +274,7 @@ class Computed {
   }
 }
 
-// MARK: Output
+/// Output
 class Computed {
 
   var longerName: Int { 1 }

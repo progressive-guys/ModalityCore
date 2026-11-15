@@ -1,4 +1,4 @@
-// MARK: - Case ConcreteMemberwiseWrapper
+// MARK: - Сортировка свойств с конкретной обёрткой оставлена для ручного решения
 @propertyWrapper
 struct Wrapped {
   var wrappedValue: Int
@@ -11,7 +11,7 @@ struct Example {
 
 func makeExample() -> Example { Example(longerName: 3, x: 4) }
 
-// MARK: - Case GenericMemberwiseWrapper
+// MARK: - Сортировка свойств с обобщённой обёрткой оставлена для ручного решения
 @propertyWrapper
 struct Box<T> {
   var wrappedValue: T
@@ -24,7 +24,7 @@ struct GenericExample {
 
 func makeExample() -> GenericExample { GenericExample(longerName: 3, x: 4) }
 
-// MARK: - Case MemberwiseInitializer
+// MARK: - Сортировка свойств, определяющих аргументы поэлементного инициализатора, оставлена для ручного решения
 struct Pair {
   let longerName: Int
   let x: Int
@@ -34,7 +34,7 @@ func makePair() -> Pair {
   Pair(longerName: 1, x: 2)
 }
 
-// MARK: - Case StoredInitializerEffects
+// MARK: - Сортировка свойств с побочными эффектами инициализации оставлена для ручного решения
 private func trace(_ value: Int) -> Int {
   print(value)
   return value
@@ -45,7 +45,7 @@ private final class Values {
   let x = trace(2)
 }
 
-// MARK: - Case WrapperInitialization
+// MARK: - Сортировка свойств с побочными эффектами обёртки не выполняется автоматически
 @propertyWrapper
 struct Recorded<Value> {
   var wrappedValue: Value
