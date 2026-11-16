@@ -31,6 +31,7 @@ enum Examples {
       } else {
         0
       }
+
     return result
   }
 
@@ -48,25 +49,6 @@ enum Examples {
     ) { return true }
 
     return false
-  }
-}
-
-// MARK: - Продолжение шаблона case выравнивается; перед default добавляется пустая строка
-func select(_ value: Int) -> Int {
-  switch value {
-  case 1,
-       2: 1
-  default: 0
-  }
-}
-
-/// Output
-func select(_ value: Int) -> Int {
-  switch value {
-  case 1,
-    2: 1
-
-  default: 0
   }
 }
 
@@ -107,17 +89,5 @@ enum Examples {
       0
     }
     return result
-  }
-}
-
-// MARK: - Однострочный return и многострочное действие в else
-func value(_ first: Bool) -> Void {
-  if first { return } else { print("value") }
-}
-
-/// Output
-func value(_ first: Bool) -> Void {
-  if first { return } else {
-    print("value")
   }
 }

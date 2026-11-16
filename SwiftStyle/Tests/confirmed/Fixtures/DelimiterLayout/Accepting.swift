@@ -1,3 +1,50 @@
+// MARK: - arguments
+func arguments(_ first: Int, _ second: Int) -> Int {
+  max(first, second)
+}
+
+func arguments(_ first: Int, _ second: Int) -> Int {
+  max(
+    first,
+    second
+  )
+}
+
+func arguments(
+  _ first: Int,
+  _ second: Int
+) -> Int {
+  max(
+    first,
+    second
+  )
+}
+
+// MARK: - Arrays
+func array(_ first: Int, _ second: Int) -> [Int] {
+  [first, second]
+}
+
+func array(_ first: Int, _ second: Int) -> [Int] {
+  [
+    first,
+    second
+  ]
+}
+
+// MARK: - Tuples
+func tuple(_ first: Int, _ second: Int) -> (Int, Int) {
+  (first, second)
+}
+
+func tuple(_ first: Int, _ second: Int) -> (Int, Int) {
+  (
+    first,
+    second
+  )
+}
+
+
 // MARK: - Закрывающие скобки при вложенных выражениях (1)
 enum Examples {
 
@@ -43,10 +90,12 @@ enum Examples {
 
   // Обращение к члену типа после многострочной строки
   static func multilineString() -> [UInt8] {
-    Array("""
+    Array(
+      """
       first
       second
-      """.utf8)
+      """.utf8
+    )
   }
 }
 
@@ -55,10 +104,12 @@ enum Examples {
 
   // Обращение к члену типа после многострочной строки с решётками
   static func rawMultilineString() -> [UInt8] {
-    Array(#"""
+    Array(
+      #"""
       first
       second
-      """#.utf8)
+      """#.utf8
+    )
   }
 
   // Следующий аргумент после массива

@@ -114,7 +114,9 @@ struct Values {
 struct Value { }
 
 extension Value {
+  
   func read() { }
+  
   struct Nested { }
 }
 
@@ -122,9 +124,7 @@ extension Value {
 struct Value { }
 
 extension Value {
-
   struct Nested { }
-
   func read() { }
 }
 

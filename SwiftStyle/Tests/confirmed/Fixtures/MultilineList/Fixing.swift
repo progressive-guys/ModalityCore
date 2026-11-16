@@ -16,6 +16,12 @@ func total(
   first + second
 }
 
+func sum(first: Int,
+  second: Int
+) -> Int {
+  first + second
+}
+
 /// Output
 func value() -> String {
   let value = String(
@@ -31,6 +37,13 @@ func value() -> String {
 }
 
 func total(
+  first: Int,
+  second: Int
+) -> Int {
+  first + second
+}
+
+func sum(
   first: Int,
   second: Int
 ) -> Int {
