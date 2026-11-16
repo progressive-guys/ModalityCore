@@ -67,7 +67,7 @@ func value(_ first: Bool) -> Int {
   return 1
 }
 
-// MARK: - Продолжение условия if выравнивается, значения веток переносятся
+// MARK: - Продолжение условия if получает отступ в два пробела, значения веток переносятся
 enum Examples {
   static func value(_ first: Bool, _ second: Bool) -> Int {
     let result = if first,

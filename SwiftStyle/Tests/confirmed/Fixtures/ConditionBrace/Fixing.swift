@@ -10,8 +10,7 @@ func sum(_ first: Int?, _ second: Int?) -> Int {
 
 /// Output
 func sum(_ first: Int?, _ second: Int?) -> Int {
-  if
-    let first,
+  if let first,
     let second
   {
     return first + second
@@ -29,8 +28,7 @@ func matches(_ first: Bool, _ second: Bool, _ third: Bool) -> Bool {
 
 /// Output
 func matches(_ first: Bool, _ second: Bool, _ third: Bool) -> Bool {
-  if
-    first,
+  if first,
     second,
     third
   {

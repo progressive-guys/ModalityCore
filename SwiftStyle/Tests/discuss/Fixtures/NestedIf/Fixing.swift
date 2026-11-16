@@ -13,7 +13,7 @@ enum Example {
 
   static func binding(_ value: Int?) {
     if let value,
-       value > 0
+      value > 0
     {
       print(value)
     }
@@ -32,7 +32,7 @@ func run(_ first: Bool, _ second: Bool, body: () -> Void) {
 /// Output
 func run(_ first: Bool, _ second: Bool, body: () -> Void) {
   if first,
-     second
+    second
   {
     body()
   } // Keep this closing comment.
@@ -71,7 +71,7 @@ enum Example {
   static func comments(_ first: Bool, _ second: Bool) {
     if first,
       // Check the next condition only after the first one succeeds.
-       second
+      second
     {
       print("ready")
     }
@@ -79,8 +79,8 @@ enum Example {
 
   static func threeLevels(_ first: Bool, _ second: Bool, _ third: Bool) {
     if first,
-       second,
-       third
+      second,
+      third
     {
       print("ready")
     }
@@ -88,7 +88,7 @@ enum Example {
 
   static func nested(_ first: Bool, _ second: Bool) {
     if first,
-       second
+      second
     {
       print("ready")
     }
