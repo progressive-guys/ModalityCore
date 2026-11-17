@@ -30,9 +30,7 @@ let project = Project(
     )
   ],
   additionalFiles: [
-    .folderReference(path: "Tests/confirmed"),
-    .folderReference(path: "Tests/discuss"),
-    .folderReference(path: "Tests/legacy")
+    .folderReference(path: "Tests/Fixtures")
   ],
   resourceSynthesizers: [.files(plugin: "ModalityBuild", extensions: ["swift"])]
 )

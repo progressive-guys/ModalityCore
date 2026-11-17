@@ -6,8 +6,8 @@ The previous rule engine has been removed. The replacement keeps the command-lin
 
 ## Fixtures
 
-`Tests/legacy` preserves the previous fixture collection.
+`Tests/Fixtures/<Rule>/` contains the reviewed fixtures. Each rule folder uses `Accepting.swift`, `Fixing.swift`, and `Declining.swift` (or `Declined.swift`). Nested scenario folders use the same names.
 
-`Tests/confirmed` contains 56 confirmed scenarios. `Tests/discuss` contains 32 scenarios for review. Each collection retains its index, manifest, and original Swift files. Tuist displays both folders as additional files. Their expected results are not yet connected to the test runner.
+Tuist copies this directory into the test bundle as resources. The three test suites select files by name. The existing test suites start with the reviewed files; formatter checks fail until the replacement engine is implemented. Some files retain the review format with several scenarios and `/// Output` markers; the current loader expects one `// MARK: Input` / `// MARK: Output` pair.
 
-The existing three test suites and loading helpers remain available. `Tests/Fixtures` has empty suite folders for the replacement tests.
+Build lint runs SwiftFormat and SwiftLint. The unavailable SwiftStyle engine is checked through its CLI and fixture tests.

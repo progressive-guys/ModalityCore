@@ -18,23 +18,9 @@ public enum SwiftStyleProject {
         product: .unitTests,
         bundleId: "dev.progressive-guys.SwiftStyleTests",
         deploymentTargets: .macOS("14.0"),
+        resources: [.folderReference(path: "Tests/Fixtures")],
         buildableFolders: ["Tests/SwiftStyleTests"],
-        copyFiles: [.resources(
-          name: "Embed fixture bundle",
-          files: [.buildProduct(name: "SwiftStyleFixtures")]
-        )],
         dependencies: [.target(name: "SwiftStyle"), .project(target: "ModalityCore", path: "..")]
-      ),
-      .target(
-        name: "SwiftStyleFixtures",
-        destinations: [.mac],
-        product: .bundle,
-        bundleId: "dev.progressive-guys.SwiftStyleFixtures",
-        deploymentTargets: .macOS("14.0"),
-        copyFiles: [.resources(
-          name: "Copy fixtures",
-          files: [.folderReference(path: "Tests/Fixtures")]
-        )]
       )
     ]
   }

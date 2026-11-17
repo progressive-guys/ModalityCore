@@ -3,42 +3,36 @@ import Foundation
 import ModalityCore
 
 {% if param.name == "SwiftStyleTests" %}
-{% macro fixtureCollections directory %}
-{% for file in directory.files %}
-{% if file.name == directory.name %}
+public enum Files {
 
-  enum {{directory.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+  enum AcceptingTests {
+    static var files: [BundledResource<SwiftFixture>] {
+      get throws { try Files.fixtures(named: "Accepting.swift") }
+    }
+  }
 
+  enum FixingTests {
+    static var files: [BundledResource<SwiftFixture>] {
+      get throws { try Files.fixtures(named: "Fixing.swift") }
+    }
+  }
+
+  enum DecliningTests {
     static var files: [BundledResource<SwiftFixture>] {
       get throws {
-        try BundledResource<SwiftFixture>.files(
-          in: #"Fixtures/{{directory.name}}"#,
-          bundle: Files.fixtureBundle,
-          extension: "swift"
-        )
+        try Files.fixtures(named: "Declining.swift") + Files.fixtures(named: "Declined.swift")
       }
     }
   }
-{% endif %}
-{% endfor %}
-{% for child in directory.directories %}
-{% if child.name != "Fixtures" %}
-{% call fixtureCollections child %}
-{% endif %}
-{% endfor %}
-{% endmacro %}
-public enum Files {
-{% for group in groups %}
-{% call fixtureCollections group %}
-{% endfor %}
+
+  private static func fixtures(named fileName: String) throws -> [BundledResource<SwiftFixture>] {
+    try BundledResource<SwiftFixture>.files(in: "Fixtures", bundle: fixtureBundle, extension: "swift")
+      .filter { $0.fileName == fileName }
+  }
 
   private static var fixtureBundle: Bundle {
     get throws {
-      let resource = BundledResource<Data>("SwiftStyleFixtures.bundle", bundle: {{param.bundle}})
-
-      guard let bundle = Bundle(url: try resource.url) else { throw CocoaError(.fileReadCorruptFile) }
-
-      return bundle
+      {{param.bundle}}
     }
   }
 }

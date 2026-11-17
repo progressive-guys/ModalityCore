@@ -28,8 +28,8 @@ struct FixingSwiftFixture: Sendable, CustomTestStringConvertible {
 extension BundledResource where Content == SwiftFixture {
 
   func load() throws -> SwiftFixture {
-    // Bundle paths use Fixtures/<Suite>/<Scenario>.swift.
-    let scenario = path.split(separator: "/").dropFirst(2).joined(separator: "/")
+    // Bundle paths use Fixtures/<Rule>/<Scenario>/Fixing.swift or Fixtures/<Rule>/Accepting.swift.
+    let scenario = path.split(separator: "/").dropFirst().joined(separator: "/")
     return SwiftFixture(
       name: (scenario as NSString).deletingPathExtension,
       source: try String(contentsOf: url, encoding: .utf8).replacingOccurrences(of: "\r\n", with: "\n")
