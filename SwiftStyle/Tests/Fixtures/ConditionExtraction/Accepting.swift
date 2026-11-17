@@ -3,7 +3,10 @@ enum Examples {
 
   // Условие после объявления с явным типом
   static func typedBinding(_ text: String) -> Bool {
-    if let parsed: Int = Int(text), abs(abs(parsed)) > 0 { return true }
+    if let parsed: Int = Int(text), abs(abs(parsed)) > 0 {
+      return true
+    }
+
     return false
   }
 
@@ -39,13 +42,19 @@ enum Examples {
 
   // Короткий предикат-замыкание остаётся непосредственно в условии
   static func shortPredicate(_ values: [Int]) -> Bool {
-    if values.contains(where: { $0 > 0 }) { return true }
+    if values.contains(where: { $0 > 0 }) {
+      return true
+    }
+
     return false
   }
 
   // Комментарий внутри вызова в условии
   static func nestedComment(_ value: Int) -> Bool {
-    if abs(/* input */ abs(value)) > 0 { return true }
+    if abs(/* input */ abs(value)) > 0 {
+      return true
+    }
+
     return false
   }
 }
@@ -73,13 +82,19 @@ enum Examples {
 
   // Результат вызова, изменяющего состояние, в условии
   static func apiInsertedResult(_ values: inout Set<Int>, _ value: Int) -> Bool {
-    if values.insert(value).inserted { return true }
+    if values.insert(value).inserted {
+      return true
+    }
+
     return false
   }
 
   // Вызов необязательного значения в условии
   static func optionalCall(_ callback: (() -> Bool)?) -> Bool {
-    if callback?() == true { return true }
+    if callback?() == true {
+      return true
+    }
+
     return false
   }
 }
@@ -96,7 +111,10 @@ enum Examples {
 
   // Короткое арифметическое выражение в условии
   static func simpleArithmetic(_ value: Int, _ offset: Int, _ limit: Int) -> Bool {
-    if value + offset > limit { return true }
+    if value + offset > limit {
+      return true
+    }
+
     return false
   }
 
@@ -108,7 +126,10 @@ enum Examples {
 
   // Короткие вложенные вызовы в условии
   static func deepShortCall(_ value: Int) -> Bool {
-    if abs(abs(abs(value))) > 0 { return true }
+    if abs(abs(abs(value))) > 0 {
+      return true
+    }
+
     return false
   }
 }
@@ -118,7 +139,10 @@ enum Examples {
 
   // Обращение по индексу в условии
   static func indexing(_ values: [Int], _ index: Int) -> Bool {
-    if values[index] > 0 { return true }
+    if values[index] > 0 {
+      return true
+    }
+
     return false
   }
 
@@ -129,7 +153,10 @@ enum Examples {
 
   // Вложенный вызов длиной 120 символов остаётся в условии
   static func nestedAtLimit(_ text: String) -> Bool {
-    if text.hasPrefix("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234".lowercased()) { return true }
+    if text.hasPrefix("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234".lowercased()) {
+      return true
+    }
+
     return false
   }
 }

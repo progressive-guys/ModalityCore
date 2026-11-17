@@ -433,9 +433,7 @@ func declarationsThenChecksAndReturn() -> Int {
   let a = 1
   let b = 2
   
-  if a == b {
-    return a
-  }
+  if a == b { return a }
   
   if b > a {
     return b

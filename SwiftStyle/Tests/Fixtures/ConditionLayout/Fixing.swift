@@ -38,7 +38,9 @@ enum Examples {
   static func value(_ first: Bool, _ second: Bool) -> Bool {
     if first,
       second
-    { return true }
+    {
+      return true
+    }
 
     return false
   }
@@ -46,7 +48,9 @@ enum Examples {
   static func value(_ values: [Int], _ value: Int) -> Bool {
     if values.contains(
       value
-    ) { return true }
+    ) {
+      return true
+    }
 
     return false
   }
