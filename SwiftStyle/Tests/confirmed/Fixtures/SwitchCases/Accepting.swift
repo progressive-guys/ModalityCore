@@ -19,3 +19,32 @@ func flagValue(_ flag: Bool) -> Int {
   case true: return 1
   }
 }
+
+// MARK: - Многострочные шаблоны и комментарии вариантов switch
+// Многострочный шаблон варианта switch
+func header(_ value: Int) -> Int {
+  switch value {
+  case 0,
+    1: 0
+
+  default: 1
+  }
+}
+
+// Строчный комментарий после варианта switch
+func inlineComment(_ value: Int) -> Int {
+  switch value {
+  case 0: 0 // First value.
+  default: 1
+  }
+}
+
+// Многострочный комментарий после варианта
+func blockComment(_ value: Int) -> Int {
+  switch value {
+  case 0: 0 /* First
+    value. */
+
+  default: 1
+  }
+}

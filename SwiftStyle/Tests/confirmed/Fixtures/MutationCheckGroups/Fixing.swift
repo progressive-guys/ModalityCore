@@ -114,6 +114,7 @@ func update(_ value: inout Int?, input: Int?) {
 func update(_ value: inout Int?, input: Int?) {
   value = input
   guard let value else { return }
+  
   print(value)
   print("ready")
 }

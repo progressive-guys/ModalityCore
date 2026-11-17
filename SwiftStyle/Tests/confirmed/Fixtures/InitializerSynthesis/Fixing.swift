@@ -1,19 +1,15 @@
 // MARK: - Явный инициализатор сохраняет значения по умолчанию и закрытый доступ
 struct Values {
-  private var longerName = 1
-  public var x = 2
+  private var x = 2
+  public var longerName = 1
 }
 
 /// Output
 struct Values {
 
-  public var x: Int
-  private var longerName: Int
+  public var longerName: Int = 1
 
-  private init(longerName: Int = 1, x: Int = 2) {
-    self.longerName = longerName
-    self.x = x
-  }
+  private var x: Int = 2
 }
 
 // MARK: - Явный инициализатор сохраняет порядок аргументов после сортировки свойств
@@ -29,11 +25,6 @@ struct Values {
 
   let x: Int
   let longerName: Int
-
-  init(longerName: Int, x: Int) {
-    self.longerName = longerName
-    self.x = x
-  }
 }
 
 func makeValues() -> Values {

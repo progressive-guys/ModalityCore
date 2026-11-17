@@ -224,6 +224,50 @@ enum Wrappers {
   }
 }
 
+// MARK: - Свойства с одинаковой обёрткой собираются вместе
+enum Wrappers {
+
+  @propertyWrapper
+  struct F<Value> {
+    var wrappedValue: Value
+  }
+
+  @propertyWrapper
+  struct G<Value> {
+    var wrappedValue: Value
+  }
+}
+
+struct RepeatedWrapperGroup {
+  @Wrappers.F var a: Int = 1
+  @Wrappers.G var m: Int = 2
+  @Wrappers.F var z: Int = 3
+
+  init() { }
+}
+
+/// Output
+enum Wrappers {
+
+  @propertyWrapper
+  struct F<Value> {
+    var wrappedValue: Value
+  }
+
+  @propertyWrapper
+  struct G<Value> {
+    var wrappedValue: Value
+  }
+}
+
+struct RepeatedWrapperGroup {
+
+  @Wrappers.F var a: Int = 1
+  @Wrappers.F var z: Int = 3
+  @Wrappers.G var m: Int = 2
+
+  init() { }
+}
 struct RepeatedWrapperGroup {
   @Wrappers.F var a: Int = 1
   @Wrappers.G var m: Int = 2

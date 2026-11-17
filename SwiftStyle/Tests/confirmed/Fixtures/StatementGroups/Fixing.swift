@@ -432,10 +432,15 @@ func differentReceivers(_ input: Int, first: inout [Int], second: inout [Int]) {
 func declarationsThenChecksAndReturn() -> Int {
   let a = 1
   let b = 2
-  if a == b { return a }
+  
+  if a == b {
+    return a
+  }
+  
   if b > a {
     return b
   }
+  
   return a
 }
 
@@ -499,7 +504,6 @@ func switchBranchRead(_ kind: Int, center: Int) {
 // MARK: - Границы групп в проверках, циклах и вычислениях (5)
 func switchSubject(_ input: Int) {
   let value = input
-
   switch value {
   case 0: print("zero")
   default: print(value)
@@ -527,6 +531,7 @@ func shortBody(_ first: inout [Int], second: inout [Int]) {
 /// Output
 func switchSubject(_ input: Int) {
   let value = input
+  
   switch value {
   case 0: print("zero")
   default: print(value)

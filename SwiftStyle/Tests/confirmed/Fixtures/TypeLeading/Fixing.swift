@@ -33,3 +33,30 @@ enum Single {
 
 /// Output
 enum Single { }
+
+// MARK: - Удаление пустой строки перед единственным вариантом перечисления
+enum Key {
+
+  case value
+}
+
+/// Output
+enum Key {
+  case value
+}
+
+// MARK: - Вход и выход совпадают: пустая строка в начале расширения сохраняется
+extension Int {
+
+  func incremented() -> Int {
+    self + 1
+  }
+}
+
+/// Output
+extension Int {
+
+  func incremented() -> Int {
+    self + 1
+  }
+}
