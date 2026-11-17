@@ -37,9 +37,7 @@ run_swiftlint() {
   if [ "${1:-}" = --fix ]; then
     /usr/bin/arch "-$host_arch" "$swiftlint" lint --config "$config_root/.swiftlint.yml" --force-exclude --quiet "$@"
   else
-    native_status=0
-    diagnostics=$(/usr/bin/arch "-$host_arch" "$swiftlint" lint --config "$config_root/.swiftlint.yml" --force-exclude --quiet --reporter json "$@") || native_status=$?
-    printf '%s\n' "$diagnostics" | sh "$kit_root/Scripts/run.sh" --filter-layout-diagnostics "$native_status"
+    /usr/bin/arch "-$host_arch" "$swiftlint" lint --config "$config_root/.swiftlint.yml" --force-exclude --quiet "$@"
   fi
 }
 
@@ -59,24 +57,11 @@ run_swiftformat() {
   return "$format_status"
 }
 
-# Run approved structural rules, including arithmetic wrap checks.
-# Existing library sources fail these checks. Enable each check after its sources are corrected.
-# rules=$rules,arithmetic_precedence_wrap,binary_operator_wrap,multiline_expression_closing_delimiter,switch_case_spacing
-rules=enum_case_blank_line,collapsible_nested_if,switch_case_pattern_indent,multiline_string_indent
-rules=$rules,arithmetic_call_arguments_wrap,mixed_additive_expression_wrap,mixed_multiplicative_expression_wrap
-rules=$rules,comparison_operator_newline,chained_closure_same_line,multiline_call_declaration_spacing
-rules=$rules,member_spacing,member_order,property_grouping,attribute_newline,private_view_properties,statement_grouping,prefer_syntax_kind_switch,prefer_type_switch
-
+# The replacement SwiftStyle engine is unavailable. Run the native tools during builds.
+# The CLI and fixture tests report the missing engine separately.
 case "${CI:-}" in
   ""|false|0)
     if [ "$autocorrect" = true ]; then
-      run_swiftformat fix "$@"
-      run_swiftlint --fix "$@"
-      # Report unresolved rules in the final check after all formatters finish.
-      fix_status=0
-      sh "$kit_root/Scripts/run.sh" --fix --rules "$rules" "$@" > /dev/null || fix_status=$?
-      if [ "$fix_status" -ne 0 ] && [ "$fix_status" -ne 2 ]; then exit "$fix_status"; fi
-      # Normalize whitespace introduced by structural fixes.
       run_swiftformat fix "$@"
       run_swiftlint --fix "$@"
     fi
@@ -86,5 +71,4 @@ esac
 status=0
 run_swiftformat lint "$@" || status=1
 run_swiftlint "$@" || status=1
-sh "$kit_root/Scripts/run.sh" --rules "$rules" "$@" || status=1
 exit "$status"
